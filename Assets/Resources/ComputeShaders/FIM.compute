@@ -1,0 +1,1295 @@
+// Each #kernel tells which function to compile; you can have many kernels
+//FIM DT Kernel 
+#pragma kernel InitBound
+#pragma kernel UpdateFarState
+#pragma kernel UpdateSourceValue
+#pragma kernel UpdateSourceState
+#pragma kernel VisualizeTexture
+#pragma kernel InitRemedy
+#pragma kernel UpdateRemedy
+#pragma kernel UpdateRemedyNeighbor
+
+//FIM Tree Kernel
+#pragma kernel InitSeed
+#pragma kernel UpdateFarStateTree
+#pragma kernel UpdateSourceValueTree
+#pragma kernel UpdateSourceStateTree
+#pragma kernel InitRemedyTree
+#pragma kernel UpdateRemedyTree
+#pragma kernel UpdateRemedyNeighborTree
+#pragma kernel GetParent
+
+//FIM Full Image Kernel
+#pragma kernel InitSeedFI
+#pragma kernel UpdateFarStateFI
+#pragma kernel UpdateSourceValueFI
+#pragma kernel UpdateSourceStateFI
+#pragma kernel InitRemedyFI
+#pragma kernel UpdateRemedyFI
+#pragma kernel UpdateRemedyNeighborFI
+
+//FIM Tracing Branch
+#pragma kernel AdjustIntensity
+#pragma kernel AdjustIntensityWithValue
+#pragma kernel InitOffset
+#pragma kernel ApplyOffset
+
+#pragma kernel ModifyMask
+
+//Get ConnectPart
+#pragma kernel InitConnectionSeed
+#pragma kernel UpdateConnection
+
+#pragma kernel InitClusterSeed
+#pragma kernel UpdateCluster
+
+#pragma kernel InitTrunk
+#pragma kernel UpdateTrunk
+
+#pragma kernel InitErase
+
+#pragma kernel TransformDataUint
+#pragma kernel TransformDataFloat
+#pragma kernel Visualization
+
+#pragma kernel CopyData
+#pragma kernel GetMaskedVolumeData
+#pragma kernel GetPhi
+#pragma kernel GetBuff
+#pragma kernel GetDiff
+
+// state tag def
+#define ACTIVE 0
+#define SOURCE 1
+#define FAR 2
+#define REMEDY 3
+#define CONVERGE 4
+#define BACKGROUND 5
+#define INFINITE 3.4028235E38
+#define Epsilon 1e-6
+#define SQRT2 1.414213562373
+
+#define THREADX 8
+#define THREADY 8
+#define THREADZ 4
+
+#define THRESHOLD_BLOCK_SIZE 1
+
+#define GWDTMIN 0.003906
+
+void SetBoundary(RWTexture3D<uint> target, uint3 index, bool isBoundary, uint tagBit)
+{
+    target[index] |= ((isBoundary ? 1 : 0) << tagBit);
+}
+
+#define max_diff  3
+
+RWTexture3D<uint> state;
+RWTexture3D<float> gwdt;
+RWTexture3D<float> visualize;
+RWTexture3D<float> mask;
+RWTexture3D<float> volume;
+Texture3D<float> origin;
+RWTexture3D<float> _offset;
+RWTexture3D<float> threshold;
+int bkgThreshold;
+uint3 dims;
+
+uint3 seed;
+int seedIndex;
+RWTexture3D<float> phi;
+RWTexture3D<uint> parent;
+float maxIntensity;
+
+//int x_offset[] = {-1, -1, -1, -1, -1,  0,  0,  0,  0, 0,  0, 0, 0,  1,  1, 1, 1, 1};
+//int y_offset[] = {-1,  0,  0,  0,  1, -1, -1, -1,  0, 0,  1, 1, 1, -1,  0, 0, 0, 1};
+//int z_offset[] = { 0, -1,  0,  1,  0, -1,  0,  1, -1, 1, -1, 0, 1,  0, -1, 0, 1, 0};
+//int diffs[] =     {2,  2,  1,  2,  2,  2,  1,  2,  1, 1,  2, 1, 2,  2,  2, 1, 2, 2};
+//float sqrt_diffs[] = {1.0f, 1.414213562373095f};
+
+uint PosToIndex(uint3 pos)
+{
+    uint index = pos.x + pos.y * dims.x + pos.z * dims.x * dims.y;
+    return index;
+}
+
+uint3 IndexToPos(uint index)
+{
+    uint x = index % dims.x;
+    uint y = (index / dims.x) % dims.y;
+    uint z = (index / dims.x / dims.y) % dims.z;
+    return uint3(x, y, z);
+}
+
+inline float newDistance(uint3 id,uint3 id2, int diff)
+{
+    float new_dist;
+    //if(phi[id2]==INFINITE) new_dist = INFINITE;
+    //else if (gwdt[id2] <= 1/255.0f) new_dist = INFINITE;
+    //else
+    //{
+    //    new_dist = phi[id2] + sqrt(diff) / ((gwdt[id] / maxIntensity) * (gwdt[id] / maxIntensity) * (gwdt[id2] / maxIntensity) * (gwdt[id2] / maxIntensity));
+    //    //new_dist = phi[id2] + sqrt(diff) / ((gwdt[id] / maxIntensity) * (gwdt[id] / maxIntensity)* (gwdt[id] / maxIntensity)* (gwdt[id] / maxIntensity));
+    //    //new_dist = phi[id2] + sqrt(diff) / ((gwdt[id] / maxIntensity) * (gwdt[id] / maxIntensity));
+    //}   
+    float factor1 = (max(gwdt[id],GWDTMIN) / 1.0f)*255;
+    float factor2 = (max(gwdt[id2],GWDTMIN) / 1.0f)*255;
+    new_dist = phi[id2] + sqrt(diff) / (factor1 * factor1 * factor2 * factor2);
+
+    //return phi[id2] + sqrt(diff) / (max(gwdt[id2],1/255.0f)*255*2.788)/(max(gwdt[id],1/255.0f)*255*2.788) ;
+
+    return new_dist;
+}
+
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void CopyData (uint3 id : SV_DispatchThreadID)
+{
+    volume[id] = origin[id];
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitBound (uint3 id : SV_DispatchThreadID)
+{
+    if (volume[id] < threshold[id/THRESHOLD_BLOCK_SIZE] || mask[id] > 0 ||
+    id.z == 0 || id.z == (dims.z - 1)||id.x == 0 || id.x == (dims.x - 1) || id.y == 0 || id.y == (dims.y - 1))
+    { 
+        state[id] = ACTIVE;
+        if(mask[id]>0) 
+        {
+            gwdt[id] = 1/255.0f; 
+        }
+        else
+        {
+            gwdt[id] = volume[id];
+        }
+    }
+    else
+    {
+        state[id] = FAR;
+        gwdt[id] = INFINITE;
+    }
+}
+
+
+uint sourceCount;
+AppendStructuredBuffer<uint> sourceSet;
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateFarState(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == FAR)
+    {
+        bool isSource = false;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int)id.x + i;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    //if (diff > max_diff)
+                    //    continue;
+                    isSource = isSource || state[uint3(x2, y2, z2)] == ACTIVE;
+                }
+            }
+        }
+        if (isSource)
+        {
+            state[id] = SOURCE;
+            uint index = PosToIndex(id);
+            sourceSet.Append(index);
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateSourceValue(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == SOURCE)
+    {
+        float min_dist = INFINITE;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    //if (diff > max_diff)
+                    //    continue;
+                    uint3 id2 = uint3(x2, y2, z2);
+                    if (state[id2] == ACTIVE)
+                    {
+                        float new_dist = gwdt[id2] + volume[id] * sqrt(diff);
+                        min_dist = min(min_dist, new_dist);
+                    }
+                }
+            }
+        }
+
+        gwdt[id] = min_dist;
+        //state[id] = ACTIVE;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateSourceState(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == SOURCE)
+        state[id] = ACTIVE;
+}
+
+AppendStructuredBuffer<uint> remedySet;
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitRemedy(uint3 id : SV_DispatchThreadID)
+{
+    float min_dist = INFINITE;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        //if (x2 < 0 || x2 >= (int) dims.x)
+        //    continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            //if (y2 < 0 || y2 >= (int) dims.y)
+            //    continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                //if (z2 < 0 || z2 >= (int) dims.z)
+                //    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                //if (diff > max_diff)
+                //    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                float new_dist = gwdt[id2] + volume[id] * sqrt(diff);
+                min_dist = min(min_dist, new_dist);
+            }
+        }
+    }
+    //for(int i=0;i<18;i++)
+    //{
+    //    int x2 = id.x + x_offset[i];
+    //    int y2 = id.y + y_offset[i];
+    //    int z2 = id.z + z_offset[i];
+    //    int diff = diffs[i];
+    //    uint3 id2 = uint3(x2, y2, z2);
+    //    if (state[id2] == ACTIVE)
+    //    {
+    //        float new_dist = gwdt[id2] + volume[id] * diff == 1? 1.0f: 1.414213562373095f;
+    //        min_dist = min(min_dist, new_dist);
+    //    }
+    //}
+    if (gwdt[id] > min_dist)
+    {
+        state[id] = REMEDY;
+        remedySet.Append(PosToIndex(id));
+    }
+    else
+    {
+        state[id] = CONVERGE;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateRemedy(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == REMEDY)
+    {
+        float min_dist = INFINITE;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            //if (x2 < 0 || x2 >= (int) dims.x)
+            //    continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                //if (y2 < 0 || y2 >= (int) dims.y)
+                //    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    //if (z2 < 0 || z2 >= (int) dims.z)
+                    //    continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    //if (diff > max_diff)
+                    //    continue;
+                    uint3 id2 = uint3(x2, y2, z2);
+                    float new_dist = gwdt[id2] + volume[id] * sqrt(diff);
+                    min_dist = min(min_dist, new_dist);
+                }
+            }
+        }
+        //for(int i=0;i<18;i++)
+        //{
+        //    int x2 = id.x + x_offset[i];
+        //    int y2 = id.y + y_offset[i];
+        //    int z2 = id.z + z_offset[i];
+        //    int diff = diffs[i];
+        //    uint3 id2 = uint3(x2, y2, z2);
+        //    if (state[id2] == ACTIVE)
+        //    {
+        //        float new_dist = gwdt[id2] + volume[id] * diff == 1? 1.0f: 1.414213562373095f;
+        //        min_dist = min(min_dist, new_dist);
+        //    }
+        //}
+        
+        if (gwdt[id] > min_dist)
+        {
+            gwdt[id] = min_dist;
+            remedySet.Append(PosToIndex(id));
+        }
+        else 
+        {
+             state[id] = CONVERGE;
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateRemedyNeighbor(uint3 id : SV_DispatchThreadID)
+{
+    bool isNeighbor = false;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        //if (x2 < 0 || x2 >= (int) dims.x)
+        //    continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            //if (y2 < 0 || y2 >= (int) dims.y)
+            //    continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                //if (z2 < 0 || z2 >= (int) dims.z)
+                //    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                //if (diff > max_diff)
+                //    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                isNeighbor = isNeighbor || state[id2] == REMEDY;
+            }
+        }
+    }
+    if (isNeighbor&&state[id]!=REMEDY)
+    {
+        state[id] = REMEDY;
+        remedySet.Append(PosToIndex(id));
+    }
+}
+
+RWStructuredBuffer<int> maxIndex;
+[numthreads(THREADX, THREADY, THREADZ)]
+void GetMaximum(uint3 id : SV_DispatchThreadID)
+{
+
+}
+
+RWStructuredBuffer<float> gwdtBuffer1;
+RWStructuredBuffer<float> gwdtBuffer2;
+[numthreads(THREADX, THREADY, THREADZ)]
+void VisualizeTexture(uint3 id : SV_DispatchThreadID)
+{
+    uint index = PosToIndex(id);
+    if (index < dims.x * dims.y * dims.z / 2)
+    {
+        gwdtBuffer1[index] = gwdt[id];
+    }
+    else
+    {
+        gwdtBuffer2[index - dims.x * dims.y * dims.z / 2] = gwdt[id];
+    }
+}
+
+
+RWStructuredBuffer<float> phiBuffer;
+[numthreads(THREADX, THREADY, THREADZ)]
+void GetPhi(uint3 id : SV_DispatchThreadID)
+{
+    uint index = PosToIndex(id);
+    phiBuffer[index] = phi[id];
+}
+
+RWTexture3D<float> buff;
+float phiMax;
+[numthreads(THREADX, THREADY, THREADZ)]
+void GetBuff(uint3 id : SV_DispatchThreadID)
+{
+    buff[id] = phi[id]/phiMax;
+}
+
+RWTexture3D<float> diff;
+RWTexture3D<float> before;
+RWTexture3D<float> after;
+[numthreads(THREADX, THREADY, THREADZ)]
+void GetDiff(uint3 id : SV_DispatchThreadID)
+{
+    diff[id] = abs(after[id]-before[id]);
+}
+
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitSeed(uint3 id : SV_DispatchThreadID)
+{
+    if (PosToIndex(id) == (uint)seedIndex)
+    {
+        state[id] = ACTIVE;
+        phi[id] = 0;
+    }
+    else if (gwdt[id] < threshold[id/THRESHOLD_BLOCK_SIZE])
+    {
+        state[id] = BACKGROUND;
+        phi[id] = INFINITE;
+    }
+    else
+    {
+        state[id] = FAR;
+        phi[id] = INFINITE;    
+    }
+    parent[id] = PosToIndex(id);
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateFarStateTree(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == FAR && mask[id]<=0)
+    {
+        bool isSource = false;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
+                    //int diff = abs(i) + abs(j) + abs(k);
+                    //if (diff > max_diff)
+                    //    continue;
+                    isSource = isSource || state[uint3(x2, y2, z2)] == ACTIVE;
+                }
+            }
+        }
+        
+        if (isSource)
+        {
+            state[id] = SOURCE;
+            uint index = PosToIndex(id);
+            sourceSet.Append(index);
+        }
+    }
+}
+
+float GI(float intensity)
+{
+    float lamda = 10;
+    float ret = exp(lamda * (1 - intensity / maxIntensity) * (1 - intensity / maxIntensity));
+    return ret;
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateSourceValueTree(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == SOURCE)
+    {
+        float min_dist = INFINITE;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            //if (x2 < 0 || x2 >= (int) dims.x)
+            //    continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                //if (y2 < 0 || y2 >= (int) dims.y)
+                //    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    //if (z2 < 0 || z2 >= (int) dims.z)
+                    //    continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    //if (diff > max_diff)
+                    //    continue;
+                    uint3 id2 = uint3(x2, y2, z2);
+                    if (state[id2] == ACTIVE)
+                    {
+                        float new_dist = newDistance(id,id2,diff);
+                        if (new_dist < min_dist)
+                        {
+                            min_dist = min(min_dist, new_dist);
+                            parent[id] = PosToIndex(id2);
+                            phi[id] = min_dist;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateSourceStateTree(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == SOURCE)
+    {
+        float min_dist = phi[id];
+        bool converged = true;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    uint3 id2 = uint3(x2, y2, z2);
+                    if (state[id2] == ACTIVE)
+                    {
+                        float new_dist = newDistance(id,id2,diff);
+                        if (new_dist < phi[id])
+                        {
+                            converged = false;
+                        }
+                    }
+                }
+            }
+        }
+        AllMemoryBarrier();
+        if(converged) state[id] = ACTIVE;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitRemedyTree(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] != ACTIVE)
+    {
+        state[id] = BACKGROUND;
+        return;
+    }
+    float min_dist = INFINITE;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                int diff = abs(i) + abs(j) + abs(k);
+                uint3 id2 = uint3(x2, y2, z2);
+                float new_dist = diff < max_diff? newDistance(id,id2,diff): INFINITE; 
+                min_dist = min(min_dist, new_dist);
+            }
+        }
+    }
+    if (phi[id] > min_dist)
+    {
+        state[id] = REMEDY;
+        remedySet.Append(PosToIndex(id));
+    }
+    else
+    {
+        state[id] = CONVERGE;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateRemedyTree(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == REMEDY)
+    {
+        //int x_offset[18] = {-1, -1, -1, -1, -1,  0,  0,  0,  0, 0,  0, 0, 0,  1,  1, 1, 1, 1};
+        //int y_offset[18] = {-1,  0,  0,  0,  1, -1, -1, -1,  0, 0,  1, 1, 1, -1,  0, 0, 0, 1};
+        //int z_offset[18] = { 0, -1,  0,  1,  0, -1,  0,  1, -1, 1, -1, 0, 1,  0, -1, 0, 1, 0};
+        //int diffs[18] =     {2,  2,  1,  2,  2,  2,  1,  2,  1, 1,  2, 1, 2,  2,  2, 1, 2, 2};
+        //float sqrt_diffs[2] = {1.0f, 1.414213562373095f};
+        uint parentIndex;
+        float min_dist = INFINITE;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            //if (x2 < 0 || x2 >= (int) dims.x)
+            //    continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                //if (y2 < 0 || y2 >= (int) dims.y)
+                //    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    //if (z2 < 0 || z2 >= (int) dims.z)
+                    //    continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    //if (diff > max_diff)
+                    //    continue;
+                    uint3 id2 = uint3(x2, y2, z2);
+                    
+                    float new_dist = diff < max_diff? newDistance(id,id2,diff): INFINITE; 
+                    if (new_dist < min_dist)
+                    {
+                        min_dist = min(min_dist, new_dist);
+                        parentIndex = PosToIndex(id2);
+                    }
+                }
+            }
+        }
+
+        //for(int i=0; i<18; i++)
+        //{
+        //    int x2 = id.x + x_offset[i];
+        //    int y2 = id.y + y_offset[i];
+        //    int z2 = id.z + z_offset[i];
+        //    int diff = diffs[i];
+        //    uint3 id2 = uint3(x2, y2, z2);
+        //    float new_dist = diff < max_diff? newDistance(id,id2,diff): INFINITE; 
+        //    if (new_dist < min_dist)
+        //    {
+        //        min_dist = min(min_dist, new_dist);
+        //        parentIndex = PosToIndex(id2);
+        //    }
+        //}
+
+        
+        if (phi[id] > min_dist)
+        {
+            phi[id] = min_dist;
+            parent[id] = parentIndex;
+            remedySet.Append(PosToIndex(id));
+        }
+        else
+        {
+            state[id] = CONVERGE;
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateRemedyNeighborTree(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == BACKGROUND)
+        return;
+    bool isNeighbor = false;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        //if (x2 < 0 || x2 >= (int) dims.x)
+        //    continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            //if (y2 < 0 || y2 >= (int) dims.y)
+            //    continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                //if (z2 < 0 || z2 >= (int) dims.z)
+                //    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                //if (diff > max_diff)
+                //    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                isNeighbor = isNeighbor || (state[id2] == REMEDY && diff < max_diff);
+            }
+        }
+    }
+
+    if (isNeighbor && state[id] != REMEDY)
+    {
+        state[id] = REMEDY;
+        remedySet.Append(PosToIndex(id));
+    }
+}
+
+RWStructuredBuffer<uint> parentBuffer1;
+RWStructuredBuffer<uint> parentBuffer2;
+RWStructuredBuffer<uint> parentBuffer;
+[numthreads(THREADX, THREADY, THREADZ)]
+void GetParent(uint3 id : SV_DispatchThreadID)
+{
+    uint index = PosToIndex(id);
+    if (index < dims.x * dims.y * dims.z / 2)
+    {
+        parentBuffer1[index] = parent[id];
+    }
+    else
+    {
+        parentBuffer2[index - dims.x * dims.y * dims.z / 2] = parent[id];
+    }
+//    parentBuffer[index] = parent[id];
+}
+
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitSeedFI(uint3 id : SV_DispatchThreadID)
+{
+    if (PosToIndex(id) == (uint) seedIndex)
+    {
+        state[id] = ACTIVE;
+        phi[id] = 0;
+    }
+    else
+    {
+        state[id] = FAR;
+        phi[id] = INFINITE;
+    }
+    parent[id] = PosToIndex(id);
+}
+
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateFarStateFI(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == FAR && mask[id]<=0)
+    {
+        bool isSource = false;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    if (diff > max_diff)
+                        continue;
+                    uint3 id2 = uint3(x2, y2, z2);
+                    isSource = isSource || state[id2] == ACTIVE;
+                    //isSource = isSource || (state[id2] == ACTIVE);
+                }
+            }
+        }
+        if (isSource)
+        {
+            state[id] = SOURCE;
+            uint index = PosToIndex(id);
+            sourceSet.Append(index);
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateSourceValueFI(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == SOURCE)
+    {
+        float min_dist = INFINITE;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    uint3 id2 = uint3(x2, y2, z2);
+                    if (state[id2] == ACTIVE)
+                    {
+                        float new_dist = newDistance(id,id2,diff);
+                        if (new_dist < min_dist)
+                        {
+                            min_dist = min(min_dist, new_dist);
+                            parent[id] = PosToIndex(id2);
+                            phi[id] = min_dist;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateSourceStateFI(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == SOURCE)
+    {
+        float min_dist = phi[id];
+        bool converged = true;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    uint3 id2 = uint3(x2, y2, z2);
+                    if (state[id2] == ACTIVE)
+                    {
+                        float new_dist = newDistance(id,id2,diff);
+                        if (new_dist < phi[id])
+                        {
+                            converged = false;
+                        }
+                    }
+                }
+            }
+        }
+        AllMemoryBarrier();
+        if(converged) state[id] = ACTIVE;
+    }
+    
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitRemedyFI(uint3 id : SV_DispatchThreadID)
+{
+    //if (state[id] != ACTIVE)
+    //{
+    //    state[id] = BACKGROUND;
+    //    return;
+    //}
+    float min_dist = INFINITE;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                if (diff > max_diff)
+                    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                float new_dist = newDistance(id,id2,diff);
+                min_dist = min(min_dist, new_dist);
+            }
+        }
+    }
+    if (phi[id] > min_dist)
+    {
+        state[id] = REMEDY;
+        remedySet.Append(PosToIndex(id));
+    }
+    else
+    {
+        state[id] = CONVERGE;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateRemedyFI(uint3 id : SV_DispatchThreadID)
+{
+    uint parentIndex;
+    if (state[id] == REMEDY)
+    {
+        float min_dist = INFINITE;
+        for (int i = -1; i <= 1; i++)
+        {
+            int x2 = (int) id.x + i;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
+            for (int j = -1; j <= 1; j++)
+            {
+                int y2 = (int) id.y + j;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
+                for (int k = -1; k <= 1; k++)
+                {
+                    int z2 = (int) id.z + k;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
+                    int diff = abs(i) + abs(j) + abs(k);
+                    if (diff > max_diff)
+                        continue;
+                    uint3 id2 = uint3(x2, y2, z2);
+                    float new_dist = newDistance(id,id2,diff);                
+
+                    if (new_dist < min_dist)
+                    {
+                        min_dist = min(min_dist, new_dist);
+                        parentIndex = PosToIndex(id2);
+                    }
+                }
+            }
+        }
+        
+        if (phi[id] > min_dist)
+        {
+            phi[id] = min_dist;
+            parent[id] = parentIndex;
+            remedySet.Append(PosToIndex(id));
+        }
+        else
+        {
+            state[id] = CONVERGE;
+        }
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateRemedyNeighborFI(uint3 id : SV_DispatchThreadID)
+{
+    if (state[id] == BACKGROUND)
+        return;
+    bool isNeighbor = false;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                if (diff > max_diff)
+                    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                isNeighbor = isNeighbor || state[id2] == REMEDY;
+            }
+        }
+    }
+    if (isNeighbor && state[id] != REMEDY)
+    {
+        state[id] = REMEDY;
+        remedySet.Append(PosToIndex(id));
+    }
+}
+
+
+RWTexture3D<uint> src;
+RWStructuredBuffer<uint> dst;
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void TransformDataUint(uint3 id : SV_DispatchThreadID)
+{
+    dst[PosToIndex(id.xyz)] = src[id];
+}
+
+
+RWTexture3D<float> srcF;
+RWStructuredBuffer<float> dstF;
+[numthreads(THREADX, THREADY, THREADZ)]
+void TransformDataFloat(uint3 id : SV_DispatchThreadID)
+{
+    dstF[PosToIndex(id.xyz)] = 256*srcF[id];
+}
+
+
+StructuredBuffer<int> targetBuffer;
+uint targetNum;
+float intensity;
+int undo;
+[numthreads(128, 1, 1)]
+void AdjustIntensity(uint3 id: SV_DISPATCHTHREADID)
+{
+    if(id.x<targetNum)
+    {
+        uint3 pos = IndexToPos(targetBuffer[id.x]);
+        if(undo>0.01)
+        {
+            _offset[pos] = 0.5;
+        }
+        else
+        {
+            _offset[pos] = 0.5 + threshold[id/THRESHOLD_BLOCK_SIZE];
+        }
+    }
+}
+
+
+[numthreads(128, 1, 1)]
+void AdjustIntensityWithValue(uint3 id: SV_DISPATCHTHREADID)
+{
+    if(id.x<targetNum)
+    {
+        uint3 pos = IndexToPos(targetBuffer[id.x]);
+        _offset[pos] += intensity/255.0f;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitOffset(uint3 id : SV_DispatchThreadID)
+{
+    _offset[id] = 0.5f;
+}
+
+
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void ApplyOffset(uint3 id : SV_DispatchThreadID)
+{
+    volume[id] = origin[id]+_offset[id] - 0.5f;
+}
+
+
+float max_intensity;
+RWTexture3D<float> visualization;
+[numthreads(THREADX, THREADY, THREADZ)]
+void Visualization(uint3 id : SV_DispatchThreadID)
+{
+    if(gwdt[id]<10/255.0f) visualization[id] = gwdt[id]/max_intensity;
+    //else visualization[id] = 3*(gwdt[id]/max_intensity+0.1)*(gwdt[id]/max_intensity+0.1);
+    else visualization[id] =max(10/255.0f,(gwdt[id]/2));
+
+   // visualization[id] = 1-(gwdt[id]/max_intensity*2);
+}
+
+StructuredBuffer<int> maskTargetBuffer;
+//Calculating the altered mask due to blocker
+[numthreads(128, 1, 1)]
+void ModifyMask(uint3 id : SV_DispatchThreadID)
+{
+    if(id.x<targetNum)
+    {
+        uint3 pos = IndexToPos(maskTargetBuffer[id.x]);
+        if(undo) mask[pos]-=1;
+        else    mask[pos]+=1;
+    }
+}
+
+RWStructuredBuffer<float> maskedVolumeBuffer;
+[numthreads(THREADX, THREADY, THREADZ)]
+void GetMaskedVolumeData(uint3 id : SV_DispatchThreadID)
+{
+    if(mask[id]>0){
+        maskedVolumeBuffer[PosToIndex(id)] = 0;
+    }
+    else{
+        maskedVolumeBuffer[PosToIndex(id)] = origin[id];
+    }
+}
+
+
+RWTexture3D<float> connection;
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitConnectionSeed(uint3 id : SV_DispatchThreadID)
+{
+    if (PosToIndex(id) == (uint) seedIndex)
+    {
+        connection[id] = 1;
+    }
+    else
+    {
+        connection[id] = 0;
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateConnection(uint3 id : SV_DispatchThreadID)
+{
+    if (volume[id]<threshold[id/THRESHOLD_BLOCK_SIZE]||connection[id] > 0 || mask[id] > 0)
+        return;
+    bool isNeighbor = false;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                if (diff > max_diff)
+                    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                isNeighbor = isNeighbor || connection[id2] > 0;
+            }
+        }
+    }
+    if (isNeighbor && connection[id] <0.9)
+    {
+        connection[id] = 1;
+        sourceSet.Append(PosToIndex(id));
+    }
+}
+
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitClusterSeed(uint3 id : SV_DispatchThreadID)
+{
+    if (PosToIndex(id) == (uint) seedIndex)
+    {
+        connection[id] = 1;
+    }
+    else
+    {
+        connection[id] = 0;
+    }
+}
+
+float viewThreshold;
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateCluster(uint3 id : SV_DispatchThreadID)
+{
+    if (origin[id]<viewThreshold||connection[id] >0)
+        return;
+    bool isNeighbor = false;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                if (diff > max_diff)
+                    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                isNeighbor = isNeighbor || connection[id2] > 0;
+            }
+        }
+    }
+    if (isNeighbor && connection[id] <0.9)
+    {
+        connection[id] = 1;
+        sourceSet.Append(PosToIndex(id));
+    }
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void InitTrunk(uint3 id : SV_DispatchThreadID)
+{
+    if (PosToIndex(id) == (uint) seedIndex)
+    {
+        connection[id] = 1;
+    }
+    else
+    {
+        connection[id] = 0;
+    }
+    // if (PosToIndex(id) == (uint)seedIndex)
+    //{
+    //    state[id] = ACTIVE;
+    //}
+    //else if (gwdt[id] < threshold[id/THRESHOLD_BLOCK_SIZE])
+    //{
+    //    state[id] = BACKGROUND;
+    //}
+    //else
+    //{
+    //    state[id] = FAR;
+    //}
+}
+
+[numthreads(THREADX, THREADY, THREADZ)]
+void UpdateTrunk(uint3 id : SV_DispatchThreadID)
+{
+    if (origin[id]<threshold[id/THRESHOLD_BLOCK_SIZE] || connection[id] > 0 || mask[id] > 0)
+        return;
+    bool isNeighbor = false;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                if (diff > max_diff)
+                    continue;
+                uint3 id2 = uint3(x2, y2, z2);
+                isNeighbor = isNeighbor || connection[id2] > 0;
+            }
+        }
+    }
+    if (isNeighbor && connection[id] <0.9)
+    {
+        connection[id] = 1;
+        sourceSet.Append(PosToIndex(id));
+    }
+}
+
+
+StructuredBuffer<int> eraseTargetBuffer;
+//Calculating the altered mask due to blocker
+[numthreads(128, 1, 1)]
+void InitErase(uint3 id : SV_DispatchThreadID)
+{
+    if(id.x<targetNum)
+    {
+        uint3 pos = IndexToPos(eraseTargetBuffer[id.x]);
+        phi[pos] = INFINITE;
+    }
+}

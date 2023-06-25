@@ -1,0 +1,84 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#include "SHCommon.hlsl"
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWStructuredBuffer<float> Result;
+float3 dM;
+Texture3D OccupancyMap;
+SamplerState samplerOccupancyMap;
+
+float GetDistance(float3 direction,uint3 id)
+{
+    float3 pos = float3(id.x + 0.5, id.y + 0.5, id.z + 0.5) / dM;
+    float3 deltaM = 0.01 * direction;
+    float3 deltauM = deltaM * dM;
+    float distance = 0;
+    for (int D = 1; D < dM.x; D++) {
+        float3 uM = pos * dM;
+        float3 rM = -frac(uM);
+        float3 deltai = ceil((step(0, -deltauM) + sign(deltauM) * D + rM) / deltauM);
+
+        float step = max(min(min(deltai.x, deltai.y), deltai.z), 1);
+        float3 uv = pos + step * deltaM * direction;
+        float v = OccupancyMap.SampleLevel(samplerOccupancyMap, uv, 0);
+        if (v > 0||uv.x>=1||uv.x<=0||uv.y>=1||uv.y<=0||uv.z>=1||uv.z<=0) {
+            distance = D;
+            break;
+        }
+    }
+    return distance;
+}
+
+[numthreads(8, 8, 8)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    int distance = 100;
+    float3 uv = float3(id.x, id.y, id.z) / dM;
+    float v = OccupancyMap.SampleLevel(samplerOccupancyMap, uv, 0);
+    float outData[16] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+    if (v > 0) {
+    }
+    else {
+        float goldenRatio = (1 + sqrt(5)) / 2;
+        float angleIncrement = PI * 2 * goldenRatio;
+        
+        for (int i = 0; i < 1000; i++)
+        {
+            float t = float(i) / float(1000);
+            float phi = acos(1 - 2 * t);
+            float theta = angleIncrement * i;
+
+            float x = sin(phi) * cos(theta);
+            float y = sin(phi) * sin(theta);
+            float z = cos(phi);
+            float3 direction = float3(x, y, z);
+            direction = normalize(direction);
+            float root[16] = { GetY00(direction), GetY10(direction), GetY1p1(direction), GetY1n1(direction),
+                               GetY20(direction), GetY2p1(direction), GetY2n1(direction), GetY2p2(direction),
+                               GetY2n2(direction), GetY30(direction), GetY3p1(direction), GetY3n1(direction),
+                               GetY3p2(direction), GetY3n2(direction), GetY3p3(direction), GetY3n3(direction) };
+
+            float distance = GetDistance(direction, id);
+
+            for (int j = 0; j < 16; j++)
+            {
+                outData[j] += root[j] * distance;
+            }
+        }
+        for (int j = 0; j < 16; j++)
+        {
+            outData[j] = outData[j] * 4.0 * PI / 1000;
+        }
+
+    }
+    for (int i = 0; i < 4; i++) {
+        int index = (i * dM.x * dM.y * dM.z + dM.x * dM.y * id.z + dM.x * id.y + id.x)*4;
+        for (int j = 0; j < 4; j++) {
+            Result[index + j] = outData[i * 4 + j];
+        }
+    }
+    // TODO: insert actual code here!
+
+}
