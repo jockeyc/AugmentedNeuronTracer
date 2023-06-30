@@ -5,12 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using System.Linq;
-using UnityEngine.UI;
-using SWC;
 using CommandStructure;
-using static UnityEngine.GraphicsBuffer;
 
-public class HandTracker : MonoBehaviour
+public class GestureController : MonoBehaviour
 {
     public enum OperationType
     {
@@ -20,7 +17,7 @@ public class HandTracker : MonoBehaviour
         Draw,
         Erase
     }
-    // Start is called before the first frame update
+
     HandsAggregatorSubsystem aggregator;
     public OperationType operation = OperationType.None;
     public bool canDraw = true;
@@ -44,6 +41,7 @@ public class HandTracker : MonoBehaviour
         bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
         if (jointIsValid && handIsValid && isPinching && pinchAmount>=0.95 && operation!=OperationType.None)
         {
+            //draw the finger track
             float radius = 0.005f;
             var curPos = jointPose.Position;
             var lastPos = track.Count>0? track.Last():curPos;
@@ -75,7 +73,7 @@ public class HandTracker : MonoBehaviour
                             List<Marker> markers = new();
                             foreach(var t in track)
                             {
-                                var pos = _config._cube.transform.InverseTransformPoint(t) + 0.5f * Vector3.one;
+                                var pos = _config.cube.transform.InverseTransformPoint(t) + 0.5f * Vector3.one;
 
                                 markers.Add(new Marker(new Vector3(pos.x*_config._scaledDim.x,pos.y*_config._scaledDim.y,pos.z*_config._scaledDim.z)));
                             }
@@ -88,7 +86,7 @@ public class HandTracker : MonoBehaviour
                             List<Vector3> positions = new();
                             foreach (var t in track)
                             {
-                                var pos = _config._cube.transform.InverseTransformPoint(t) + 0.5f * Vector3.one;
+                                var pos = _config.cube.transform.InverseTransformPoint(t) + 0.5f * Vector3.one;
                                 pos = pos.Mul(_config._originalDim);
                                 positions.Add(pos);
                             }
@@ -106,7 +104,7 @@ public class HandTracker : MonoBehaviour
 
         if (jointIsValid)
         {
-            var pos = _config._cube.transform.InverseTransformPoint(jointPose.Position) + new Vector3(.5f, .5f, .5f);
+            var pos = _config.cube.transform.InverseTransformPoint(jointPose.Position) + new Vector3(.5f, .5f, .5f);
             //_config._cube.GetComponent<MeshRenderer>().material.SetVector("_rightHandIndexTip", pos);
         }
 
@@ -120,7 +118,7 @@ public class HandTracker : MonoBehaviour
 
     private List<uint> Track2Indexes(List<Vector3> track,int radius)
     {
-        var cube = _config._cube;
+        var cube = _config.cube;
         Vector3Int dim = _config._scaledDim;
         Debug.Log(track.Count);
         HashSet<uint> targets = new();

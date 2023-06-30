@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Resources;
 using UnityEditor;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class Watershed
@@ -29,12 +28,12 @@ public class Watershed
         };
         cut.SetPixelData<byte>(cutData, 0, 0);
         cut.Apply();
-
+#if UNITY_EDITOR
         AssetDatabase.DeleteAsset("Assets/Textures/" + "cut" + ".Asset");
         AssetDatabase.CreateAsset(cut, "Assets/Textures/" + "cut" + ".Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-
+#endif
         ComputeBuffer regionBuffer = new(region.Length,sizeof(int));
         ComputeBuffer stateBuffer = new(region.Length,sizeof(int));
         regionBuffer.SetData(region);

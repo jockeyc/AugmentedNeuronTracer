@@ -3,21 +3,11 @@ using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 
-/// A unility class with functions to Scale Texture2D Data.
-///
-/// Scale is performed on the GPU using RTT, so it's blazing fast.
-/// Setting up and Getting back the texture data is the bottleneck. 
-/// But Scaling itself costs only 1 draw call and 1 RTT State setup!
-/// WARNING: This script override the RTT Setup! (It sets a RTT!)	 
-///
-/// Note: This scaler does NOT support aspect ratio based scaling. You will have to do it yourself!
-/// It supports Alpha, but you will have to divide by alpha in your shaders, 
-/// because of premultiplied alpha effect. Or you should use blend modes.
 public class TextureScaler
 {
 	static ComputeShader scaleCS = (ComputeShader)Resources.Load("ComputeShaders/Texture3DScaler");
 
-	public static (Texture3D,RenderTexture) Scale(Texture3D src,Vector3Int dims, bool smoothing)
+	public static Texture3D Scale(Texture3D src,Vector3Int dims, bool smoothing)
     {
 		int kernelKey;
 		RenderTexture filtered = new RenderTexture(src.width, src.height, 0, RenderTextureFormat.R8);
@@ -82,13 +72,13 @@ public class TextureScaler
 		dst.filterMode = FilterMode.Point;
 		dst.wrapMode = TextureWrapMode.Clamp;
 		dst.Apply();
-
-		AssetDatabase.DeleteAsset("Assets/Textures/" + "scaled" + ".Asset");
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset("Assets/Textures/" + "scaled" + ".Asset");
 		AssetDatabase.CreateAsset(dst, "Assets/Textures/" + "scaled" + ".Asset");
 		AssetDatabase.SaveAssets();
 		AssetDatabase.Refresh();
-
-		return (dst, null);
+#endif
+        return dst;
 	}
 
     static Texture3D readRenderTexture3D(RenderTexture source)

@@ -1,15 +1,11 @@
 
-using ARNeuron;
 using CommandStructure;
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
+using Fusion;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Rendering.PostProcessing;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class Config : MonoBehaviour
 {
@@ -28,9 +24,9 @@ public class Config : MonoBehaviour
     [SerializeField] public Texture3D _occupancy;
     [SerializeField] private int _bkgThresh;
     [SerializeField] public int _blockSize;
-    [SerializeField] public GameObject _seed;
-    [SerializeField] public GameObject _cube;
-    [SerializeField] public GameObject _paintingBoard;
+    [SerializeField] public GameObject seed;
+    [SerializeField] public GameObject cube;
+    [SerializeField] public GameObject paintingBoard;
     [SerializeField] public Vector3Int _rootPos;
     [SerializeField] public float _somaRadius = -1;
     [SerializeField] private int _viewThresh;
@@ -41,16 +37,14 @@ public class Config : MonoBehaviour
     [SerializeField] public bool useBatch = true;
     [SerializeField] public bool useKeyBoard = true;
     [SerializeField] public int customThresh = 30;
+    public NetworkRunner runner;
 
-    public enum ShaderType {
-        Base, FlexibleThreshold, FixedThreshold, BaseAccelerated
-    }
     private byte[] volumeData;
 
     public List<Blocker> _blockers = new();
 
     public Tracer tracer;
-    public HandTracker handTracker;
+    public GestureController gestureController;
     public GazeController gazeController;
     public CMDInvoker invoker;
 
@@ -66,6 +60,9 @@ public class Config : MonoBehaviour
     public Texture3D occupancyMap;
     public Texture3D distanceMap;
 
+    public enum ShaderType {
+        Base, FlexibleThreshold, FixedThreshold, BaseAccelerated
+    }
     private void Awake()
     {
         if (path.Length > 0 && needImport)
@@ -74,12 +71,13 @@ public class Config : MonoBehaviour
         }
         if (_origin == null) return;
         imageName = _origin.name;
+
         savePath = CreateSavePath($"C:\\Users\\80121\\Desktop\\MyResult\\{imageName}\\");
 
         _originalDim = new Vector3Int(_origin.width, _origin.height, _origin.depth);
         if (scale)
         {
-            (_volume, _filtered) = TextureScaler.Scale(_origin, _scaledDim, gaussianSmoothing);   //Scale volume
+            _volume = TextureScaler.Scale(_origin, _scaledDim, gaussianSmoothing);   //Scale volume
             _scaledDim = new Vector3Int(_volume.width, _volume.height, _volume.depth);
         }
         else
@@ -87,25 +85,22 @@ public class Config : MonoBehaviour
             _scaledDim = _originalDim;
         }
         Debug.Log($"{_volume.width},{_volume.height},{_volume.depth}");
-        string filter = imageName + "_occupancy";
 
         volumeData = _volume.GetPixelData<byte>(0).ToArray();
 
         tracer = gameObject.AddComponent<Tracer>();
-        handTracker = gameObject.GetComponent<HandTracker>();
+        gestureController = gameObject.GetComponent<GestureController>();
         gazeController = gameObject.GetComponent<GazeController>();
 
         invoker = gameObject.AddComponent<CMDInvoker>();
         invoker.tracer = tracer;
         invoker.savePath = savePath + "\\commands.json";
 
+        //volume rendering post process
+        _postProcessVolume = GameObject.Find("volume").GetComponent<PostProcessVolume>();
         if(_postProcessVolume.profile.GetSetting<BaseVolumeRendering>()==null)_postProcessVolume.profile.AddSettings<BaseVolumeRendering>();
         _postProcessVolume.profile.GetSetting<BaseVolumeRendering>().volume.overrideState = true;
         _postProcessVolume.profile.GetSetting<BaseVolumeRendering>().volume.value = _origin;
-
-        _cube.transform.localScale = new Vector3(_originalDim.x, _originalDim.y, _originalDim.z) / MathF.Max(_originalDim.x, MathF.Max(_originalDim.y, _originalDim.z));
-
-        //viewRadius = Math.Max(_scaledDim.x, _scaledDim.y) * 0.02f;
 
         if(volumeRenderingWithChebyshev)
         {
@@ -182,12 +177,6 @@ public class Config : MonoBehaviour
     bool save = false;
     private void Update()
     {
-        //if (Input.GetKey(KeyCode.T)) tracer.Trace();
-        //if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.LeftControl) || save)
-        //{
-        //    save = false;
-        //    tracer.Save();
-        //}
         if (Input.GetKey(KeyCode.Z))
         {
             invoker.Undo();
@@ -202,7 +191,7 @@ public class Config : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.G))
         {
-            _cube.GetComponent<BoxCollider>().enabled = !_cube.GetComponent<BoxCollider>().enabled;
+            cube.GetComponent<BoxCollider>().enabled = !cube.GetComponent<BoxCollider>().enabled;
         }
     }
 
@@ -235,7 +224,6 @@ public class Config : MonoBehaviour
             string newDirectoryName = $"{existingNumber + 1:D3}"; 
             newDirectoryPath = Path.Combine(path, newDirectoryName);  
 
-            // 创建新目录
             Directory.CreateDirectory(newDirectoryPath);
         }
 

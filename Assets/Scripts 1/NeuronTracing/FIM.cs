@@ -7,12 +7,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
-using UnityEditor.MemoryProfiler;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.XR.OpenXR.Input;
-using static UnityEditor.Progress;
 
 public class FIM : MonoBehaviour
 {
@@ -66,7 +63,7 @@ public class FIM : MonoBehaviour
         volume = CopyData(origin);
     }
 
-    //Fast Iterative Method Distance Transform Using Compute Shader
+    //Return the part connected to soma according to the threshold
     public RenderTexture ConnectedPart(bool view) {
         int bkgThreshold = view ? config.ViewThresh : config.BkgThresh;
         var connection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
@@ -104,6 +101,7 @@ public class FIM : MonoBehaviour
         return connection;
     }
 
+    //distance transform with FIM
     public void FIMDT()
     {
         int bkgThreshold = config.BkgThresh;
@@ -261,6 +259,7 @@ public class FIM : MonoBehaviour
 
     }
 
+    // coroutine version of  distance transform with FIM
     public IEnumerator FIMDTCoroutine()
     {
         int kernel = computeShader.FindKernel("ApplyOffset");
@@ -408,6 +407,8 @@ public class FIM : MonoBehaviour
         gwdtBuffer1.Release();
         gwdtBuffer2.Release();
     }
+
+    // calculate the geodesic distance wthin the trunk part with FIM
     public List<Marker> FIMTree()
     {
         float computationTime = Time.realtimeSinceStartup;
@@ -583,6 +584,8 @@ public class FIM : MonoBehaviour
 
         return completeTree;
     }
+
+    // coroutine version of calculating the geodesic distance wthin the trunk part with FIM 
     public IEnumerator FIMTreeCoroutine(List<Marker> completeTree)
     {
         float computationTime = Time.realtimeSinceStartup;
@@ -779,10 +782,10 @@ public class FIM : MonoBehaviour
     }
 
     /// <summary>
-    /// FIMFI Full iamge
+    /// calculate the geodesic distance wthin full image range with FIM
     /// </summary>
-    /// <returns></returns>
-    public List<Marker> FIMFI(List<Marker> oldTree = null)
+    /// <returns>markers of connected part</returns>
+    public List<Marker> FIMFI()
     {
 
         int bkgThreshold = config.BkgThresh;
@@ -1042,6 +1045,10 @@ public class FIM : MonoBehaviour
     RenderTexture afterRemedy;
     RenderTexture afterTracing;
 
+    /// <summary>
+    /// incrementally calculate the tracing part
+    /// </summary>
+    /// <returns>markers of connected part</returns>
     public List<Marker> FIMRemedy()
     {
         float time = Time.realtimeSinceStartup;
@@ -1215,6 +1222,11 @@ public class FIM : MonoBehaviour
 
         return completeTree;
     }
+
+    /// <summary>
+    /// incrementally calculate the tracing part in way of coroutine
+    /// </summary>
+    /// <returns>markers of connected part</returns>
     public IEnumerator FIMRemedy(List<Marker> completeTree)
     {
         float time = Time.realtimeSinceStartup;
@@ -1349,8 +1361,6 @@ public class FIM : MonoBehaviour
         var tracingDiff = GetDiff(afterRemedy,afterTracing);
         SaveTexture(tracingDiff, "Assets/Textures/FIM/tracingDiff.Asset");
 
-
-
         Debug.Log($"Incremental Calculation cost: {Time.realtimeSinceStartup - calculationTime}");
 
         markers = new Dictionary<int, Marker>();
@@ -1381,17 +1391,6 @@ public class FIM : MonoBehaviour
         foreach (var index in trunk)
         {
             uint index2 = parentBufferData[index];
-            if (!trunk.Contains(index2))
-            {
-
-                int i = (int)(index2 % dim.x);
-                int j = (int)((index2 / dim.x) % dim.y);
-                int k = (int)((index2 / dim.x / dim.y) % dim.z);
-
-                //createSphere(new Vector3(i, j, k), config._scaledDim, Color.yellow);
-                //Marker marker = new Marker(new Vector3(i, j, k));
-                //markers[(int)index2] = marker;
-            }
             Marker marker1 = markers[(int)index];
             Marker marker2 = markers[(int)index2];
             if (marker1 == marker2) marker1.parent = null;
@@ -1572,7 +1571,11 @@ public class FIM : MonoBehaviour
         return completeTree;
     }
 
-
+    /// <summary>
+    /// get the indexes of the branch from the target to the trunk
+    /// </summary>
+    /// <param name="targetIndex"></param>
+    /// <returns></returns>
     public List<uint> GetBranch(uint targetIndex)
     {
         HashSet<uint> ret = new();
@@ -1592,7 +1595,11 @@ public class FIM : MonoBehaviour
         return ret.ToList();
     }
 
-
+    /// <summary>
+    /// adjust the intensity of targets
+    /// </summary>
+    /// <param name="targets"></param>
+    /// <param name="undo"></param>
     public void AdjustIntensity(List<uint> targets, bool undo)
     {
         if (targets.Count == 0)
@@ -1613,6 +1620,11 @@ public class FIM : MonoBehaviour
         targetBuffer.Release();
     }
 
+    /// <summary>
+    /// adjust the intensity of targets with a offset intensity
+    /// </summary>
+    /// <param name="targetIndexes"></param>
+    /// <param name="intensity"></param>
     public void AdjustIntensity(List<uint> targetIndexes, float intensity)
     {
         uint[] targetData = targetIndexes.ToArray();
@@ -1627,6 +1639,12 @@ public class FIM : MonoBehaviour
         targetBuffer.Release();
     }
 
+    /// <summary>
+    /// mask the target voxels
+    /// </summary>
+    /// <param name="targetindexes"></param>
+    /// <param name="undo"></param>
+    /// <returns>render texture and byte data of the masked volume</returns>
     public (RenderTexture, byte[]) ModifyMask(List<uint> targetindexes, bool undo)
     {
         foreach (uint index in targetindexes)
@@ -1682,6 +1700,11 @@ public class FIM : MonoBehaviour
         return renderTexture;
     }
 
+    /// <summary>
+    /// get the count of buffer
+    /// </summary>
+    /// <param name="appendBuffer"></param>
+    /// <returns></returns>
     uint GetAppendBufferSize(ComputeBuffer appendBuffer)
     {
         uint[] countBufferData = new uint[1];
@@ -1693,6 +1716,13 @@ public class FIM : MonoBehaviour
 
         return count;
     }
+
+    /// <summary>
+    /// coroutine version
+    /// </summary>
+    /// <param name="appendBuffer"></param>
+    /// <param name="countBufferData"></param>
+    /// <returns></returns>
     IEnumerator GetAppendBufferSize(ComputeBuffer appendBuffer, uint[] countBufferData)
     {
         var countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
@@ -1723,74 +1753,6 @@ public class FIM : MonoBehaviour
     {
         int index = ((int)pos.x + (int)pos.y * dim.x + (int)pos.z * dim.x * dim.y);
         return index;
-    }
-
-    public float[] GetGWDTData()
-    {
-        ComputeBuffer buffer = new ComputeBuffer(dim.x * dim.y * dim.z, sizeof(float), ComputeBufferType.Default);
-        int kernel = computeShader.FindKernel("TransformDataFloat");
-        computeShader.SetTexture(kernel, "srcF", gwdt);
-        computeShader.SetBuffer(kernel, "dstF", buffer);
-        computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
-
-        float[] bufferData = new float[buffer.count];
-        buffer.GetData(bufferData, 0, 0, buffer.count);
-        buffer.Release();
-        return bufferData;
-    }
-
-    public float[] GetPHIData()
-    {
-        ComputeBuffer buffer = new ComputeBuffer(dim.x * dim.y * dim.z, sizeof(float), ComputeBufferType.Default);
-        int kernel = computeShader.FindKernel("TransformDataFloat");
-        computeShader.SetTexture(kernel, "srcF", phi);
-        computeShader.SetBuffer(kernel, "dstF", buffer);
-        computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
-
-        float[] bufferData = new float[buffer.count];
-        buffer.GetData(bufferData, 0, 0, buffer.count);
-        buffer.Release();
-        return bufferData;
-    }
-
-    public int[] GetPARENTData()
-    {
-        int[] res = new int[parentBufferData.Length];
-        for (int i = 0; i < parentBufferData.Length; i++)
-        {
-            res[i] = (int)parentBufferData[i];
-        }
-        return res;
-    }
-
-    public HashSet<int> GetResults()
-    {
-        var ret = new HashSet<int>();
-        foreach (uint result in trunk)
-        {
-            ret.Add((int)result);
-        }
-        return ret;
-    }
-
-    public FastMarching.States[] GetStateData()
-    {
-        ComputeBuffer buffer = new ComputeBuffer(dim.x * dim.y * dim.z, sizeof(uint), ComputeBufferType.Default);
-        int kernel = computeShader.FindKernel("TransformDataUint");
-        computeShader.SetTexture(kernel, "src", state);
-        computeShader.SetBuffer(kernel, "dst", buffer);
-        computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
-
-        uint[] bufferData = new uint[buffer.count];
-        buffer.GetData(bufferData, 0, 0, buffer.count);
-        buffer.Release();
-        FastMarching.States[] res = new FastMarching.States[bufferData.Length];
-        for (int i = 0; i < bufferData.Length; i++)
-        {
-            if (bufferData[i] == 0) res[i] = FastMarching.States.ALIVE;
-            else res[i] = FastMarching.States.FAR;
-        }
-        return res;
     }
 
     private void createSphere(Vector3 pos, Vector3Int Dim, Color color, float scale = 0.002f)
@@ -1826,20 +1788,25 @@ public class FIM : MonoBehaviour
         return offset;
     }
 
-    public List<uint> GetCluster(uint index)
+    /// <summary>
+    /// return the connected part of the target index
+    /// </summary>
+    /// <param name="targetIndex"></param>
+    /// <returns></returns>
+    public List<uint> GetCluster(uint targetIndex)
     {
         int bkgThreshold = config.ViewThresh;
         var connection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         int kernel = computeShader.FindKernel("InitClusterSeed");
         computeShader.SetTexture(kernel, "connection", connection);
-        computeShader.SetInt("seedIndex", (int)index);
+        computeShader.SetInt("seedIndex", (int)targetIndex);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
         uint sourceCount;
 
         HashSet<uint> cluster = new();
-        cluster.Add(index);
+        cluster.Add(targetIndex);
         computeShader.SetInts("dims", dimsArray);
         computeShader.SetFloat("viewThreshold", bkgThreshold / 255.0f);
         //Update Step
@@ -2003,12 +1970,12 @@ public class FIM : MonoBehaviour
         {
             Vector3 coordA = IndexToVector(a, new Vector3Int((int)cubesDim.x, (int)cubesDim.y, (int)cubesDim.z));
             Vector3 posA = coordA.Div(cubesDim) - 0.5f * Vector3.one;
-            posA = config._cube.transform.TransformPoint(posA);
+            posA = config.cube.transform.TransformPoint(posA);
             float distToCameraA = Vector3.Distance(posA, Camera.current.transform.position);
 
             Vector3 coordB = IndexToVector(b, new Vector3Int((int)cubesDim.x, (int)cubesDim.y, (int)cubesDim.z));
             Vector3 posB = coordB.Div(cubesDim) - 0.5f * Vector3.one;
-            posB = config._cube.transform.TransformPoint(posB);
+            posB = config.cube.transform.TransformPoint(posB);
             float distToCameraB = Vector3.Distance(posB, Camera.current.transform.position);
             if (distToCameraA < distToCameraB) return 1;
             else if (distToCameraA > distToCameraB) return -1;
@@ -2027,7 +1994,7 @@ public class FIM : MonoBehaviour
             {
                 Gizmos.color = new Color(1, 0, 0, 0.1F);
                 Vector3 pos = coord.Div(cubesDim) - 0.5f * Vector3.one;
-                pos = config._cube.transform.TransformPoint(pos);
+                pos = config.cube.transform.TransformPoint(pos);
                 //Gizmos.DrawCube(pos, new Vector3(1 / cubesDim.x, 1 / cubesDim.y, 0.5f / cubesDim.z));
                 //Gizmos.color = new Color(1, 1, 1, 1.0F);
                 //Gizmos.DrawWireCube(pos, new Vector3(1, 1, 0.5f));
@@ -2037,7 +2004,7 @@ public class FIM : MonoBehaviour
             {
                 Gizmos.color = cubeColor;
                 Vector3 pos = coord.Div(cubesDim) - 0.5f * Vector3.one;
-                pos = config._cube.transform.TransformPoint(pos);
+                pos = config.cube.transform.TransformPoint(pos);
                 pos += 0.5f * new Vector3(1.0f / cubesDim.x, 1.0f / cubesDim.y, 0.5f / cubesDim.z);
                 Gizmos.DrawCube(pos, new Vector3(1.0f / cubesDim.x, 1.0f / cubesDim.y, 0.5f / cubesDim.z));
                 Gizmos.color = wireColor;
@@ -2048,7 +2015,7 @@ public class FIM : MonoBehaviour
             {
                 Gizmos.color = cubeColor;
                 Vector3 pos = coord.Div(cubesDim) - 0.5f * Vector3.one;
-                pos = config._cube.transform.TransformPoint(pos);
+                pos = config.cube.transform.TransformPoint(pos);
                 pos += 0.5f * new Vector3(1.0f / cubesDim.x, 1.0f / cubesDim.y, 0.5f / cubesDim.z);
                 Gizmos.DrawCube(pos, new Vector3(1.0f / cubesDim.x, 1.0f / cubesDim.y, 0.5f / cubesDim.z));
                 Gizmos.color = wireColor;
@@ -2098,9 +2065,11 @@ public class FIM : MonoBehaviour
 
     void SaveTexture(Texture texture, string path)
     {
+#if UNITY_EDITOR
         AssetDatabase.DeleteAsset(path);
         AssetDatabase.CreateAsset(texture, path);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+#endif
     }
 }

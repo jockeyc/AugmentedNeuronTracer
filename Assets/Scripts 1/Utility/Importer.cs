@@ -70,10 +70,12 @@ public class Importer
             Texture3D texture3D = new Texture3D(1024, 1024, 1024, TextureFormat.R8, false);
             texture3D.SetPixelData(imageData.ToArray(), 0);
             texture3D.Apply();
+#if UNITY_EDITOR
             AssetDatabase.DeleteAsset("Assets/Textures/" + name + ".Asset");
             AssetDatabase.CreateAsset(texture3D, "Assets/Textures/" + name + ".Asset");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+#endif
             return texture3D;
         }
         /// <summary>
@@ -197,11 +199,12 @@ public class Importer
             texture3D.wrapMode = TextureWrapMode.Clamp;
             texture3D.Apply();
             string name = path.Substring(path.LastIndexOf('\\') + 1, path.LastIndexOf('.') - path.LastIndexOf('\\')-1);
+#if UNITY_EDITOR
             AssetDatabase.DeleteAsset("Assets/Textures/" + name + ".Asset");
             AssetDatabase.CreateAsset(texture3D, "Assets/Textures/" + name + ".Asset");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
+#endif
             return texture3D;
         }
         private int DecodeIFH()

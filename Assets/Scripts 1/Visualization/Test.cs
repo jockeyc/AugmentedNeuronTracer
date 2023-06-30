@@ -10,10 +10,12 @@ public class Test : MonoBehaviour
     void Start()
     {
         var res = Preprocess.DivideIntoClusters(texture,10);
+#if UNITY_EDITOR
         AssetDatabase.DeleteAsset("Assets/Resources/Textures/divided.Asset");
         AssetDatabase.CreateAsset(res, "Assets/Resources/Textures/divided.Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+#endif
     }
 
     // Update is called once per frame

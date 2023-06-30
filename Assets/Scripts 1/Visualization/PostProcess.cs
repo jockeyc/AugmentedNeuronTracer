@@ -25,7 +25,7 @@ public sealed class BaseVolumeRenderer : PostProcessEffectRenderer<BaseVolumeRen
         var cmd = context.command;
         cmd.BeginSample("BaseVolumeRendering");
 
-        Config config =  GameObject.Find("Config").GetComponent<Config>();
+        Config config =  GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
 
         Shader[] shaders = new Shader[4];
         shaders[0] = Shader.Find("VolumeRendering/Base");
@@ -39,7 +39,7 @@ public sealed class BaseVolumeRenderer : PostProcessEffectRenderer<BaseVolumeRen
 
         sheet.properties.SetMatrix(Shader.PropertyToID("_InverseProjectionMatrix"), projectionMatrix.inverse);
         sheet.properties.SetMatrix(Shader.PropertyToID("_InverseViewMatrix"), context.camera.cameraToWorldMatrix);
-        sheet.properties.SetMatrix(Shader.PropertyToID("_WorldToLocalMatrix"), config._cube.transform.worldToLocalMatrix);
+        sheet.properties.SetMatrix(Shader.PropertyToID("_WorldToLocalMatrix"), config.cube.transform.worldToLocalMatrix);
         sheet.properties.SetTexture(Shader.PropertyToID("_Volume"), settings.volume.value);
         if(config.VRShaderType == Config.ShaderType.FlexibleThreshold)
         {

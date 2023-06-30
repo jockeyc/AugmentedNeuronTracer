@@ -53,10 +53,12 @@ public class SphericalHarmonicCompute : MonoBehaviour
 
             string fileName = "Assets/Textures/" + "Spherical" + i + ".Asset";
             Debug.Log(fileName);
+#if UNITY_EDITOR
             AssetDatabase.DeleteAsset(fileName);
             AssetDatabase.CreateAsset(texture3D, fileName);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+#endif
         }
 
         

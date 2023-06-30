@@ -54,7 +54,7 @@ public class LoadSwc : MonoBehaviour
         //    CreateNeuron(cube.transform, temp.transform, i ,new Vector3Int(textures[i].width, textures[i].height, textures[i].depth), textures[i]);
         //}
         LoadPath(filePath);
-        CreateNeuron(config._cube.transform, config._originalDim, config.Origin);
+        CreateNeuron(config.cube.transform, config._originalDim, config.Origin);
     }
 
     [InspectorButton]

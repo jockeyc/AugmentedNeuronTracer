@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PipeCasing : MonoBehaviour
@@ -114,13 +113,12 @@ public class PipeCasing : MonoBehaviour
         ObjectManipulator om = pc.GetComponent<ObjectManipulator>();
         om.colliders.Clear();
         pc.pipeCasing = this;
-        Debug.Log("child" + pc.transform.childCount);
-        for(int i=0;i<pc.transform.childCount;i++)
+        int childCount = pc.transform.childCount;
+        for(int i= childCount/2; i<childCount; i++)
         {
-            Debug.Log(om.colliders.Count);
-            var cc = pc.transform.GetChild(i).GetComponent<CapsuleCollider>();
-            if(cc!=null) om.colliders.Add(cc);
+            var cc = pc.transform.GetChild(i).GetComponent<Collider>();
         }
+
     }
 
     public void ClearPipes()
@@ -170,7 +168,7 @@ public class PipeCasing : MonoBehaviour
 
     internal void Initial(Marker marker, GameObject sphere, Vector3Int dim, Transform cubeTransform)
     {
-        config = GameObject.Find("Config").GetComponent<Config>();
+        config = GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
         markers = new();
         spheres = new();
         targets = new();

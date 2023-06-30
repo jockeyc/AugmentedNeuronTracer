@@ -13,7 +13,10 @@ public class PipeController : MonoBehaviour
     void Start()
     {
         OM = GetComponent<ObjectManipulator>();
-        OM.selectEntered.AddListener((SelectEnterEventArgs args) => { pipeCasing.MoveOn(); });
+        OM.selectEntered.AddListener((SelectEnterEventArgs args) => {
+            Debug.Log("selected");
+            pipeCasing.MoveOn();
+        });
         //OM.selectEntered.AddListener
     }
 
@@ -27,7 +30,7 @@ public class PipeController : MonoBehaviour
         }
         if (OM.isHovered)
         {
-            Debug.Log("FUck!!!");
+            Debug.Log("AAA!!!");
             pipeCasing.MoveOn();
         }
         //for(int i=0;i<transform.childCount;i++)

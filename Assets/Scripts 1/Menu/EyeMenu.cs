@@ -18,7 +18,7 @@ public class EyeMenu : SubMenu
     // Start is called before the first frame update
     void Start()
     {
-        config = GameObject.Find("Config").GetComponent<Config>();
+        config = GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
         sliders = GetComponentsInChildren<Slider>();
         var Buttons = GetComponentsInChildren<PressableButton>();
         Debug.Log(Buttons.Length);

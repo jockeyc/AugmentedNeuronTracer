@@ -49,10 +49,6 @@ namespace CommandStructure
 
     }
 
-    /// <summary>
-    /// The 'ConcreteCommand' class
-    /// </summary>
-    /// 
     [Serializable]
     class AdjustCommand : Command
     {
@@ -63,6 +59,13 @@ namespace CommandStructure
         public AdjustCommand()
         {
         }
+
+        /// <summary>
+        /// adjust a range of voxels
+        /// </summary>
+        /// <param name="tracer">tracer</param>
+        /// <param name="indexes">the indexes of target voxel to be adjusted</param>
+        /// <param name="intensity">the offset of intensity</param>
         public AdjustCommand(Tracer tracer, List<uint> indexes, int intensity) : base(tracer)
         {
             _indexes = indexes;
@@ -71,6 +74,11 @@ namespace CommandStructure
             commandType = "Adjust";
         }
 
+        /// <summary>
+        /// adjust a branch from the target to the trunk
+        /// </summary>
+        /// <param name="tracer"></param>
+        /// <param name="index">the target point on a branch</param>
         public AdjustCommand(Tracer tracer, uint index) : base(tracer)
         {
             _indexes = tracer.GetBranch(index);

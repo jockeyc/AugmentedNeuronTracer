@@ -42,10 +42,12 @@ public class ErrorHeatMapCompute : MonoBehaviour
 
         computeShader.Dispatch(kernel, Mathf.CeilToInt(dim.x / 8) , Mathf.CeilToInt(dim.y / 8), Mathf.CeilToInt(dim.z / 8));
 
+#if UNITY_EDITOR
         AssetDatabase.DeleteAsset($"Assets/Textures/HeatMap/{name}.Asset");
         AssetDatabase.CreateAsset(result, $"Assets/Textures/HeatMap/{name}.Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+#endif
     }
 
     private float[] getHits(string path)

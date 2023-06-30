@@ -64,7 +64,7 @@ public class GazeController : MonoBehaviour
     {
         interactor = GameObject.Find("GazeInteractor").GetComponent<FuzzyGazeInteractor>();
         config = GetComponent<Config>();
-        cube = config._cube;
+        cube = config.cube;
 
         Vector3Int dim = config._scaledDim;
         eyeHeatMap = new(dim.x, dim.y, 0, RenderTextureFormat.R8)
@@ -89,6 +89,7 @@ public class GazeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        cube = config.cube;
         var result = interactor.PreciseHitResult;
         //if (result.IsRaycast) Debug.Log("Is Casting");
         traceTime += Time.deltaTime;
@@ -157,29 +158,7 @@ public class GazeController : MonoBehaviour
                         EyePointer.SetActive(true);
                         EyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
                         EyePointer.transform.position = Vector3.SmoothDamp(EyePointer.transform.position, result.raycastHit.point, ref velocity, dampTime);
-                        int curIndex = getIntersection(localHitPos, localGazeOrigin);
-                        //if (curIndex != -1)
-                        //{
-                        //    int i = curIndex % config._scaledDim.x;
-                        //    int j = (curIndex / config._scaledDim.x) % config._scaledDim.y;
-                        //    int k = (curIndex / (config._scaledDim.x * config._scaledDim.y) % config._scaledDim.z);
-                        //    Vector3 pos = new Vector3();
-                        //    pos.x = i / (float)config._scaledDim.x;
-                        //    pos.y = j / (float)config._scaledDim.y;
-                        //    pos.z = k / (float)config._scaledDim.z;
 
-                        //    pos = pos - new Vector3(.5f, .5f, .5f);
-                        //    pos = cube.transform.TransformPoint(pos);
-                        //    EyePointer.transform.position = pos;
-                        //    if (config.tracer.Contained((uint)curIndex))
-                        //    {
-                        //        EyePointer.GetComponent<MeshRenderer>().material.color = Color.blue;
-                        //    }
-                        //    else
-                        //    {
-                        //        EyePointer.GetComponent<MeshRenderer>().material.color = Color.red;
-                        //    }
-                        //}
                         var direction = (localHitPos - localGazeOrigin).normalized;
                         var hitPos = (localHitPos + 0.5f * Vector3.one).Mul(config._scaledDim/config.thresholdBlockSize);
                         //config.tracer.AdjustThreshold(hitPos,direction);
@@ -364,6 +343,12 @@ public class GazeController : MonoBehaviour
         return ir;
     }
 
+    /// <summary>
+    /// return the intersection with eye sight and image foreground
+    /// </summary>
+    /// <param name="targetPos">the intersection with eye sight and the boundary of volume</param>
+    /// <param name="gazeOrigin">the postion of eye(camera)</param>
+    /// <returns></returns>
     private int getIntersection(Vector3 targetPos, Vector3 gazeOrigin)
     {
         var volume = config.Volume;
@@ -442,6 +427,7 @@ public class GazeController : MonoBehaviour
         }
         else return -1;
     }
+
     private double fittingDistribution()
     {
         double[] pathLength = new double[100];

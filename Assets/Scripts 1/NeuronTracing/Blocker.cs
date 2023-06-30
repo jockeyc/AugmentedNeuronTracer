@@ -22,7 +22,7 @@ public class Blocker : MonoBehaviour
         blockerList.Add(this);
         config = GameObject.Find("Config").GetComponent<Config>();
         dim = config._scaledDim;
-        cubeTransform = config._cube.transform;
+        cubeTransform = config.cube.transform;
         tracer = config.tracer;
 
         manipulator = gameObject.GetComponent<ObjectManipulator>();
@@ -117,7 +117,7 @@ public class Blocker : MonoBehaviour
                 Vector3 pos = point + origin;
                 pos = pos.Div(dim);
                 pos -= new Vector3(.5f, .5f, .5f);
-                pos = config._cube.transform.TransformPoint(pos);
+                pos = config.cube.transform.TransformPoint(pos);
                 sphere.transform.position = pos;
                 sphere.transform.SetParent(points.transform, false);
             }

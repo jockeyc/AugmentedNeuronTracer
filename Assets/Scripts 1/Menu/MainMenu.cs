@@ -18,8 +18,8 @@ public class MainMenu : MonoBehaviour
         Save,
         Auto,
         Eye,
-        Blocker,
         Move,
+        Blocker,
         Draw,
         Erase,
         Undo,
@@ -38,13 +38,14 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        config = GameObject.Find("Config").GetComponent<Config>();
+        config = GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
         buttons = gameObject.GetComponentsInChildren<PressableButton>();
         buttons[(int)ButtonFunc.Save].OnClicked.AddListener(() => SaveEvent());
         buttons[(int)ButtonFunc.Auto].OnClicked.AddListener(() => AutoEvent());
         buttons[(int)ButtonFunc.Eye].OnClicked.AddListener(() => EyeEvent());
-        buttons[(int)ButtonFunc.Blocker].OnClicked.AddListener(() => BlockerEvent());
+        //buttons[(int)ButtonFunc.Blocker].OnClicked.AddListener(() => BlockerEvent());
         buttons[(int)ButtonFunc.Move].OnClicked.AddListener(() => MoveEvent());
+        //buttons[(int)ButtonFunc.Blocker].OnClicked.AddListener(() => MoveEvent());
         buttons[(int)ButtonFunc.Draw].OnClicked.AddListener(() => DrawEvent());
         buttons[(int)ButtonFunc.Erase].OnClicked.AddListener(() => EraseEvent());
         buttons[(int)ButtonFunc.Undo].OnClicked.AddListener(() => UndoEvent());
@@ -106,7 +107,7 @@ public class MainMenu : MonoBehaviour
         //config.tracer.Save(0);
         buttons[(int)ButtonFunc.Save].enabled = true;
         buttons[(int)ButtonFunc.Eye].enabled = true;
-        buttons[(int)ButtonFunc.Blocker].enabled = true;
+        //buttons[(int)ButtonFunc.Blocker].enabled = true;
         buttons[(int)ButtonFunc.Draw].enabled = true;
         buttons[(int)ButtonFunc.Erase].enabled = true;
         buttons[(int)ButtonFunc.Undo].enabled = true;
@@ -134,7 +135,7 @@ public class MainMenu : MonoBehaviour
             {
                 eyeMenu.Show();
             }
-            config.GetComponent<HandTracker>().operation = HandTracker.OperationType.None;
+            config.GetComponent<GestureController>().operation = GestureController.OperationType.None;
             config.gazeController.currentState = GazeController.EyeInteractionState.Repair;
         }
         else
@@ -152,13 +153,13 @@ public class MainMenu : MonoBehaviour
         {
             LockMove(true);
             config.gazeController.currentState = GazeController.EyeInteractionState.None;
-            config.handTracker.operation = HandTracker.OperationType.Draw;
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
+            config.gestureController.operation = GestureController.OperationType.Draw;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
             HideSubMenu();
         }
         else
         {
-            config.handTracker.operation = HandTracker.OperationType.None;
+            config.gestureController.operation = GestureController.OperationType.None;
         }
     }
 
@@ -168,12 +169,12 @@ public class MainMenu : MonoBehaviour
         {
             LockMove(true);
             config.gazeController.currentState = GazeController.EyeInteractionState.None;
-            config.handTracker.operation = HandTracker.OperationType.Erase;
+            config.gestureController.operation = GestureController.OperationType.Erase;
             HideSubMenu();
         }
         else
         {
-            config.handTracker.operation = HandTracker.OperationType.None;
+            config.gestureController.operation = GestureController.OperationType.None;
         }
     }
 
@@ -212,7 +213,8 @@ public class MainMenu : MonoBehaviour
 
     void MoveEvent()
     {
-        LockMove(config._paintingBoard.GetComponent<ObjectManipulator>().enabled);
+        Debug.Log("move");
+        LockMove(config.paintingBoard.GetComponent<ObjectManipulator>().enabled);
         buttons[(int)ButtonFunc.Draw].ForceSetToggled(false);
         buttons[(int)ButtonFunc.Erase].ForceSetToggled(false);
         HideSubMenu();
@@ -239,24 +241,25 @@ public class MainMenu : MonoBehaviour
 
     void LockMove(bool islock)
     {
+        Debug.Log("what£¿");
         PressableButton button = buttons[(int)ButtonFunc.Move];
         var iconSelector = button.GetComponentInChildren<FontIconSelector>();
         TextMeshProUGUI textMeshPro = button.GetComponentsInChildren<TextMeshProUGUI>()[1];
         if (!islock)
         {
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled=true;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled=true;
             textMeshPro.text = "lock";
             iconSelector.CurrentIconName = "Icon 17";
         }
         else
         {
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
             textMeshPro.text = "move";
             iconSelector.CurrentIconName = "Icon 40";
             buttons[(int)ButtonFunc.Move].ForceSetToggled(false);
 
         }
-        config.handTracker.operation = HandTracker.OperationType.None;
+        config.gestureController.operation = GestureController.OperationType.None;
 
     }
     // Update is called once per frame

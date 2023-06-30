@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class BlockerMenu : SubMenu
 {
@@ -21,7 +20,7 @@ public class BlockerMenu : SubMenu
     // Start is called before the first frame update
     void Start()
     {
-        config = GameObject.Find("Config").GetComponent<Config>();
+        config = GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
         var Buttons = GetComponentsInChildren<PressableButton>();
 
         Buttons[1].OnClicked.AddListener(() => OnNewClicked());
@@ -70,12 +69,12 @@ public class BlockerMenu : SubMenu
         if (!button.IsToggled)
         {
             buttonBlockers[button].GetComponent<MeshRenderer>().material.color = new Color(0.4874213f, 0.7125539f, 1f, 0.3764706f);
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled = true;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled = true;
         }
         else
         {
             buttonBlockers[button].GetComponent<MeshRenderer>().material.color = new Color(0.5149505f,1.0f,0.4862745f,0.3764706f);
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
         }
     }
 

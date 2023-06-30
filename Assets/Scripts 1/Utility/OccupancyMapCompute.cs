@@ -58,10 +58,12 @@ public class OccupancyMapCompute : MonoBehaviour
         var texture3D = readRenderTexture3D(resultTexture);
 
         string name = volume.name;
+#if UNITY_EDITOR
         AssetDatabase.DeleteAsset("Assets/Resources/Textures/_occupancy" + ".Asset");
         AssetDatabase.CreateAsset(texture3D, "Assets/Resources/Textures/_occupancy" + ".Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+#endif
         Debug.Log("SavingTexture succeeded!");
         occupancyMap = texture3D;
     }
@@ -97,12 +99,12 @@ public class OccupancyMapCompute : MonoBehaviour
         distanceCompute.Dispatch(kernelKey, Mathf.CeilToInt(dMap.x / 8.0f), Mathf.CeilToInt(dMap.y / 8.0f), Mathf.CeilToInt(dMap.z / 8.0f));
 
         distanceMap = readRenderTexture3D(result);
-
+#if UNITY_EDITOR
         AssetDatabase.DeleteAsset("Assets/Resources/Textures/_distanceMap" + ".Asset");
         AssetDatabase.CreateAsset(distanceMap, "Assets/Resources/Textures/_distanceMap" + ".Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-
+#endif
         Debug.Log("Calculated DistanceMap");
         //AssetDatabase.DeleteAsset("Assets/Textures/" + "Distance2" + ".Asset");
         //AssetDatabase.CreateAsset(texture3D, "Assets/Textures/" + "Distance2" + ".Asset");

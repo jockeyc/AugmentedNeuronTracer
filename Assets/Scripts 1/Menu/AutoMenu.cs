@@ -22,7 +22,7 @@ public class AutoMenu : SubMenu
     // Start is called before the first frame update
     void Start()
     {
-        config = GameObject.Find("Config").GetComponent<Config>();
+        config = GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
         sliders = GetComponentsInChildren<Slider>();
         Buttons = GetComponentsInChildren<PressableButton>();
         
@@ -30,17 +30,13 @@ public class AutoMenu : SubMenu
         
         sliders[0].OnValueUpdated.AddListener((SliderEventData data) => UpdateBkgValue(data));
         sliders[1].OnValueUpdated.AddListener((SliderEventData data) => UpdateRadiusValue(data));
-        //sliders[2].OnValueUpdated.AddListener((SliderEventData data) => UpdateOffsetValue(data));
         Buttons[0].OnClicked.AddListener(() =>AdjustSlider(0,true));
         Buttons[1].OnClicked.AddListener(() =>AdjustSlider(0,false));
         Buttons[2].OnClicked.AddListener(() =>AdjustSlider(1,true));
         Buttons[3].OnClicked.AddListener(() =>AdjustSlider(1,false));
-        //Buttons[4].OnClicked.AddListener(() =>AdjustSlider(2, true));
-        //Buttons[5].OnClicked.AddListener(() =>AdjustSlider(2,false));
         Buttons[4].OnClicked.AddListener(() => OnStartClicked());
         Buttons[5].OnClicked.AddListener(() => OnCancelClicked());
         Buttons[6].OnClicked.AddListener(() => OnModifyClicked());
-        //Buttons[2].IsToggled = false;
 
         config.VRShaderType = Config.ShaderType.FlexibleThreshold;
 
@@ -56,13 +52,13 @@ public class AutoMenu : SubMenu
         if (Buttons[6].IsToggled)
         {
             config.gazeController.currentState = GazeController.EyeInteractionState.EditThresh;
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled = true;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled = true;
             iconSelector.CurrentIconName = "Icon 9";
         }
         else
         {
             config.gazeController.currentState = GazeController.EyeInteractionState.None;
-            config._paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
+            config.paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
             iconSelector.CurrentIconName = "Icon 10";
         }
     }
@@ -99,12 +95,8 @@ public class AutoMenu : SubMenu
         config._postProcessVolume.profile.GetSetting<BaseVolumeRendering>().threshold.value = threshold;
 
         config.tracer.TraceTrunk(0);
-
-        //config.tracer.CullingForeground();
-        //var radiusText = textMeshProUGUIs[3];
-        //radiusText.text = $"Soma Radius:\n {config._somaRadius}";
-        //sliders[1].Value = config._somaRadius / SLIDER_MAXIMUM[1];
     }
+
     async void UpdateRadiusValue(SliderEventData data)
     {
         if (Mathf.Abs(data.OldValue-data.NewValue)* SLIDER_MAXIMUM[1] < 0.1) { return; }
@@ -125,7 +117,6 @@ public class AutoMenu : SubMenu
             config.tracer.Pruning(token);
         }, token);
         Debug.Log("Time:"+(Time.realtimeSinceStartup-time));
-        config.tracer.ClearResult();
         config.tracer.CreateTree();
     }
 
@@ -143,12 +134,7 @@ public class AutoMenu : SubMenu
 
     void AdjustSlider(int index, bool up)
     {
-        if (up)
-        {
-            sliders[index].Value+= 1.0f/ SLIDER_MAXIMUM[index];
-        }
-        else
-            sliders[index].Value-= 1.0f / SLIDER_MAXIMUM[index];
+        sliders[index].Value += (up ? 1.0f : -1.0f) / SLIDER_MAXIMUM[index];
     }
 
     // Update is called once per frame

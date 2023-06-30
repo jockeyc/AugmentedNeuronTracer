@@ -1,16 +1,9 @@
-using MathNet.Numerics.LinearAlgebra.Storage;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Resources;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using UnityEditor;
-using UnityEditor.Build;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class Tracer : MonoBehaviour
 {
@@ -19,20 +12,7 @@ public class Tracer : MonoBehaviour
     public bool isMsfm = true;
     public int bkg_thresh = 30;
 
-    ////vector<string> filelist;
-    //string inimg_file;
-    //string inmarker_file;
-    //string outswc_file;
-    //bool is_gsdt = true;
-    ////bool is_coverage_prune = true;//false;
-    //bool is_break_accept = false;
-    //bool is_leaf_prune = true;
-    //bool is_smooth = false;
-    //double length_thresh = 1.0;
-    //int cnn_type = 2; // default connection type 2
-    //int channel = 0;
     double SR_ratio = 9.0 / 9.0;
-    float somaRadius;
 
     public HashSet<int> targets = new();
     
@@ -81,12 +61,19 @@ public class Tracer : MonoBehaviour
         config._rootPos = rootPos;
     }
 
+    /// <summary>
+    /// calculate the min geodesic distance of all voxel to the soma
+    /// </summary>
+    /// <param name="type">current operation type:initial,sweep,eye tracing</param>
     public void Trace(int type = 0)
     {
-        ClearResult();
         FIMFI(type);
     }
 
+    /// <summary>
+    /// only calculate the part of trunk
+    /// </summary>
+    /// <param name="type">current operation type</param>
     public void TraceTrunk(int type = 0)
     {
         if(curCoroutine != null)StopCoroutine(curCoroutine);
@@ -96,29 +83,23 @@ public class Tracer : MonoBehaviour
 
     public void dontCoroutine(int  type=0)
     {
-        FIMdont(type);
+        FIMnotCoroutine(type);
     }
 
-    //public HashSet<uint> TraceBranch(int type = 0)
-    //{
-    //    ClearResult();
-    //    HashSet<uint> modified = FIMRemedy(type);
-    //    return modified;
-    //} 
+    /// <summary>
+    /// trace the remedy part
+    /// </summary>
+    /// <param name="type">current operation type</param>
     public void TraceBranch(int type = 0)
     {
         if (curCoroutine != null) StopCoroutine(curCoroutine);
         curCoroutine = StartCoroutine(FIMRemedyCoroutine(type));
-        //FIMRemedy(type);
     }
 
     public void DeleteBranch(HashSet<uint> modified, int type = 0)
     {
-        ClearResult();
         FIMDelete(type, modified);
     }
-
-
 
     public void FIMFI(int type)
     {
@@ -192,7 +173,7 @@ public class Tracer : MonoBehaviour
 
     //    PostProcess(type);
     //}
-    public void FIMdont(int type)
+    public void FIMnotCoroutine(int type)
     {
         time = Time.realtimeSinceStartup;
 
@@ -234,7 +215,7 @@ public class Tracer : MonoBehaviour
         bkg_thresh = config.BkgThresh;
         byte[] img1d = config.VolumeData;
         Vector3Int dim = config._scaledDim;
-        var cube = config._cube;
+        var cube = config.cube;
         float time = Time.realtimeSinceStartup;
         float calculationTime = 0;
 
@@ -275,6 +256,10 @@ public class Tracer : MonoBehaviour
         Debug.Log($"create tree complete in {Time.realtimeSinceStartup - time}s");
     }
 
+    /// <summary>
+    /// including setting type, pruning, resampling and creating
+    /// </summary>
+    /// <param name="type"></param>
     private void PostProcess(int type)
     {
         //img1d = config.Origin.GetPixelData<byte>(0).ToArray();
@@ -330,24 +315,21 @@ public class Tracer : MonoBehaviour
         Debug.Log($"resample Tree nums:{resampledTree.Count} resample complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
-        ClearResult();
-
         List<float> growth = new(resampledTree.Count);
         foreach(var marker in resampledTree)
         {
             float value = (float)batches[(int)marker.img_index(dim.x, dim.x * dim.y)] / (currentSequence+1);
             growth.Add(value);
         }
-        if (config.useBatch) Primitive.CreateTree(resampledTree, cube.transform, dim, growth);
-        else Primitive.CreateTree(resampledTree, cube.transform, dim);
+
+        //if (config.useBatch) Primitive.CreateTree(resampledTree, cube.transform, dim, growth);
+        //else Primitive.CreateTree(resampledTree, cube.transform, dim);
+        Primitive.RpcCreateTree(config.runner, resampledTree, cube.transform, dim);
         Debug.Log($"create tree complete in {Time.realtimeSinceStartup - time}s");
-
-
-
     }
     public void CreateTree()
     {
-        Primitive.CreateTree(resampledTree, cube.transform, dim);
+        Primitive.RpcCreateTree(config.runner, resampledTree, cube.transform, dim);
     }
     public void Pruning(CancellationToken token)
     {
@@ -363,11 +345,11 @@ public class Tracer : MonoBehaviour
     {
         img1d = config.VolumeData;
         dim = config._scaledDim;
-        cube = config._cube;
+        cube = config.cube;
     }
     public void AdjustIntensity(List<Vector3> track, float intensity)
     {
-        var cube = config._cube;
+        var cube = config.cube;
         Vector3Int dim = config._scaledDim;
         Debug.Log(track.Count);
         float time = Time.realtimeSinceStartup;
@@ -414,6 +396,12 @@ public class Tracer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="indexes">index of voxels to be adjusted</param>
+    /// <param name="intensity">0 indicates automatic branch adjustment, otherwise indicates the magnitude of adjustment </param>
+    /// <param name="undo"></param>
     public void AdjustIntensity(List<uint> indexes, float intensity, bool undo)
     {
         if (intensity == 0)  //branch
@@ -540,10 +528,11 @@ public class Tracer : MonoBehaviour
         }
         Debug.Log(count);
         var dim = config._scaledDim;
-        Primitive.CreateTree(resampledTree, config._cube.transform, dim);
+        Primitive.CreateTree(resampledTree, config.cube.transform, dim);
 
     }
 
+    
     public void ClearResult()
     {
         GameObject temp = GameObject.Find("Temp");
@@ -599,6 +588,11 @@ public class Tracer : MonoBehaviour
         foreground = fim.GetForegroundExtension();
     }
 
+    /// <summary>
+    /// adjust the threshold of background with eye sweeping
+    /// </summary>
+    /// <param name="localHitPos">intersection of eye sight and volume in local space</param>
+    /// <param name="localdirection">direction of eye sight in local space</param>
     internal void AdjustThreshold(Vector3 localHitPos, Vector3 localdirection)
     {
         fim.AdjustThreshold(localHitPos,localdirection);

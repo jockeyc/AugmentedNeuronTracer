@@ -72,9 +72,11 @@ public class LumiPathVolumeRenderingScript : MonoBehaviour
         Texture3D VolumeData = new Texture3D(512, 512, 512, TextureFormat.RFloat, false);
         VolumeData.SetPixelData(texture3dData, 0, 0);
         VolumeData.Apply();
+#if UNITY_EDITOR
         AssetDatabase.CreateAsset(VolumeData, "Assets/Textures/Volume.Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+#endif
     }
 
     private Vector3 C(float theta, float phi)
@@ -143,10 +145,12 @@ public class LumiPathVolumeRenderingScript : MonoBehaviour
         RenderTexture.active = resultTexture;
         texture2D.ReadPixels(new Rect(0, 0, entryPointNum, exitPointNum), 0, 0);
         texture2D.Apply();
+#if UNITY_EDITOR
         AssetDatabase.CreateAsset(texture2D, "Assets/Textures/"+name+".Asset");
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("SavingTexture succeeded!");
+#endif
     }
 
     private void Start()

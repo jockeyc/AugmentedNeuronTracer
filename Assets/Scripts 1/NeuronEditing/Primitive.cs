@@ -1,14 +1,15 @@
+using Fusion;
 using Microsoft.MixedReality.Toolkit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.Timeline;
 using UnityEngine.UIElements;
+using UnityEngine.XR.Interaction.Toolkit;
 
-public class Primitive
+public class Primitive : NetworkBehaviour
 {
     //public static GameObject CreateCylinder(Marker marker, Transform parentTransform, float Scale = 1 / 512.0f)
     //{
@@ -111,6 +112,19 @@ public class Primitive
 
         myCylinder.GetComponent<MeshRenderer>().material = materials[marker.type];
         return myCylinder;
+    }
+    [Rpc]
+    public static void RpcCreateCylinder(NetworkRunner runner, Vector3 positionA, Vector3 positionB, float radiusA, float radiusB, int type, RpcInfo info = default)
+    {
+        Transform temp = GameObject.Find("Temp").transform;
+        float length = Vector3.Distance(positionA, positionB);
+        GameObject myCylinder = MyCylinder(radiusA, radiusB, length);
+        myCylinder.transform.position = (positionA + positionB) / 2;
+        myCylinder.transform.up = (positionA - positionB).normalized;
+        myCylinder.transform.SetParent(temp, true);
+        //myCylinder.transform.SetParent(parentTransform);
+
+        myCylinder.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Textures/{type}"); ;
     }
     public static GameObject CreateCylinderTemp(Marker marker, Vector3Int dim, Transform parentTransform, Transform temp, int colortype, float radiusBias = 0)
     {
@@ -219,6 +233,42 @@ public class Primitive
         info.batch = marker.batch;
         return sphere;
     }
+
+    [Rpc]
+    public static void RpcClearTree(NetworkRunner runner)
+    {
+        GameObject temp = GameObject.Find("Temp");
+        for (int i = 0; i < temp.transform.childCount; i++)
+        {
+            GameObject.Destroy(temp.transform.GetChild(i).gameObject);
+        }
+    }
+
+    [Rpc]
+    public static void RpcCreateSphere(NetworkRunner runner, Vector3 position, float radius, int type, RpcInfo info = default)
+    {
+        if (info.IsInvokeLocal) return;
+        Debug.Log(info);
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Textures/{type}"); ;
+
+        Transform temp = GameObject.Find("Temp").transform;
+        sphere.transform.position = position;
+        sphere.transform.SetParent(temp, true);
+        sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
+    }
+
+    public static GameObject CreateSphere(Vector3 position, float radius, int type)
+    {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Textures/{type}"); ;
+
+        Transform temp = GameObject.Find("Temp").transform;
+        sphere.transform.position = position;
+        sphere.transform.SetParent(temp, true);
+        sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
+        return sphere;
+    }
     public static GameObject CreateSphereTemp(Marker marker, Vector3Int dim, Transform parentTransform, Transform temp, int colorType)
     {
         var position = marker.position.Div(dim) - 0.5f * Vector3.one;
@@ -303,6 +353,54 @@ public class Primitive
         return colors[^1];
     }
 
+    public static void RpcCreateTree(NetworkRunner runner, List<Marker> tree, Transform parentTransform, Vector3Int dim)
+    {
+        RpcClearTree(runner);
+        foreach (var marker in tree)
+        {
+            Vector3 positionA = marker.position.Div(dim) - 0.5f * Vector3.one;
+            positionA = parentTransform.TransformPoint(positionA);
+            float radiusA = marker.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z)) * parentTransform.parent.localScale.x;
+
+            RpcCreateSphere(runner, positionA, radiusA, marker.type);
+            var sphere = CreateSphere(positionA, radiusA, marker.type);
+            if (marker.isLeaf)
+            {
+                var statefulInteractable = sphere.AddComponent<StatefulInteractable>();
+                statefulInteractable.ToggleMode = StatefulInteractable.ToggleType.OneWayToggle;
+                var pipeCasing = sphere.AddComponent<PipeCasing>();
+                pipeCasing.Initial(marker, sphere, dim, parentTransform);
+                statefulInteractable.selectEntered.AddListener((SelectEnterEventArgs args) =>
+                {
+                    Debug.Log("select leaf");
+                    if (statefulInteractable.IsToggled)
+                    {
+                        pipeCasing.AddLength();
+                        //pipeCasing.Activate();
+
+                    }
+                    else
+                    {
+                        pipeCasing.ClearPipes();
+                    }
+                });
+            }
+
+            if (marker.parent != null)
+            {
+                var positionB = marker.parent.position.Div(dim) - 0.5f * Vector3.one;
+                float radiusB = marker.parent.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z)) * parentTransform.parent.localScale.x;
+                positionB = parentTransform.TransformPoint(positionB);
+
+                RpcCreateCylinder(runner, positionA, positionB, radiusA, radiusB, marker.type);
+            }
+            else
+            {
+                //sphere.name = "Soma";
+            }
+        }
+
+    }
     public static void CreateTree(List<Marker> tree, Transform parentTransform, Vector3Int dim)
     {
         materials[0] = Resources.Load<Material>("Textures/Red");
@@ -310,35 +408,18 @@ public class Primitive
         materials[2] = Resources.Load<Material>("Textures/Green");
         materials[3] = Resources.Load<Material>("Textures/Cyan");
         materials[4] = Resources.Load<Material>("Textures/Purple");
-        //foreach (var marker in tree)
-        //{
-        //    marker.radius = 1.8f * marker.radius;
-        //}
-        //float Scale = 1 / 512.0f;
-        Dictionary<Marker, SwcNode> map = new Dictionary<Marker, SwcNode>();
+
         foreach (var marker in tree)
         {
-            //marker.radius = 1.3f * marker.radius;
-        }
-        foreach (var marker in tree)
-        {
-            GameObject sphere = Primitive.CreateSphere(marker, dim, parentTransform);
+            GameObject sphere = CreateSphere(marker, dim, parentTransform);
 
             if (marker.parent != null)
             {
-                var parent = marker.parent;
-                GameObject cylinder = Primitive.CreateCylinder(marker, dim, parentTransform);
-                //Chosen c = cylinder.AddComponent<Chosen>();
-                //c.nodeA = parent;
-                //c.nodeB = node;
-                //node.cylinder = cylinder;
+                CreateCylinder(marker, dim, parentTransform);
             }
             else
             {
                 sphere.name = "Soma";
-                //Chosen soma = sphere.AddComponent<Chosen>();
-                //soma.nodeA = node;
-                //soma.nodeB = node;
             }
         }
     }
