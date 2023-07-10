@@ -30,7 +30,7 @@
       "hash": "03353e7a94bd01ef6daa80e3a5fd85c7f5fa4725"
     },
     "com.microsoft.mixedreality.openxr": {
-      "version": "file:../../../ExternalDependencies/com.microsoft.mixedreality.openxr-1.7.0.tgz",
+      "version": "file:../MRTK3/ExternalDependencies/com.microsoft.mixedreality.openxr-1.7.0.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {
@@ -48,7 +48,7 @@
       "hash": "22d727d4d1641c27fa85a7519cf76b81890c8f3d"
     },
     "com.microsoft.mrtk.accessibility": {
-      "version": "file:../../../com.microsoft.mrtk.accessibility",
+      "version": "file:../MRTK3/com.microsoft.mrtk.accessibility",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -58,7 +58,7 @@
       }
     },
     "com.microsoft.mrtk.audio": {
-      "version": "file:../../../com.microsoft.mrtk.audio",
+      "version": "file:../MRTK3/com.microsoft.mrtk.audio",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -66,7 +66,7 @@
       }
     },
     "com.microsoft.mrtk.core": {
-      "version": "file:../../../com.microsoft.mrtk.core",
+      "version": "file:../MRTK3/com.microsoft.mrtk.core",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -76,7 +76,7 @@
       }
     },
     "com.microsoft.mrtk.data": {
-      "version": "file:../../../com.microsoft.mrtk.data",
+      "version": "file:../MRTK3/com.microsoft.mrtk.data",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -86,7 +86,7 @@
       }
     },
     "com.microsoft.mrtk.diagnostics": {
-      "version": "file:../../../com.microsoft.mrtk.diagnostics",
+      "version": "file:../MRTK3/com.microsoft.mrtk.diagnostics",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -95,7 +95,7 @@
       }
     },
     "com.microsoft.mrtk.extendedassets": {
-      "version": "file:../../../com.microsoft.mrtk.extendedassets",
+      "version": "file:../MRTK3/com.microsoft.mrtk.extendedassets",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -110,7 +110,7 @@
       "hash": "385952c3e0c59b934f7846cb2b815977cb22dcda"
     },
     "com.microsoft.mrtk.input": {
-      "version": "file:../../../com.microsoft.mrtk.input",
+      "version": "file:../MRTK3/com.microsoft.mrtk.input",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -123,7 +123,7 @@
       }
     },
     "com.microsoft.mrtk.spatialmanipulation": {
-      "version": "file:../../../com.microsoft.mrtk.spatialmanipulation",
+      "version": "file:../MRTK3/com.microsoft.mrtk.spatialmanipulation",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -134,7 +134,7 @@
       }
     },
     "com.microsoft.mrtk.standardassets": {
-      "version": "file:../../../com.microsoft.mrtk.standardassets",
+      "version": "file:../MRTK3/com.microsoft.mrtk.standardassets",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -142,7 +142,7 @@
       }
     },
     "com.microsoft.mrtk.tools": {
-      "version": "file:../../../com.microsoft.mrtk.tools",
+      "version": "file:../MRTK3/com.microsoft.mrtk.tools",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -150,13 +150,13 @@
       }
     },
     "com.microsoft.mrtk.tts.windows": {
-      "version": "file:../../../ExternalDependencies/com.microsoft.mrtk.tts.windows-1.0.1.tgz",
+      "version": "file:../MRTK3/ExternalDependencies/com.microsoft.mrtk.tts.windows-1.0.1.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {}
     },
     "com.microsoft.mrtk.uxcomponents": {
-      "version": "file:../../../com.microsoft.mrtk.uxcomponents",
+      "version": "file:../MRTK3/com.microsoft.mrtk.uxcomponents",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -168,7 +168,7 @@
       }
     },
     "com.microsoft.mrtk.uxcomponents.noncanvas": {
-      "version": "file:../../../com.microsoft.mrtk.uxcomponents.noncanvas",
+      "version": "file:../MRTK3/com.microsoft.mrtk.uxcomponents.noncanvas",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -178,7 +178,7 @@
       }
     },
     "com.microsoft.mrtk.uxcore": {
-      "version": "file:../../../com.microsoft.mrtk.uxcore",
+      "version": "file:../MRTK3/com.microsoft.mrtk.uxcore",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -190,7 +190,7 @@
       }
     },
     "com.microsoft.mrtk.windowsspeech": {
-      "version": "file:../../../com.microsoft.mrtk.windowsspeech",
+      "version": "file:../MRTK3/com.microsoft.mrtk.windowsspeech",
       "depth": 0,
       "source": "local",
       "dependencies": {
@@ -199,7 +199,7 @@
       }
     },
     "com.microsoft.spatialaudio.spatializer.unity": {
-      "version": "file:../../../ExternalDependencies/com.microsoft.spatialaudio.spatializer.unity-2.0.37.tgz",
+      "version": "file:../MRTK3/ExternalDependencies/com.microsoft.spatialaudio.spatializer.unity-2.0.37.tgz",
       "depth": 0,
       "source": "local-tarball",
       "dependencies": {}
