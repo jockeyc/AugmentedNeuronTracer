@@ -7,7 +7,7 @@ Augmented Neuron Tracer (ANT), a progressive and controllable semi-automatic neu
 4. Open the scene "ANT" in Secenes.
 5. Open the Resources/Prefabs/Config, modify settings in the inspector.
 ## File Directory
-···
+```
 AugmentedNeuronTracer
 ├── Assets
 │   ├── Materials
@@ -70,4 +70,4 @@ AugmentedNeuronTracer
 │   ├── Textures // texture of neuronal images and processed images
 ├── MRTK3 //packages of MRTK3
 └── Packages //packages configuration
-···
+```
