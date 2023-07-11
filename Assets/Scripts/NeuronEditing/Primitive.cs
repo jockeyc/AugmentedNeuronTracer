@@ -437,7 +437,6 @@ public class Primitive : NetworkBehaviour
         materials[9] = Resources.Load<Material>("Textures/9");
 
         //float Scale = 1 / 512.0f;
-        Dictionary<Marker, SwcNode> map = new Dictionary<Marker, SwcNode>();
         foreach (var marker in tree)
         {
             GameObject sphere = Primitive.CreateSphereTemp(marker, dim, parentTransform, temp, colorType);
@@ -470,7 +469,6 @@ public class Primitive : NetworkBehaviour
         materials[4] = Resources.Load<Material>("Textures/Purple");
 
         //float Scale = 1 / 512.0f;
-        Dictionary<Marker, SwcNode> map = new Dictionary<Marker, SwcNode>();
         foreach (var marker in tree)
         {
             marker.radius = 1.8f * marker.radius;
