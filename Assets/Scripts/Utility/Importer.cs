@@ -14,7 +14,7 @@ public class Importer
     {
         byte[] sourceData;//把TIFF文件读到byte数组中
         List<byte> imageData;
-        //接下来是TIFF文件的各种属性
+        //TIFF文件的各种属性
         bool ByteOrder = true;//true:II  false:MM
         public int ImageWidth = 0;
         public int ImageLength = 0;
