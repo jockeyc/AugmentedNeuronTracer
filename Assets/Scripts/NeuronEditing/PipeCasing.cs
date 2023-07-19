@@ -1,11 +1,11 @@
 using CommandStructure;
 using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
+using Microsoft.MixedReality.Toolkit.Subsystems;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class PipeCasing : MonoBehaviour
 {
@@ -19,10 +19,11 @@ public class PipeCasing : MonoBehaviour
     public float radiusBias = 2;
     public float pipeExtension = 1;
     public Vector3Int dim;
+    HandsAggregatorSubsystem aggregator;
     // Start is called before the first frame update
     void Start()
     {
-        
+        aggregator = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
     }
 
     // Update is called once per frame
@@ -82,7 +83,7 @@ public class PipeCasing : MonoBehaviour
     }
 
     [InspectorButton]
-    private void Trace()
+    public void Trace()
     {
         config.invoker.Execute(new MaskCommand(config.tracer, targets));
         ClearPipes();
@@ -99,26 +100,55 @@ public class PipeCasing : MonoBehaviour
             cylinder.transform.SetParent(GameObject.Find("Pipe").transform, true);
             targets.AddRange(GetTargets(marker, radiusBias , pipeExtension));
 
-            cylinder.AddComponent<CapsuleCollider>();
-            //var statefulInteractable = cylinder.AddComponent<StatefulInteractable>();
-            //statefulInteractable.ToggleMode = StatefulInteractable.ToggleType.Button;
-            //statefulInteractable.OnClicked.AddListener(() =>
-            //{
-            //    MoveOn();
-            //    Activate();
-            //});
-        }
 
-        PipeController pc = (GameObject.Find("Pipe").GetComponent<PipeController>());
-        ObjectManipulator om = pc.GetComponent<ObjectManipulator>();
-        om.colliders.Clear();
+            if (i == len - 1 || i + center == markers.Count - 1)
+            {
+                cylinder.AddComponent<BoxCollider>();
+                var si = cylinder.AddComponent<StatefulInteractable>();
+                si.IsPokeSelected.OnEntered.AddListener((args) => {
+                    HeadInteract();
+                });
+            }
+            else if (i == 0)
+            {
+                cylinder.AddComponent<BoxCollider>();
+                var si = cylinder.AddComponent<StatefulInteractable>();
+                si.IsPokeSelected.OnEntered.AddListener((args) => {
+                    TailInteract();
+                });
+            }
+        }
+        GameObject pipe = GameObject.Find("Pipe");
+        PipeController pc = pipe.GetComponent<PipeController>();
         pc.pipeCasing = this;
-        int childCount = pc.transform.childCount;
-        for(int i= childCount/2; i<childCount; i++)
-        {
-            var cc = pc.transform.GetChild(i).GetComponent<Collider>();
-        }
+    }
 
+    private void HeadInteract()
+    {
+        bool jointIsValid = aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.RightHand, out HandJointPose jointPose);
+        bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
+        if (jointIsValid && handIsValid && isPinching && pinchAmount >= 0.95)
+        {
+            MoveOn();
+        }
+        else
+        {
+            AddLength();
+        }
+    }
+
+    private void TailInteract()
+    {
+        bool jointIsValid = aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.RightHand, out HandJointPose jointPose);
+        bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
+        if (jointIsValid && handIsValid && isPinching && pinchAmount >= 0.95)
+        {
+            MoveBack();
+        }
+        else
+        {
+            DecLength();
+        }
     }
 
     public void ClearPipes()
@@ -127,7 +157,6 @@ public class PipeCasing : MonoBehaviour
         {
             GameObject.Destroy(GameObject.Find("Pipe").transform.GetChild(i).gameObject);
         }
-        //config.tracer.ModifyMask(targets, true, -1);
         targets.Clear();
     }
 

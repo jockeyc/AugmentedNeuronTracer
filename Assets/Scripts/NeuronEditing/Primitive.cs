@@ -366,23 +366,16 @@ public class Primitive : NetworkBehaviour
             var sphere = CreateSphere(positionA, radiusA, marker.type);
             if (marker.isLeaf)
             {
-                var statefulInteractable = sphere.AddComponent<StatefulInteractable>();
-                statefulInteractable.ToggleMode = StatefulInteractable.ToggleType.OneWayToggle;
+                var si = sphere.AddComponent<StatefulInteractable>();
+                si.ToggleMode = StatefulInteractable.ToggleType.Toggle;
                 var pipeCasing = sphere.AddComponent<PipeCasing>();
                 pipeCasing.Initial(marker, sphere, dim, parentTransform);
-                statefulInteractable.selectEntered.AddListener((SelectEnterEventArgs args) =>
+                si.IsToggled.OnEntered.AddListener((args) =>
                 {
-                    Debug.Log("select leaf");
-                    if (statefulInteractable.IsToggled)
-                    {
-                        pipeCasing.AddLength();
-                        //pipeCasing.Activate();
-
-                    }
-                    else
-                    {
-                        pipeCasing.ClearPipes();
-                    }
+                    GameObject menu = GameObject.Find("IsolateMenu(Clone)") ?? GameObject.Instantiate(Resources.Load("Prefabs/IsolateMenu")) as GameObject;
+                    menu.SetActive(true);
+                    menu.GetComponent<IsolateMenu>().pipeCasing = pipeCasing;
+                    pipeCasing.ClearPipes();
                 });
             }
 
