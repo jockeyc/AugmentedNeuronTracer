@@ -22,6 +22,7 @@ AugmentedNeuronTracer
 │   │   │   ├── AutoMenu.prefab //menu for auto reconstruction and area background threshold adjusting
 │   │   │   ├── Config.prefab //configuration of reconstruction
 │   │   │   ├── EyeMenu.prefab //menu for tracing branch with eye
+│   │   │   ├── IsolateMenu.prefab //menu for isolating branch signals
 │   │   │   ├── HandMenuBase.prefab // menu for basic hand menu
 │   │   │   ├── PaintingBoard.prefab // parent transform of reconstruction and neuronal image
 │   │   ├── Textures //materials in different colors of reconstruction
@@ -36,6 +37,7 @@ AugmentedNeuronTracer
 │   │   │   ├── AutoMenu.cs
 │   │   │   ├── EyeMenu.cs
 │   │   │   ├── MainMenu.cs
+│   │   │   ├── IsolateMenu.cs
 │   │   │   ├── SubMenu.cs
 │   │   ├── Mutiplayer //for mutiplayer
 │   │   │   ├── BasicSpawner.cs
