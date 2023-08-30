@@ -12,7 +12,7 @@ public class ErrorHeatMapCompute : MonoBehaviour
     ComputeShader computeShader;
     public Config config;
     public string path;
-    public string name;
+    new public string name;
 
     private void Start()
     {

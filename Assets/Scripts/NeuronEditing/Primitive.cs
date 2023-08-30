@@ -209,7 +209,7 @@ public class Primitive : NetworkBehaviour
             var statefulInteractable = sphere.AddComponent<StatefulInteractable>();
             statefulInteractable.ToggleMode = StatefulInteractable.ToggleType.OneWayToggle;
             var pipeCasing = sphere.AddComponent<PipeCasing>();
-            pipeCasing.Initial(marker, sphere, dim, parentTransform);
+            pipeCasing.Initial(marker, dim, parentTransform);
             statefulInteractable.OnClicked.AddListener(() =>
             {
                 if (statefulInteractable.IsToggled)
@@ -289,7 +289,7 @@ public class Primitive : NetworkBehaviour
             var statefulInteractable = sphere.AddComponent<StatefulInteractable>();
             statefulInteractable.ToggleMode = StatefulInteractable.ToggleType.OneWayToggle;
             var pipeCasing = sphere.AddComponent<PipeCasing>();
-            pipeCasing.Initial(marker, sphere, dim, parentTransform);
+            pipeCasing.Initial(marker, dim, parentTransform);
             statefulInteractable.OnClicked.AddListener(() =>
             {
                 if (statefulInteractable.IsToggled)
@@ -369,7 +369,7 @@ public class Primitive : NetworkBehaviour
                 var si = sphere.AddComponent<StatefulInteractable>();
                 si.ToggleMode = StatefulInteractable.ToggleType.Toggle;
                 var pipeCasing = sphere.AddComponent<PipeCasing>();
-                pipeCasing.Initial(marker, sphere, dim, parentTransform);
+                pipeCasing.Initial(marker, dim, parentTransform);
                 si.IsToggled.OnEntered.AddListener((args) =>
                 {
                     GameObject menu = GameObject.Find("IsolateMenu(Clone)") ?? GameObject.Instantiate(Resources.Load("Prefabs/IsolateMenu")) as GameObject;

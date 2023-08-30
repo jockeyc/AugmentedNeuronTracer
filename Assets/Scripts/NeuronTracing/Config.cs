@@ -119,6 +119,11 @@ public class Config : MonoBehaviour
         }
     }
 
+    public void Initialize()
+    {
+
+    }
+
     public int BkgThresh
     {
         get { return _bkgThresh; }
@@ -172,9 +177,6 @@ public class Config : MonoBehaviour
         }
     }
 
-
-
-    bool save = false;
     private void Update()
     {
         if (Input.GetKey(KeyCode.Z))

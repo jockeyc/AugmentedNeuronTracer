@@ -67,6 +67,7 @@ public class FIM : MonoBehaviour
     public RenderTexture ConnectedPart(bool view) {
         int bkgThreshold = view ? config.ViewThresh : config.BkgThresh;
         var connection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
+
         int kernel = computeShader.FindKernel("InitConnectionSeed");
         computeShader.SetTexture(kernel, "connection", connection);
         computeShader.SetInt("seedIndex", VectorToIndex(config._rootPos, dim));

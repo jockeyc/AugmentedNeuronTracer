@@ -51,13 +51,13 @@ public class AutoMenu : SubMenu
         var iconSelector = Buttons[6].GetComponentInChildren<FontIconSelector>();
         if (Buttons[6].IsToggled)
         {
-            config.gazeController.currentState = GazeController.EyeInteractionState.EditThresh;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.EditThresh;
             config.paintingBoard.GetComponent<ObjectManipulator>().enabled = true;
             iconSelector.CurrentIconName = "Icon 9";
         }
         else
         {
-            config.gazeController.currentState = GazeController.EyeInteractionState.None;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.None;
             config.paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
             iconSelector.CurrentIconName = "Icon 10";
         }
@@ -147,7 +147,7 @@ public class AutoMenu : SubMenu
     {
         //config._cube.GetComponent<MeshRenderer>().material = origin;
         config.VRShaderType = Config.ShaderType.Base;
-        config.gazeController.currentState = GazeController.EyeInteractionState.None;
+        config.gazeController.interactionType = GazeController.EyeInteractionType.None;
         base.Hide();
     }
 

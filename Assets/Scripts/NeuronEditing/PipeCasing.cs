@@ -118,9 +118,6 @@ public class PipeCasing : MonoBehaviour
                 });
             }
         }
-        GameObject pipe = GameObject.Find("Pipe");
-        PipeController pc = pipe.GetComponent<PipeController>();
-        pc.pipeCasing = this;
     }
 
     private void HeadInteract()
@@ -160,6 +157,13 @@ public class PipeCasing : MonoBehaviour
         targets.Clear();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="marker"></param>
+    /// <param name="radiusBias">Modified value of pipe radius</param>
+    /// <param name="pipeExtension">Distance extended along the direction</param>
+    /// <returns></returns>
     private List<uint> GetTargets(Marker marker, float radiusBias, float pipeExtension)
     {
         var dim = config._scaledDim;
@@ -195,14 +199,12 @@ public class PipeCasing : MonoBehaviour
         return count;
     }
 
-    internal void Initial(Marker marker, GameObject sphere, Vector3Int dim, Transform cubeTransform)
+    internal void Initial(Marker marker, Vector3Int dim, Transform cubeTransform)
     {
         config = GameObject.FindGameObjectWithTag("Config").GetComponent<Config>();
         markers = new();
-        spheres = new();
         targets = new();
         markers.Add(marker);
-        spheres[marker] = sphere;
         center = 0;
         this.dim = dim;
         this.cube = cubeTransform;

@@ -85,7 +85,7 @@ public class MainMenu : MonoBehaviour
         if(subMenu == null)
         {
             LockMove(true);
-            config.gazeController.currentState = GazeController.EyeInteractionState.None;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.None;
             if (autoMenu == null)
             {
                 var obj = Instantiate(Resources.Load("prefabs/AutoMenu")) as GameObject;
@@ -136,14 +136,14 @@ public class MainMenu : MonoBehaviour
                 eyeMenu.Show();
             }
             config.GetComponent<GestureController>().operation = GestureController.OperationType.None;
-            config.gazeController.currentState = GazeController.EyeInteractionState.Repair;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.Repair;
         }
         else
         {  
             if(subMenu is EyeMenu)
             {
                 HideSubMenu();
-                config.gazeController.currentState = GazeController.EyeInteractionState.None;
+                config.gazeController.interactionType = GazeController.EyeInteractionType.None;
             }
         }
     }
@@ -152,7 +152,7 @@ public class MainMenu : MonoBehaviour
         if (buttons[(int)ButtonFunc.Draw].IsToggled)
         {
             LockMove(true);
-            config.gazeController.currentState = GazeController.EyeInteractionState.None;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.None;
             config.gestureController.operation = GestureController.OperationType.Draw;
             config.paintingBoard.GetComponent<ObjectManipulator>().enabled = false;
             HideSubMenu();
@@ -168,7 +168,7 @@ public class MainMenu : MonoBehaviour
         if (buttons[(int)ButtonFunc.Erase].IsToggled)
         {
             LockMove(true);
-            config.gazeController.currentState = GazeController.EyeInteractionState.None;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.None;
             config.gestureController.operation = GestureController.OperationType.Erase;
             HideSubMenu();
         }

@@ -62,9 +62,9 @@ MonoBehaviour:
   _occupancy: {fileID: 0}
   _bkgThresh: 66
   _blockSize: 0
-  _seed: {fileID: 0}
-  _cube: {fileID: 0}
-  _paintingBoard: {fileID: 0}
+  seed: {fileID: 0}
+  cube: {fileID: 0}
+  paintingBoard: {fileID: 0}
   _rootPos: {x: 256, y: 257, z: 62}
   _somaRadius: 20
   _viewThresh: 0
@@ -75,9 +75,10 @@ MonoBehaviour:
   useBatch: 0
   useKeyBoard: 1
   customThresh: 30
+  runner: {fileID: 0}
   _blockers: []
   tracer: {fileID: 0}
-  handTracker: {fileID: 1951327602390588472}
+  gestureController: {fileID: 0}
   gazeController: {fileID: 1951327602390589383}
   invoker: {fileID: 0}
   originMaterial: {fileID: 2100000, guid: 16511326e1a017444a6805257b78f103, type: 2}
@@ -120,6 +121,7 @@ MonoBehaviour:
   config: {fileID: 0}
   editTimeInterval: 1
   dampTime: 0.12
+  fasterDampTime: 0.12
 --- !u!114 &1762420453882920886
 MonoBehaviour:
   m_ObjectHideFlags: 0

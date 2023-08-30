@@ -84,7 +84,7 @@ public class EyeMenu : SubMenu
     public override void Hide()
     {
         config.VRShaderType = Config.ShaderType.Base;
-        config.gazeController.currentState = GazeController.EyeInteractionState.None;
+        config.gazeController.interactionType = GazeController.EyeInteractionType.None;
         mainMenu.buttons[3].ForceSetToggled(false);
         base.Hide();
     }
