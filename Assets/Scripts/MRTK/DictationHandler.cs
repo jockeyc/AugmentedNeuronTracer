@@ -1,15 +1,18 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
 
-using Microsoft.MixedReality.Toolkit.Subsystems;
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
+
+using MixedReality.Toolkit.Subsystems;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     /// <summary>
     /// Demonstration script showing how to subscribe to and handle
-    /// events fired by DictationSubsystem.
+    /// events fired by <see cref="DictationSubsystem"/>.
     /// </summary>
     [AddComponentMenu("MRTK/Examples/Dictation Handler")]
     public class DictationHandler : MonoBehaviour
@@ -44,7 +47,8 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         [field: SerializeField]
         public StringUnityEvent OnRecognitionFaulted { get; private set; }
 
-        private DictationSubsystem dictationSubsystem;
+        private IDictationSubsystem dictationSubsystem = null;
+        private IKeywordRecognitionSubsystem keywordRecognitionSubsystem = null;
 
         /// <summary>
         /// Start dictation on a DictationSubsystem.
@@ -54,9 +58,15 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             // Make sure there isn't an ongoing recognition session
             StopRecognition();
 
-            dictationSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<DictationSubsystem>();
+            dictationSubsystem = XRSubsystemHelpers.DictationSubsystem;
             if (dictationSubsystem != null)
             {
+                keywordRecognitionSubsystem = XRSubsystemHelpers.KeywordRecognitionSubsystem;
+                if (keywordRecognitionSubsystem != null)
+                {
+                    keywordRecognitionSubsystem.Stop();
+                }
+
                 dictationSubsystem.Recognizing += DictationSubsystem_Recognizing;
                 dictationSubsystem.Recognized += DictationSubsystem_Recognized;
                 dictationSubsystem.RecognitionFinished += DictationSubsystem_RecognitionFinished;
@@ -73,11 +83,13 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         private void DictationSubsystem_RecognitionFaulted(DictationSessionEventArgs obj)
         {
             OnRecognitionFaulted.Invoke("Recognition faulted. Reason: " + obj.ReasonString);
+            HandleDictationShutdown();
         }
 
         private void DictationSubsystem_RecognitionFinished(DictationSessionEventArgs obj)
         {
             OnRecognitionFinished.Invoke("Recognition finished. Reason: " + obj.ReasonString);
+            HandleDictationShutdown();
         }
 
         private void DictationSubsystem_Recognized(DictationResultEventArgs obj)
@@ -98,12 +110,29 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             if (dictationSubsystem != null)
             {
                 dictationSubsystem.StopDictation();
+            }
+        }
+
+        /// <summary>
+        /// Stop dictation on the current DictationSubsystem.
+        /// </summary>
+        public void HandleDictationShutdown()
+        {
+            if (dictationSubsystem != null)
+            {
                 dictationSubsystem.Recognizing -= DictationSubsystem_Recognizing;
                 dictationSubsystem.Recognized -= DictationSubsystem_Recognized;
                 dictationSubsystem.RecognitionFinished -= DictationSubsystem_RecognitionFinished;
                 dictationSubsystem.RecognitionFaulted -= DictationSubsystem_RecognitionFaulted;
                 dictationSubsystem = null;
             }
+
+            if (keywordRecognitionSubsystem != null)
+            {
+                keywordRecognitionSubsystem.Start();
+                keywordRecognitionSubsystem = null;
+            }
         }
     }
 }
+#pragma warning restore CS1591

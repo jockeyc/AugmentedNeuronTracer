@@ -1,13 +1,16 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 using UnityEngine.XR.Interaction.Toolkit;
-using Microsoft.MixedReality.Toolkit.Input;
+using MixedReality.Toolkit.Input;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     /// <summary>
     /// Basic example of how to use interactors to create a simple whiteboard-like drawing system.
@@ -29,7 +32,10 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         // Used draw a full line between current frame + last frame's "paintbrush" position.
         private Dictionary<IXRInteractor, Vector2> lastPositions = new Dictionary<IXRInteractor, Vector2>();
 
-        void Start()
+        /// <summary>
+        /// A Unity event function that is called on the frame when a script is enabled just before any of the update methods are called the first time.
+        /// </summary> 
+        private void Start()
         {
             // Create new texture and bind it to renderer/material.
             texture = new Texture2D(TextureSize, TextureSize, TextureFormat.RGBA32, false);
@@ -59,6 +65,9 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             drawingColor = new Color(1.0f, 0.0f, 0.2f, 1.0f);
         }
 
+        /// <summary>
+        /// A Unity event function that is called when the script component has been destroyed.
+        /// </summary>
         protected override void OnDestroy()
         {
             Object.Destroy(texture);
@@ -137,3 +146,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         }
     }
 }
+#pragma warning restore CS1591

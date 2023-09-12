@@ -1,13 +1,8 @@
 using Fusion;
-using Microsoft.MixedReality.Toolkit;
-using System;
-using System.Collections;
+using MixedReality.Toolkit;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.Timeline;
-using UnityEngine.UIElements;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class Primitive : NetworkBehaviour
 {
@@ -102,12 +97,12 @@ public class Primitive : NetworkBehaviour
         positionB = parentTransform.TransformPoint(positionB);
 
 
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         float length = Vector3.Distance(positionA, positionB);
         GameObject myCylinder = MyCylinder(radiusA, radiusB, length);
         myCylinder.transform.position = (positionA + positionB) / 2;
         myCylinder.transform.up = (positionA - positionB).normalized;
-        myCylinder.transform.SetParent(temp, true);
+        myCylinder.transform.SetParent(reconstruction, true);
         //myCylinder.transform.SetParent(parentTransform);
 
         myCylinder.GetComponent<MeshRenderer>().material = materials[marker.type];
@@ -116,17 +111,17 @@ public class Primitive : NetworkBehaviour
     [Rpc]
     public static void RpcCreateCylinder(NetworkRunner runner, Vector3 positionA, Vector3 positionB, float radiusA, float radiusB, int type, RpcInfo info = default)
     {
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         float length = Vector3.Distance(positionA, positionB);
         GameObject myCylinder = MyCylinder(radiusA, radiusB, length);
         myCylinder.transform.position = (positionA + positionB) / 2;
         myCylinder.transform.up = (positionA - positionB).normalized;
-        myCylinder.transform.SetParent(temp, true);
-        //myCylinder.transform.SetParent(parentTransform);
+        myCylinder.transform.SetParent(reconstruction, true);
+        //myCylinder.transform.SetParent(parentTransform);  
 
         myCylinder.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Textures/{type}"); ;
     }
-    public static GameObject CreateCylinderTemp(Marker marker, Vector3Int dim, Transform parentTransform, Transform temp, int colortype, float radiusBias = 0)
+    public static GameObject CreateCylinderTemp(Marker marker, Vector3Int dim, Transform parentTransform, Transform reconstruction, int colortype, float radiusBias = 0)
     {
         if (marker.parent == null) return null;
         var positionA = marker.position.Div(dim) - 0.5f * Vector3.one;
@@ -143,7 +138,7 @@ public class Primitive : NetworkBehaviour
 
         float length = Vector3.Distance(positionA, positionB);
         GameObject myCylinder = MyCylinder(radiusA, radiusB, length);
-        myCylinder.transform.SetParent(temp, false);
+        myCylinder.transform.SetParent(reconstruction, false);
         myCylinder.transform.position = (positionA + positionB) / 2;
         myCylinder.transform.up = (positionA - positionB).normalized;
         //myCylinder.transform.SetParent(parentTransform);
@@ -167,12 +162,12 @@ public class Primitive : NetworkBehaviour
         positionB = parentTransform.TransformPoint(positionB);
 
 
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         float length = Vector3.Distance(positionA, positionB);
         GameObject myCylinder = MyCylinder(radiusA, radiusB, length);
         myCylinder.transform.position = (positionA + positionB) / 2;
         myCylinder.transform.up = (positionA - positionB).normalized;
-        myCylinder.transform.SetParent(temp, true);
+        myCylinder.transform.SetParent(reconstruction, true);
 
         //myCylinder.GetComponent<MeshRenderer>().material.color = Color.Lerp(Color.red, Color.green, colorIntensity);
         // myCylinder.GetComponent<MeshRenderer>().material.color = Color.Lerp(new Color(158, 1, 66), new Color(78, 98, 171), colorIntensity);
@@ -197,9 +192,9 @@ public class Primitive : NetworkBehaviour
         if (marker.type > 4) marker.type = 0;
         sphere.GetComponent<MeshRenderer>().material = materials[marker.type];
 
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         sphere.transform.position = parentTransform.TransformPoint(position);
-        sphere.transform.SetParent(temp, true);
+        sphere.transform.SetParent(reconstruction, true);
         sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
 
         if (marker.isLeaf)
@@ -237,10 +232,10 @@ public class Primitive : NetworkBehaviour
     [Rpc]
     public static void RpcClearTree(NetworkRunner runner)
     {
-        GameObject temp = GameObject.Find("Temp");
-        for (int i = 0; i < temp.transform.childCount; i++)
+        GameObject reconstruction = GameObject.Find("Reconstruction");
+        for (int i = 0; i < reconstruction.transform.childCount; i++)
         {
-            GameObject.Destroy(temp.transform.GetChild(i).gameObject);
+            GameObject.Destroy(reconstruction.transform.GetChild(i).gameObject);
         }
     }
 
@@ -252,9 +247,9 @@ public class Primitive : NetworkBehaviour
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Textures/{type}"); ;
 
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         sphere.transform.position = position;
-        sphere.transform.SetParent(temp, true);
+        sphere.transform.SetParent(reconstruction, true);
         sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
     }
 
@@ -263,23 +258,23 @@ public class Primitive : NetworkBehaviour
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.GetComponent<MeshRenderer>().material = Resources.Load<Material>($"Textures/{type}"); ;
 
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         sphere.transform.position = position;
-        sphere.transform.SetParent(temp, true);
         sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
+        sphere.transform.SetParent(reconstruction, true);
         return sphere;
     }
-    public static GameObject CreateSphereTemp(Marker marker, Vector3Int dim, Transform parentTransform, Transform temp, int colorType)
+    public static GameObject CreateSphereTemp(Marker marker, Vector3Int dim, Transform parentTransform, Transform reconstruction, int colorType)
     {
         var position = marker.position.Div(dim) - 0.5f * Vector3.one;
-        var radius = marker.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z));
+        var radius = marker.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z)) ;
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         if (marker.type > 4) marker.type = 0;
         sphere.GetComponent<MeshRenderer>().material = materials[colorType];
 
-        //Transform temp = GameObject.Find("Temp").transform;
+        //Transform reconstruction = GameObject.Find("Reconstruction").transform;
         sphere.transform.position = parentTransform.TransformPoint(position);
-        sphere.transform.SetParent(temp, true);
+        sphere.transform.SetParent(reconstruction, true);
         sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
 
         if (marker.isLeaf)
@@ -325,9 +320,9 @@ public class Primitive : NetworkBehaviour
         sphere.GetComponent<MeshRenderer>().material.color = GetColor(colorIntensity);
         //sphere.GetComponent<MeshRenderer>().material = materials[marker.type];
 
-        Transform temp = GameObject.Find("Temp").transform;
+        Transform reconstruction = GameObject.Find("Reconstruction").transform;
         sphere.transform.position = parentTransform.TransformPoint(position);
-        sphere.transform.SetParent(temp, true);
+        sphere.transform.SetParent(reconstruction, true);
         sphere.transform.localScale = new Vector3(1, 1, 1) * radius;
 
         var info = sphere.AddComponent<NodeInformation>();
@@ -360,36 +355,32 @@ public class Primitive : NetworkBehaviour
         {
             Vector3 positionA = marker.position.Div(dim) - 0.5f * Vector3.one;
             positionA = parentTransform.TransformPoint(positionA);
-            float radiusA = marker.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z)) * parentTransform.parent.localScale.x;
+            float radiusA = marker.radius * Vector3.one.Divide(dim).MinComponent() * parentTransform.parent.transform.localScale.x;
 
             RpcCreateSphere(runner, positionA, radiusA, marker.type);
             var sphere = CreateSphere(positionA, radiusA, marker.type);
-            if (marker.isLeaf)
-            {
-                var si = sphere.AddComponent<StatefulInteractable>();
-                si.ToggleMode = StatefulInteractable.ToggleType.Toggle;
-                var pipeCasing = sphere.AddComponent<PipeCasing>();
-                pipeCasing.Initial(marker, dim, parentTransform);
-                si.IsToggled.OnEntered.AddListener((args) =>
-                {
-                    GameObject menu = GameObject.Find("IsolateMenu(Clone)") ?? GameObject.Instantiate(Resources.Load("Prefabs/IsolateMenu")) as GameObject;
-                    menu.SetActive(true);
-                    menu.GetComponent<IsolateMenu>().pipeCasing = pipeCasing;
-                    pipeCasing.ClearPipes();
-                });
-            }
+            //if (marker.isLeaf)
+            //{
+            //    var si = sphere.AddComponent<StatefulInteractable>();
+            //    si.ToggleMode = StatefulInteractable.ToggleType.Toggle;
+            //    var pipeCasing = sphere.AddComponent<PipeCasing>();
+            //    pipeCasing.Initial(marker, dim, parentTransform);
+            //    si.IsToggled.OnEntered.AddListener((args) =>
+            //    {
+            //        GameObject menu = GameObject.Find("IsolateMenu(Clone)") ?? GameObject.Instantiate(Resources.Load("Prefabs/IsolateMenu")) as GameObject;
+            //        menu.SetActive(true);
+            //        menu.GetComponent<IsolateMenu>().pipeCasing = pipeCasing;
+            //        pipeCasing.ClearPipes();
+            //    });
+            //}
 
             if (marker.parent != null)
             {
                 var positionB = marker.parent.position.Div(dim) - 0.5f * Vector3.one;
-                float radiusB = marker.parent.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z)) * parentTransform.parent.localScale.x;
+                float radiusB = marker.parent.radius * Vector3.one.Divide(dim).MinComponent() * parentTransform.parent.transform.localScale.x;
                 positionB = parentTransform.TransformPoint(positionB);
 
                 RpcCreateCylinder(runner, positionA, positionB, radiusA, radiusB, marker.type);
-            }
-            else
-            {
-                //sphere.name = "Soma";
             }
         }
 
@@ -416,7 +407,7 @@ public class Primitive : NetworkBehaviour
             }
         }
     }
-    public static void CreateTreeTemp(List<Marker> tree, Transform parentTransform, Transform temp, int colorType, Vector3Int dim)
+    public static void CreateTreeTemp(List<Marker> tree, Transform parentTransform, Transform reconstruction, int colorType, Vector3Int dim)
     {
         materials[0] = Resources.Load<Material>("Textures/0");
         materials[1] = Resources.Load<Material>("Textures/1");
@@ -432,12 +423,12 @@ public class Primitive : NetworkBehaviour
         //float Scale = 1 / 512.0f;
         foreach (var marker in tree)
         {
-            GameObject sphere = Primitive.CreateSphereTemp(marker, dim, parentTransform, temp, colorType);
+            GameObject sphere = Primitive.CreateSphereTemp(marker, dim, parentTransform, reconstruction, colorType);
 
             if (marker.parent != null)
             {
                 var parent = marker.parent;
-                GameObject cylinder = Primitive.CreateCylinderTemp(marker, dim, parentTransform, temp, colorType);
+                GameObject cylinder = Primitive.CreateCylinderTemp(marker, dim, parentTransform, reconstruction, colorType);
                 //Chosen c = cylinder.AddComponent<Chosen>();
                 //c.nodeA = parent;
                 //c.nodeB = node;

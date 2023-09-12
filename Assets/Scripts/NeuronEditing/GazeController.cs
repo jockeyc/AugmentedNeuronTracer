@@ -1,17 +1,22 @@
+using ANT;
 using CommandStructure;
+using Cysharp.Threading.Tasks.Triggers;
+using Fusion;
 using MathNet.Numerics;
-using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.Input;
-using Microsoft.MixedReality.Toolkit.Subsystems;
+using MixedReality.Toolkit;
+using MixedReality.Toolkit.Input;
+using MixedReality.Toolkit.SpatialManipulation;
+using MixedReality.Toolkit.Subsystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class GazeController : MonoBehaviour
+public class GazeController : Singleton<GazeController>
 {
-    public enum EyeInteractionType { None, Repair, EditThresh }
+    public enum EyeInteractionType { None, Repair, EditThresh, LabelConfirm, LabelRefine }
     public enum GazeState { Saccade, Fixation}
 
     struct ScanPoint
@@ -27,42 +32,43 @@ public class GazeController : MonoBehaviour
             position = _position;
         }
     }
-
-    FuzzyGazeInteractor interactor;
-    GameObject eyePointer = null;
-
     public EyeInteractionType interactionType = EyeInteractionType.None;
     public GazeState gazeState = GazeState.Saccade;
 
-    public Material mMaterial;
+    public float editTimeInterval = 2.0f;
+    public float dampTime = 0.05f;
+    public float adjustSpeed = 0.5f;
 
-    public GameObject cube;
+    private FuzzyGazeInteractor interactor;
+    private GameObject eyePointer = null;
 
-    List<float> hitPoints = new();
+    private List<float> hitPoints = new();
 
-    float preTime;
-    float preComputeTime;
-    float preHitTime;
+    private float preTime;
 
-    int[] scanPathLengthCount = new int[100];
-    Vector3 scanSum = Vector3.zero;
+    private int[] scanPathLengthCount = new int[100];
+    private Vector3 scanSum = Vector3.zero;
 
-    Vector3 preLocalHitPos = Vector3.zero;
+    private Vector3 preLocalHitPos = Vector3.zero;
+    private Vector3 prePinchPos = Vector3.zero;
+    private Vector3 direction = Vector3.zero;
 
     private Queue<ScanPoint> scanPoints = new();
 
-    public Config config;
+    private Config config;
+    private GameObject cube;
 
-    float traceTime = 0;
+    private float traceTime = 0;
+    
+    private RenderTexture eyeHeatMap;
 
-    public float editTimeInterval = 2.0f;
-    public float dampTime = 0.05f;
-    RenderTexture eyeHeatMap;
+    private Vector3 velocity;
 
-    Vector3 velocity;
+    private Material eyePointerMaterial;
+    private HandsAggregatorSubsystem aggregator;
+    private bool preIsPinching = false;
 
-    HandsAggregatorSubsystem aggregator;
-    bool preIsPinching = false;
+    private int times = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -71,7 +77,7 @@ public class GazeController : MonoBehaviour
         config = GetComponent<Config>();
         cube = config.cube;
 
-        Vector3Int dim = config._scaledDim;
+        Vector3Int dim = config.scaledDim;
         eyeHeatMap = new(dim.x, dim.y, 0, RenderTextureFormat.R8)
         {
             //graphicsFormat = GraphicsFormat.R8_UInt,
@@ -84,110 +90,44 @@ public class GazeController : MonoBehaviour
 
         eyePointer = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         eyePointer.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        eyePointer.GetComponent<SphereCollider>().enabled = false;
         eyePointer.SetActive(false);
+        eyePointerMaterial = eyePointer.GetComponent<MeshRenderer>().material;
 
         aggregator = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
     }
 
-    public void Initialize()
-    {
-          
-    }
 
-    int times = 0;
     // Update is called once per frame
     void Update()
     {
         cube = config.cube;
         var result = interactor.PreciseHitResult;
-        //if (result.IsRaycast) Debug.Log("Is Casting");
+
         traceTime += Time.deltaTime;
-        if (result.IsRaycast)
+        if (result.IsRaycast && result.raycastHit.collider.CompareTag("Board"))
         {
-            var localGazeOrigin = cube.transform.InverseTransformPoint(Camera.main.transform.position);
-            var localHitPos = cube.transform.InverseTransformPoint(result.raycastHit.point);
-            if (preLocalHitPos == Vector3.zero) preLocalHitPos = localHitPos;
- 
-            switch (interactionType)
+            var gazeOrigin = interactor.rayOriginTransform.position;
+            var hitPos = result.raycastHit.point;
+
+            bool jointIsValid = aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.RightHand, out HandJointPose jointPose);
+            bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
+            bool isReadyForInteraction = jointIsValid && handIsValid && isPinching && pinchAmount >= 0.99f && interactionType != EyeInteractionType.None && !BoardManager.Instance.IsNearInteracting();
+
+            //gesture
+            if (isReadyForInteraction)
             {
-                case EyeInteractionType.None:
-                    {
-                        eyePointer.SetActive(false);
-                        break;
-                    }
-                case EyeInteractionType.Repair:
-                     {
-                        eyePointer.SetActive(true);
-                        var timeStamp = Time.realtimeSinceStartup;
-                        int curIndex = GetIntersection(localHitPos, localGazeOrigin);
-                        if (curIndex != -1)
-                        {
-                            eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, IndexToPos(curIndex), ref velocity, dampTime);
-                        }
-                        else
-                        {
-                            eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, result.raycastHit.point, ref velocity, dampTime);
-                        }
+                HandlePinching(gazeOrigin, jointPose.Position);
 
-                        if ((timeStamp - preTime) > 1.0f / 60)
-                        {
-#if EYE_HEAT_MAP
-                            for eye heat map
-                            if (curIndex != -1)
-                            {
-                                int i = curIndex % config._scaledDim.x;
-                                int j = (curIndex / config._scaledDim.x) % config._scaledDim.y;
-                                int k = (curIndex / (config._scaledDim.x * config._scaledDim.y) % config._scaledDim.z);
-                                addHitPoint(new Vector3(i, j, k));
-                            }
-#endif
-                            AddScanPoint(localHitPos,timeStamp);
-                            RemoveExpiredScanPoint(timeStamp);
-                            preTime = timeStamp;
-                            preLocalHitPos = localHitPos;
-                            
-                            double gamma = FitDistribution();
-                            if (gamma > 0.85)
-                            {
-                                gazeState = GazeState.Fixation;
-                                Vector3 scanCenter = scanSum / scanPoints.Count;
-                                setSeed(scanCenter, localGazeOrigin);
-                            }
-                            else
-                            {
-                                gazeState = GazeState.Saccade;
-                                eyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
-                            }
-                        }
-                        break;
-                    }
-                case EyeInteractionType.EditThresh:
-                    {
-                        eyePointer.SetActive(true);
-                        eyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
-                        eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, result.raycastHit.point, ref velocity, dampTime);
-
-                        var direction = (localHitPos - localGazeOrigin).normalized;
-                        var hitPos = (localHitPos + 0.5f * Vector3.one).Mul(config._scaledDim/config.thresholdBlockSize);
-                        //config.tracer.AdjustThreshold(hitPos,direction);
-                        if(traceTime > editTimeInterval)
-                        {
-                            //config.tracer.TraceTrunk(1);
-                            config.tracer.dontCoroutine(1);
-                            traceTime = 0;
-                        }
-                        if(times++>=2)
-                        {
-                            times = 0;
-                            //config.invoker.Execute(new ThreshCommand(config.tracer,hitPos,direction));
-                            config.tracer.AdjustThreshold(hitPos, direction);
-                        }
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
+            }
+            else if (preIsPinching)
+            {
+                HandleEndOfPinching();
+            }
+            //gaze 
+            else 
+            {
+                HandleGazeInteraction(gazeOrigin,hitPos);
             }
         }
         else
@@ -195,124 +135,240 @@ public class GazeController : MonoBehaviour
             eyePointer.SetActive(false);
         }
 
-        
-        bool jointIsValid = aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.RightHand, out HandJointPose jointPose);
-        bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
-        Debug.Log($"isReadyToPinch:{isReadyToPinch}, isPinching:{isPinching}, pinchAmount:{pinchAmount}"); 
-        if (jointIsValid && handIsValid && isPinching && pinchAmount >= 0.95 && interactionType == EyeInteractionType.Repair)
+    }
+
+    private void HandleGazeInteraction(Vector3 gazeOrigin,Vector3 hitPos)
+    {
+        var localGazeOrigin = cube.transform.InverseTransformPoint(gazeOrigin);
+        var localHitPos = cube.transform.InverseTransformPoint(hitPos);
+        preLocalHitPos = preLocalHitPos == Vector3.zero ? localHitPos : preLocalHitPos;
+
+        direction = hitPos - gazeOrigin;
+        switch (interactionType)
         {
-            preIsPinching = true;
-        }
-        else  if(preIsPinching == true)
-        {
-            config.invoker.Execute(new AdjustCommand(config.tracer, config._curIndex));
-            preIsPinching = false;
+            case EyeInteractionType.None:
+                {
+                    eyePointer.SetActive(false);
+                    break;
+                }
+            case EyeInteractionType.Repair:
+                {
+                    eyePointer.SetActive(true);
+                    var timeStamp = Time.realtimeSinceStartup;
+                    int curIndex = GetIntersection(Config.Instance.ScaledVolume, localHitPos, localGazeOrigin);
+                    if (curIndex != -1)
+                    {
+                        eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, IndexToPos(curIndex), ref velocity, dampTime);
+                    }
+                    else
+                    {
+                        eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, hitPos, ref velocity, dampTime);
+                    }
+
+                    if ((timeStamp - preTime) > 1.0f / 60)
+                    {
+#if EYE_HEAT_MAP
+                                for eye heat map
+                                if (curIndex != -1)
+                                {
+                                    int i = curIndex % config._scaledDim.x;
+                                    int j = (curIndex / config._scaledDim.x) % config._scaledDim.y;
+                                    int k = (curIndex / (config._scaledDim.x * config._scaledDim.y) % config._scaledDim.z);
+                                    addHitPoint(new Vector3(i, j, k));
+                                }
+#endif
+                        AddScanPoint(localHitPos, timeStamp);
+                        RemoveExpiredScanPoint(timeStamp);
+                        preTime = timeStamp;
+                        preLocalHitPos = localHitPos;
+
+                        double gamma = FitDistribution();
+                        if (gamma > 0.85)
+                        {
+                            gazeState = GazeState.Fixation;
+                            Vector3 scanCenter = scanSum / scanPoints.Count;
+                            SetSeed(scanCenter, localGazeOrigin);
+                        }
+                        else
+                        {
+                            gazeState = GazeState.Saccade;
+                            eyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
+                        }
+                    }
+                    break;
+                }
+            case EyeInteractionType.EditThresh:
+                {
+                    eyePointer.SetActive(true);
+                    eyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
+                    eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, hitPos, ref velocity, dampTime);
+
+                    var localDirection = (localHitPos - localGazeOrigin).normalized;
+                    var hitCoordinate = (localHitPos + 0.5f * Vector3.one).Mul(config.scaledDim / config.thresholdBlockSize);
+                    //config.tracer.AdjustThreshold(hitPos,direction);
+                    if (traceTime > editTimeInterval)
+                    {
+                        //config.tracer.TraceTrunk(1);
+                        config.tracer.dontCoroutine(1);
+                        traceTime = 0;
+                    }
+                    if (times++ >= 2)
+                    {
+                        times = 0;
+                        //config.invoker.Execute(new ThreshCommand(config.tracer,hitPos,direction));
+                        config.tracer.AdjustThreshold(hitCoordinate, localDirection);
+                    }
+                    break;
+                }
+            case EyeInteractionType.LabelConfirm:
+            case EyeInteractionType.LabelRefine:
+                {
+                    eyePointer.SetActive(true);
+                    var timeStamp = Time.realtimeSinceStartup;
+                    int curIndex = GetIntersection(Config.Instance.ScaledVolume, localHitPos, localGazeOrigin);
+                    if (curIndex != -1)
+                    {
+                        eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, IndexToPos(curIndex), ref velocity, dampTime);
+                    }
+                    else
+                    {
+                        eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, hitPos, ref velocity, dampTime);
+                    }
+
+                    if ((timeStamp - preTime) > 1.0f / 60)
+                    {
+                        AddScanPoint(localHitPos, timeStamp);
+                        RemoveExpiredScanPoint(timeStamp);
+                        preTime = timeStamp;
+                        preLocalHitPos = localHitPos;
+
+                        double gamma = FitDistribution();
+                        if (gamma > 0.85)
+                        {
+                            gazeState = GazeState.Fixation;
+                            Vector3 scanCenter = scanSum / scanPoints.Count;
+                            SetLabel(scanCenter, localGazeOrigin);
+                        }
+                        else
+                        {
+                            gazeState = GazeState.Saccade;
+                            eyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
+                        }
+                    }
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
         }
     }
 
-    private void setSeed(Vector3 scanCenter, Vector3 gazeOrigin)
+    private void HandleEndOfPinching()
     {
-        var volume = config.Volume;
-        int bkgThresh = config.ViewThresh;
-        int sz0 = volume.width, sz1 = volume.height, sz2 = volume.depth;
-        Vector3 direction = (scanCenter - gazeOrigin).normalized;
-        byte[] volumeData = config.VolumeData;
-        float min_x = -0.5f, min_y = -0.5f, min_z = -0.5f;
-        float max_x = 0.5f, max_y = 0.5f, max_z = 0.5f;
-        float tmin_x = (min_x - scanCenter.x) / direction.x;
-        float tmin_y = (min_y - scanCenter.y) / direction.y;
-        float tmin_z = (min_z - scanCenter.z) / direction.z;
-        float tmax_x = (max_x - scanCenter.x) / direction.x;
-        float tmax_y = (max_y - scanCenter.y) / direction.y;
-        float tmax_z = (max_z - scanCenter.z) / direction.z;
-        if (tmax_x < tmin_x) (tmax_x, tmin_x) = (tmin_x, tmax_x);
-        if (tmax_y < tmin_y) (tmax_y, tmin_y) = (tmin_y, tmax_y);
-        if (tmax_z < tmin_z) (tmax_z, tmin_z) = (tmin_z, tmax_z);
-        float tmin = Mathf.Max(tmin_x, Mathf.Max(tmin_y, tmin_z));
-        float tmax = Mathf.Min(tmax_x, Mathf.Min(tmax_y, tmax_z));
-        float max_length = tmax - tmin;
-        float dt = 0.001f;
-        Vector3 p = scanCenter + new Vector3(.5f, .5f, .5f);
-        float distance = 0;
-        uint max_index = 0;
-        byte max_intensity = 0;
-        for (int t = 0; t < 100000; t++)
+        switch (interactionType)
         {
-            int x = (int)(p.x * sz0);
-            int y = (int)(p.y * sz1);
-            int z = (int)(p.z * sz2);
-            int offset = 1;
-            for (int offsetX = -offset; offsetX <= offset; offsetX++)
+            case EyeInteractionType.Repair:
+                config.invoker.Execute(new AdjustCommand(config.tracer, config.curIndex));
+                break;
+            case EyeInteractionType.LabelConfirm:
+            case EyeInteractionType.LabelRefine:
+                BoardManager.Instance.CreatePoint(Config.Instance.curIndex, Config.Instance.scaledDim, Color.green);
+                break;
+        }
+        preIsPinching = false;
+    }
+
+    private void HandlePinching(Vector3 gazeOrigin, Vector3 curPinchPos)
+    {
+        eyePointer.GetComponent<MeshRenderer>().material.color = Color.blue;
+        if (preIsPinching)
+        {
+            switch (interactionType)
             {
-                for (int offsetY = -offset; offsetY <= offset; offsetY++)
-                {
-                    for (int offsetZ = -offset; offsetZ <= offset; offsetZ++)
+                case EyeInteractionType.LabelRefine:
+                    Vector3 originPos = interactor.rayOriginTransform.position;
+                    Quaternion rotationChange = Quaternion.FromToRotation((prePinchPos - gazeOrigin).normalized, (curPinchPos - gazeOrigin).normalized);
+                    Quaternion interpolatedRotation = Quaternion.Slerp(Quaternion.identity, rotationChange, adjustSpeed);
+                    direction = interpolatedRotation * direction;
+
+                    if (Physics.Raycast(gazeOrigin, direction, out RaycastHit hitInfo))
                     {
-                        int w = x + offsetX;
-                        int h = y + offsetY;
-                        int d = z + offsetZ;
-                        if (w >= 0 && w < sz0 && h >= 0 && h < sz1 && d >= 0 && d < sz2)
+                        if (!SetLabel(cube.transform.InverseTransformPoint(hitInfo.point), cube.transform.InverseTransformPoint(originPos)))
                         {
-                            uint index = (uint)(w + (h * sz0) + (d * sz0 * sz1));
-                            byte intesity = volumeData[index];
-                            if (intesity > max_intensity)
-                            {
-                                max_intensity = intesity;
-                                max_index = index;
-                            }
+                            eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, hitInfo.point, ref velocity, dampTime);
                         }
                     }
-                }
+                    break;
             }
-
-            p += direction * dt;
-            distance += dt;
-            if (distance > max_length) break;
         }
+        preIsPinching = true;
+        prePinchPos = curPinchPos;
+    }
+
+    private void SetSeed(Vector3 scanCenter, Vector3 gazeOrigin)
+    {
+        int max_index = GetIntersection(Config.Instance.ScaledVolume, scanCenter, gazeOrigin);
         //Debug.Log("max_intesity" + max_intensity);
+        var position = Utils.IndexToPosition((uint)max_index, Config.Instance.scaledDim);
 
-
-        int i = (int)(max_index % sz0);
-        int j = (int)((max_index / sz0) % sz1);
-        int k = (int)((max_index / (sz0 * sz1) % sz2));
-        Vector3 pos = new Vector3();
-        pos.x = i / (float)sz0;
-        pos.y = j / (float)sz1;
-        pos.z = k / (float)sz2;
-
-        if (max_intensity >= bkgThresh)
+        if (max_index>=0)
         {
-            if (!config.tracer.Contained(max_index))
-            {
-                //config.invoker.Execute(new AdjustCommand(config.tracer, max_index));
-            }
             //SetPointer((int)max_index, false);
-            config._curIndex = max_index;
-            pos -= new Vector3(.5f, .5f, .5f);
-            pos = cube.transform.TransformPoint(pos);
+            config.curIndex = (uint)max_index;
+            position -= new Vector3(.5f, .5f, .5f);
+            position = cube.transform.TransformPoint(position);
 
-            if (config.tracer.Contained(max_index))
+            if (config.tracer.Contained((uint)max_index))
             {
-                eyePointer.GetComponent<MeshRenderer>().material.color = Color.blue;
+                eyePointerMaterial.color = Color.blue;
             }
             else
             {
-                eyePointer.GetComponent<MeshRenderer>().material.color = Color.red;
+                eyePointerMaterial.color = Color.red;
             }
 
-            eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, pos, ref velocity, dampTime);
+            eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, position, ref velocity, dampTime);
+
+            if (!config.tracer.Contained((uint)max_index))
+            {
+                //config.invoker.Execute(new AdjustCommand(config.tracer, max_index));
+            }
+        }
+        else
+        {
+            eyePointerMaterial.color = Color.white;
+        }
+    }
+
+    private bool SetLabel(Vector3 scanCenter, Vector3 gazeOrigin)
+    {
+        int maxIndex = GetIntersection(Config.Instance.ScaledVolume, scanCenter, gazeOrigin);
+        //Debug.Log("max_intesity" + max_intensity);
+        var position = Utils.IndexToPosition((uint)maxIndex, Config.Instance.scaledDim);
+
+        if (maxIndex >= 0)
+        {
+            config.curIndex = (uint)maxIndex;
+            position -= 0.5f * Vector3.one;
+            position = cube.transform.TransformPoint(position);
+            eyePointerMaterial.color = Color.red;
+            eyePointer.transform.position = Vector3.SmoothDamp(eyePointer.transform.position, position, ref velocity, dampTime);
+            return true;
         }
         else
         {
             eyePointer.GetComponent<MeshRenderer>().material.color = Color.white;
+            return false;
         }
     }
 
+
     private float Radius(uint index, byte[] volumeData)
     {
-        int sz0 = config._scaledDim.x;
-        int sz1 = config._scaledDim.y;
-        int sz2 = config._scaledDim.z;
+        int sz0 = config.scaledDim.x;
+        int sz1 = config.scaledDim.y;
+        int sz2 = config.scaledDim.z;
 
         int x = (int)(index % sz0);
         int y = (int)((index / sz0) % sz1);
@@ -358,33 +414,26 @@ public class GazeController : MonoBehaviour
         return ir;
     }
 
-    /// <summary>
-    /// return the intersection with eye sight and image foreground
+    /// Return the intersection with eye sight and image foreground
     /// </summary>
-    /// <param name="targetPos">the intersection with eye sight and the boundary of volume</param>
-    /// <param name="gazeOrigin">the postion of eye(camera)</param>
+    /// <param name="texture">The 3D texture to sample from</param>
+    /// <param name="targetPos">The intersection with eye sight and the boundary of volume</param>
+    /// <param name="gazeOrigin">The position of eye (camera)</param>
     /// <returns></returns>
-    private int GetIntersection(Vector3 targetPos, Vector3 gazeOrigin)
+    private int GetIntersection(Texture3D texture,Vector3 targetPos, Vector3 gazeOrigin)
     {
-        var volume = config.Volume;
         int bkgThresh = config.ViewThresh;
-        int sz0 = volume.width, sz1 = volume.height, sz2 = volume.depth;
+        int sz0 = texture.width, sz1 = texture.height, sz2 = texture.depth;
         Vector3 direction = (targetPos - gazeOrigin).normalized;
         byte[] volumeData = config.VolumeData;
-        float min_x = -0.5f, min_y = -0.5f, min_z = -0.5f;
-        float max_x = 0.5f, max_y = 0.5f, max_z = 0.5f;
-        float tmin_x = (min_x - targetPos.x) / direction.x;
-        float tmin_y = (min_y - targetPos.y) / direction.y;
-        float tmin_z = (min_z - targetPos.z) / direction.z;
-        float tmax_x = (max_x - targetPos.x) / direction.x;
-        float tmax_y = (max_y - targetPos.y) / direction.y;
-        float tmax_z = (max_z - targetPos.z) / direction.z;
-        if (tmax_x < tmin_x) (tmax_x, tmin_x) = (tmin_x, tmax_x);
-        if (tmax_y < tmin_y) (tmax_y, tmin_y) = (tmin_y, tmax_y);
-        if (tmax_z < tmin_z) (tmax_z, tmin_z) = (tmin_z, tmax_z);
-        float tmin = Mathf.Max(tmin_x, Mathf.Max(tmin_y, tmin_z));
-        float tmax = Mathf.Min(tmax_x, Mathf.Min(tmax_y, tmax_z));
-        float max_length = tmax - tmin;
+        Vector3 minBounds = -0.5f * Vector3.one;
+        Vector3 maxBounds = 0.5f * Vector3.one;
+
+        Vector3 tmin = (minBounds - targetPos).Divide(direction);  // Element-wise division
+        Vector3 tmax = (maxBounds - targetPos).Divide(direction);
+        (tmin, tmax) = (Vector3.Min(tmin, tmax), Vector3.Max(tmin, tmax));
+        float max_length = tmax.MaxComponent() - tmin.MinComponent();
+
         float dt = 0.001f;
         Vector3 p = targetPos + new Vector3(.5f, .5f, .5f);
         float distance = 0;
@@ -423,18 +472,6 @@ public class GazeController : MonoBehaviour
             distance += dt;
             if (distance > max_length) break;
         }
-        //Debug.Log("max_intesity" + max_intensity);
-
-
-        int i = (int)(max_index % sz0);
-        int j = (int)((max_index / sz0) % sz1);
-        int k = (int)((max_index / (sz0 * sz1) % sz2));
-        Vector3 pos = new Vector3();
-        pos.x = i / (float)sz0;
-        pos.y = j / (float)sz1;
-        pos.z = k / (float)sz2;
-        pos = pos - new Vector3(.5f, .5f, .5f);
-        pos = cube.transform.TransformPoint(pos);
 
         if (max_intensity >= bkgThresh)
         {
@@ -488,7 +525,7 @@ public class GazeController : MonoBehaviour
         hitPoints.Add(pos.z);
         //Debug.Log("add hit:" + pos.ToString("f4"));
 
-        Vector3Int dim = config._scaledDim;
+        Vector3Int dim = config.scaledDim;
         ComputeShader computeShader = Resources.Load("ComputeShaders/ErrorHeatMap") as ComputeShader;
         int kernel = computeShader.FindKernel("CSMain");
 
@@ -517,14 +554,14 @@ public class GazeController : MonoBehaviour
 
     Vector3 IndexToPos(int index)
     {
-        int i = index % config._scaledDim.x;
-        int j = (index / config._scaledDim.x) % config._scaledDim.y;
-        int k = (index / (config._scaledDim.x * config._scaledDim.y) % config._scaledDim.z);
+        int i = index % config.scaledDim.x;
+        int j = (index / config.scaledDim.x) % config.scaledDim.y;
+        int k = (index / (config.scaledDim.x * config.scaledDim.y) % config.scaledDim.z);
         Vector3 pos = new()
         {
-            x = i / (float)config._scaledDim.x,
-            y = j / (float)config._scaledDim.y,
-            z = k / (float)config._scaledDim.z
+            x = i / (float)config.scaledDim.x,
+            y = j / (float)config.scaledDim.y,
+            z = k / (float)config.scaledDim.z
         };
         pos -= new Vector3(.5f, .5f, .5f);
         pos = cube.transform.TransformPoint(pos);

@@ -963,9 +963,13 @@ namespace Fusion.CodeGen {
               var done = Nop();
               il.Append(Ldc_I4((int)RpcTargetStatus.Unreachable));
               il.Append(Bne_Un_S(done));
-              il.Append(Ldarg(rpcTargetParameter));
-              il.Append(Ldstr(rpc.ToString()));
-              il.Append(Call(asm.NetworkBehaviourUtils.GetMethod(nameof(NetworkBehaviourUtils.NotifyRpcTargetUnreachable))));
+
+              if (!returnsRpcInvokeInfo) {
+                il.Append(Ldarg(rpcTargetParameter));
+                il.Append(Ldstr(rpc.ToString()));
+                il.Append(Call(asm.NetworkBehaviourUtils.GetMethod(nameof(NetworkBehaviourUtils.NotifyRpcTargetUnreachable))));
+              }
+
               il.Append(Pop()); // pop the GetRpcTargetStatus
 
               il.AppendMacro(ctx.SetRpcInvokeInfoStatus(invokeLocal, RpcLocalInvokeResult.TagetPlayerIsNotLocal));
@@ -988,8 +992,8 @@ namespace Fusion.CodeGen {
                 // will never get called
                 var checkDone = Nop();
                 il.Append(Bne_Un_S(checkDone));
-
-                if (NetworkRunner.BuildType == NetworkRunner.BuildTypes.Debug) {
+                
+                if (!returnsRpcInvokeInfo && NetworkRunner.BuildType == NetworkRunner.BuildTypes.Debug) {
                   il.Append(Ldarg(rpcTargetParameter));
                   il.Append(Ldstr(rpc.ToString()));
                   il.Append(Call(asm.NetworkBehaviourUtils.GetMethod(nameof(NetworkBehaviourUtils.NotifyLocalTargetedRpcCulled))));
@@ -1012,12 +1016,14 @@ namespace Fusion.CodeGen {
             il.Append(And());
             il.Append(Brtrue_S(checkDone));
 
-            // source is not valid, notify
-            il.Append(Ldstr(rpc.ToString()));
-            il.Append(Ldarg_0());
-            il.Append(Ldfld(asm.NetworkedBehaviour.GetField(nameof(NetworkBehaviour.Object))));
-            il.Append(Ldc_I4(sources));
-            il.Append(Call(asm.NetworkBehaviourUtils.GetMethod(nameof(NetworkBehaviourUtils.NotifyLocalSimulationNotAllowedToSendRpc))));
+            if (!returnsRpcInvokeInfo) {
+              // source is not valid, notify
+              il.Append(Ldstr(rpc.ToString()));
+              il.Append(Ldarg_0());
+              il.Append(Ldfld(asm.NetworkedBehaviour.GetField(nameof(NetworkBehaviour.Object))));
+              il.Append(Ldc_I4(sources));
+              il.Append(Call(asm.NetworkBehaviourUtils.GetMethod(nameof(NetworkBehaviourUtils.NotifyLocalSimulationNotAllowedToSendRpc))));
+            }
 
             il.AppendMacro(ctx.SetRpcInvokeInfoStatus(invokeLocal, RpcLocalInvokeResult.InsufficientSourceAuthority));
             il.AppendMacro(ctx.SetRpcInvokeInfoStatus(RpcSendCullResult.InsufficientSourceAuthority));
@@ -3062,7 +3068,7 @@ namespace Fusion.CodeGen {
 
   internal class ILWeaverAssemblyResolver : IAssemblyResolver {
     private List<string> _lookInDirectories;
-    private Dictionary<string, string> _assemblyNameToPath;
+    private Dictionary<string, List<string>> _assemblyNameToPath;
     private Dictionary<string, AssemblyDefinition> _resolvedAssemblies = new Dictionary<string, AssemblyDefinition>();
     private string _compiledAssemblyName;
     private ILWeaverLog _log;
@@ -3072,16 +3078,16 @@ namespace Fusion.CodeGen {
     public ILWeaverAssemblyResolver(ILWeaverLog log, string compiledAssemblyName, string[] references, string[] weavedAssemblies) {
       _log                  = log;
       _compiledAssemblyName = compiledAssemblyName;
-      _assemblyNameToPath   = new Dictionary<string, string>();
+      _assemblyNameToPath   = new Dictionary<string, List<string>>();
 
       foreach (var referencePath in references) {
         var assemblyName = Path.GetFileNameWithoutExtension(referencePath);
-        if (_assemblyNameToPath.TryGetValue(assemblyName, out var existingPath)) {
-          _log.Warn($"Assembly {assemblyName} (full path: {referencePath}) already referenced by {compiledAssemblyName} at {existingPath}");
-        } else {
-          _log.Debug($"Adding {assemblyName}->{referencePath}");
-          _assemblyNameToPath.Add(assemblyName, referencePath);
+        if (!_assemblyNameToPath.TryGetValue(assemblyName, out var existingPaths)) {
+          existingPaths = new List<string>();
+          _assemblyNameToPath.Add(assemblyName, existingPaths);
         }
+        _log.Debug($"Adding {assemblyName}->{referencePath}");
+        existingPaths.Add(referencePath);
       }
 
       _lookInDirectories = references.Select(x => Path.GetDirectoryName(x)).Distinct().ToList();
@@ -3123,15 +3129,20 @@ namespace Fusion.CodeGen {
     }
 
     private string GetAssemblyPath(AssemblyNameReference name) {
-      if (_assemblyNameToPath.TryGetValue(name.Name, out var path)) {
-        return path;
+      if (_assemblyNameToPath.TryGetValue(name.Name, out var paths)) {
+        _log.Assert(paths.Count > 0);
+        if (paths.Count > 1) {
+          _log.Warn($"Assembly {name.FullName} seems to be referenced multiple times: {string.Join(", ", paths)}. Using the first one.");
+          paths.RemoveRange(1, paths.Count - 1);
+        }
+        return paths[0];
       }
 
       // fallback for second-order references
       foreach (var parentDir in _lookInDirectories) {
         var fullPath = Path.Combine(parentDir, name.Name + ".dll");
         if (File.Exists(fullPath)) {
-          _assemblyNameToPath.Add(name.Name, fullPath);
+          _assemblyNameToPath.Add(name.Name, new List<string>() { fullPath });
           return fullPath;
         }
       }

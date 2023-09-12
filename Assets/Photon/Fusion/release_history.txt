@@ -1,3 +1,51 @@
+# 1.1.8
+
+## F
+
+### Build 725 (Jul 19, 2023)
+
+**Changes**
+
+- Made AccuracyDefaults.TryGetAccuracy and GetAccuracyOrThrow methods public
+- If RPC returns `RpcInvokeInfo`, no error will be logged if target or flags prevent the RPC from being sent
+
+**Bug Fixes**
+
+- Fixed: Not being able to send RPCs after State Authority has been requested and granted
+- Fixed: Shared Mode: RPCs invoked in `NetworkBehaviour.Spawned` not being called on remote clients
+- Fixed: Angle AngleLerp method now returns correct value if a and b are equal
+- Fixed: "Apply" button doing nothing when entering Play mode with `NetworkProjectConfig` having unsaved changes
+
+# 1.1.7
+
+## F
+
+### Build 709 (Jun 15, 2023)
+
+**What's New**
+
+- `HitboxRoot.DeRegister` method to manually de-register the root colliders from the lag-compensation system
+- Allow to subclass NetworkPhysicsSimulation2D and NetworkPhysicsSimulation3D to override PhysicsSimulationDeltaTime, which defines the delta-time used to update the physics simulation. By default, set to be Runner.Simulation.DeltaTime
+- StartGameArgs.UseDefaultPhotonCloudPorts
+
+**Changes**
+
+- Photon Realtime SDK to v4.1.6.23
+- JoinSessionLobby to include `useDefaultCloudPorts` argument
+
+**Bug Fixes**
+
+- Fixed: Minor alloc in `NetSocketHybrid.Receive` in Debug build
+- Fixed: An alloc each frame in `NetworkRunner.RegisterNetworkCallbacks` if it contains no callbacks
+- Fixed: Added fallback for Arial.ttf font. New Unity 2022 for Mac uses LegacyRuntime.ttf instead
+- Fixed: NotifyWindowFull does not respect Connection Timeout
+- Fixed: "Assembly already referenced" warning emit by ILWeaver (XBoxOne)
+- Fixed: Ensure that RigidBody's isKinematic value stays always to true on clients with server only physics
+- Fixed: Reeze after long pause
+- Fixed: Ensure that parent NetworkTransform move before their children, to avoid problems for children that do not move often (the offset to the parent could otherwise be applied erroneously by Unity, due to its parent move, after a child moved first to its world position)
+- Fixed: Ensure that, in shared topology, the NetworkTransform moves stays smooth during initialization even if the scene startup induces some frame freezes
+- Fixed: NetworkMecanimAnimator now caches hashes for parameters, eliminating AnimatorControllerParameter.nameHash calls in hotpaths
+
 # 1.1.6
 
 ## F

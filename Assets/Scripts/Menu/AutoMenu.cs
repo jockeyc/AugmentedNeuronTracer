@@ -1,8 +1,7 @@
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
-using Microsoft.MixedReality.Toolkit.UX;
+using MixedReality.Toolkit.SpatialManipulation;
+using MixedReality.Toolkit.UX;
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
@@ -26,7 +25,6 @@ public class AutoMenu : SubMenu
         sliders = GetComponentsInChildren<Slider>();
         Buttons = GetComponentsInChildren<PressableButton>();
         
-        sliders[1].Value = config._somaRadius*2 / (float)SLIDER_MAXIMUM[1];
         
         sliders[0].OnValueUpdated.AddListener((SliderEventData data) => UpdateBkgValue(data));
         sliders[1].OnValueUpdated.AddListener((SliderEventData data) => UpdateRadiusValue(data));
@@ -44,6 +42,7 @@ public class AutoMenu : SubMenu
         token = source.Token;
 
         sliders[0].Value = config.BkgThresh / (float)SLIDER_MAXIMUM[0];
+        sliders[1].Value = config.somaRadius * 2 / (float)SLIDER_MAXIMUM[1];
     }
 
     private void OnModifyClicked()
@@ -79,7 +78,7 @@ public class AutoMenu : SubMenu
     {
         if(data.OldValue==data.NewValue) { return; }
         int value = Mathf.RoundToInt(data.NewValue * SLIDER_MAXIMUM[0]);
-        value = Mathf.Clamp(value, 3, SLIDER_MAXIMUM[0]);
+        value = Mathf.Clamp(value, 20, SLIDER_MAXIMUM[0]);
         TextMeshProUGUI[] textMeshProUGUIs = GetComponentsInChildren<TextMeshProUGUI>();
         var bkgText = textMeshProUGUIs[0];
         bkgText.text = $"Background\n Threshold:\n {value}";
@@ -89,10 +88,12 @@ public class AutoMenu : SubMenu
         var connection = config.tracer.ConnectedPart(false);
 
         config.VRShaderType = Config.ShaderType.FlexibleThreshold;
-        config._postProcessVolume.profile.GetSetting<BaseVolumeRendering>().connection.overrideState = true;
-        config._postProcessVolume.profile.GetSetting<BaseVolumeRendering>().threshold.overrideState = true;
-        config._postProcessVolume.profile.GetSetting<BaseVolumeRendering>().connection.value = connection;
-        config._postProcessVolume.profile.GetSetting<BaseVolumeRendering>().threshold.value = threshold;
+
+        var renderSetting = Config.Instance.postProcessVolume.profile.GetSetting<BaseVolumeRendering>();
+        renderSetting.connection.overrideState = true;
+        renderSetting.connection.value = connection;
+        renderSetting.threshold.overrideState = true;
+        renderSetting.threshold.value = threshold;
 
         config.tracer.TraceTrunk(0);
     }
@@ -102,11 +103,11 @@ public class AutoMenu : SubMenu
         if (Mathf.Abs(data.OldValue-data.NewValue)* SLIDER_MAXIMUM[1] < 0.1) { return; }
         source.Cancel();
         int value = Mathf.RoundToInt(data.NewValue * SLIDER_MAXIMUM[1]);
-        value = Mathf.Clamp(value, 10, SLIDER_MAXIMUM[1]);
+        value = Mathf.Clamp(value, 8, SLIDER_MAXIMUM[1]);
         TextMeshProUGUI[] textMeshProUGUIs = GetComponentsInChildren<TextMeshProUGUI>();
         var radiusText = textMeshProUGUIs[3];
         radiusText.text = $"Soma Radius:\n {value}";
-        config._somaRadius = value/2;
+        config.somaRadius = value / 2;
 
         source = new CancellationTokenSource();
         token = source.Token;
@@ -128,7 +129,7 @@ public class AutoMenu : SubMenu
 
     void OnCancelClicked()
     {
-        config.tracer.ClearResult();
+        Config.Instance.tracer.ClearResult();
         Hide();
     }
 
@@ -145,17 +146,16 @@ public class AutoMenu : SubMenu
 
     public override void Hide()
     {
-        //config._cube.GetComponent<MeshRenderer>().material = origin;
-        config.VRShaderType = Config.ShaderType.Base;
-        config.gazeController.interactionType = GazeController.EyeInteractionType.None;
+        Config.Instance.VRShaderType = Config.ShaderType.Base;
+        Config.Instance.gazeController.interactionType = GazeController.EyeInteractionType.None;
         base.Hide();
     }
 
     public override void Show()
     {
-        //config._cube.GetComponent<MeshRenderer>().material = withThreshold;
-        config.VRShaderType = Config.ShaderType.FlexibleThreshold;
-        config.invoker.Clear();
+        Config.Instance.gazeController.interactionType = GazeController.EyeInteractionType.None;
+        Config.Instance.VRShaderType = Config.ShaderType.FlexibleThreshold;
+        Config.Instance.invoker.Clear();
         base.Show();
     }
 }

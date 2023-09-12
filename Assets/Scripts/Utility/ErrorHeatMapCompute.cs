@@ -16,7 +16,7 @@ public class ErrorHeatMapCompute : MonoBehaviour
 
     private void Start()
     {
-        Vector3Int dim = config._originalDim;
+        Vector3Int dim = config.originalDim;
         computeShader = Resources.Load("ComputeShaders/ErrorHeatMap") as ComputeShader;
         int kernel = computeShader.FindKernel("CSMain");
         RenderTexture result = new(dim.x, dim.y, 0, RenderTextureFormat.R8)
@@ -37,7 +37,7 @@ public class ErrorHeatMapCompute : MonoBehaviour
 
         computeShader.SetTexture(kernel, "Result", result);
         computeShader.SetBuffer(kernel, "_Hits", hitsBuffer);
-        computeShader.SetInts("dim", new int[] { config._originalDim.x, config._originalDim.y, config._originalDim.z });
+        computeShader.SetInts("dim", new int[] { config.originalDim.x, config.originalDim.y, config.originalDim.z });
         computeShader.SetInt("_HitCount", hits.Length/3);
 
         computeShader.Dispatch(kernel, Mathf.CeilToInt(dim.x / 8) , Mathf.CeilToInt(dim.y / 8), Mathf.CeilToInt(dim.z / 8));

@@ -34,30 +34,34 @@ public sealed class BaseVolumeRenderer : PostProcessEffectRenderer<BaseVolumeRen
         shaders[3] = Shader.Find("VolumeRendering/BaseAccelerated");
 
         var sheet = context.propertySheets.Get(shaders[(int)config.VRShaderType]);
+        //var sheet = context.propertySheets.Get(shaders[0]);
 
         Matrix4x4 projectionMatrix = GL.GetGPUProjectionMatrix(context.camera.projectionMatrix, false);
 
         sheet.properties.SetMatrix(Shader.PropertyToID("_InverseProjectionMatrix"), projectionMatrix.inverse);
         sheet.properties.SetMatrix(Shader.PropertyToID("_InverseViewMatrix"), context.camera.cameraToWorldMatrix);
         sheet.properties.SetMatrix(Shader.PropertyToID("_WorldToLocalMatrix"), config.cube.transform.worldToLocalMatrix);
+        //sheet.properties.SetMatrix(Shader.PropertyToID("_WorldToLocalMatrix"), GameObject.Find("Cube").transform.worldToLocalMatrix);
         sheet.properties.SetTexture(Shader.PropertyToID("_Volume"), settings.volume.value);
-        if(config.VRShaderType == Config.ShaderType.FlexibleThreshold)
+
+        if (config.VRShaderType == Config.ShaderType.FlexibleThreshold)
         {
             sheet.properties.SetTexture(Shader.PropertyToID("_Threshold"), settings.threshold.value);
             sheet.properties.SetTexture(Shader.PropertyToID("_Connection"), settings.connection.value);
         }
-        else if(config.VRShaderType == Config.ShaderType.FixedThreshold)
+        else if (config.VRShaderType == Config.ShaderType.FixedThreshold)
         {
             sheet.properties.SetTexture(Shader.PropertyToID("_Mask"), settings.mask.value);
             sheet.properties.SetFloat(Shader.PropertyToID("_viewThreshold"), settings.viewThreshold.value);
         }
-        else if(config.VRShaderType == Config.ShaderType.BaseAccelerated)
+        else if (config.VRShaderType == Config.ShaderType.BaseAccelerated)
         {
             sheet.properties.SetTexture(Shader.PropertyToID("_OccupancyMap"), settings.occupancyMap.value);
             sheet.properties.SetTexture(Shader.PropertyToID("_DistanceMap"), settings.distanceMap.value);
             sheet.properties.SetVector(Shader.PropertyToID("_Dimensions"), settings.dimension.value);
             sheet.properties.SetFloat(Shader.PropertyToID("_BlockSize"), settings.blockSize.value);
         }
+
         context.command.BlitFullscreenTriangle(context.source, context.destination, sheet, 0);
 
         cmd.EndSample("BaseVolumeRendering");

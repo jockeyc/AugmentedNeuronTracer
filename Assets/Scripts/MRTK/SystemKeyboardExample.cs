@@ -1,16 +1,19 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
 
-using Microsoft.MixedReality.Toolkit.Input;
-using Microsoft.MixedReality.Toolkit.UX;
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
+
+using MixedReality.Toolkit.Input;
+using MixedReality.Toolkit.UX;
 using TMPro;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     /// <summary>
-    /// An example script that delegates keyboard API access either to the WMR MixedRealityKeyboard
-    /// or Unity's TouchScreenKeyboard API depending on the platform.
+    /// An example script that delegates keyboard API access either to the WinRT <c>MixedRealityKeyboard</c> class
+    /// or Unity's <see cref="TouchScreenKeyboard"/> class depending on the platform.
     /// </summary>
     /// <remarks>
     /// <para>Note that like Unity's TouchScreenKeyboard API, this script only supports WSA, iOS, and Android.</para>
@@ -46,6 +49,9 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 
         #region MonoBehaviour Implementation
 
+        /// <summary>
+        /// A Unity event function that is called on the frame when a script is enabled just before any of the update methods are called the first time.
+        /// </summary> 
         private void Start()
         {
             // Initially hide the preview.
@@ -87,6 +93,9 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
 
         
 #if WINDOWS_UWP
+        /// <summary>
+        /// A Unity event function that is called every frame, if this object is enabled.
+        /// </summary>
         private void Update()
         {
             // Windows mixed reality keyboard update goes here
@@ -130,11 +139,14 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             }
         }
 #elif UNITY_IOS || UNITY_ANDROID
+        /// <summary>
+        /// A Unity event function that is called every frame, if this object is enabled.
+        /// </summary>
         private void Update()
         {
             // non-Windows mixed reality keyboard initialization goes here
             // for non-Windows mixed reality keyboards just use Unity's default
-            // touchscreenkeyboard.
+            // touch screen keyboard.
             if (touchscreenKeyboard != null)
             {
                 string KeyboardText = touchscreenKeyboard.text;
@@ -161,3 +173,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         #endregion MonoBehaviour Implementation
     }
 }
+#pragma warning restore CS1591

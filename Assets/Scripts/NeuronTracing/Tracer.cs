@@ -57,8 +57,13 @@ public class Tracer : MonoBehaviour
     public void Initial(int bkgThreshold,float somaRadius,Vector3Int rootPos)
     {
         config.BkgThresh = bkgThreshold;
-        config._somaRadius = somaRadius;
+        config.somaRadius = somaRadius;
         config._rootPos = rootPos;
+    }
+
+    public void ClearBkgOffset()
+    {
+
     }
 
     /// <summary>
@@ -214,7 +219,7 @@ public class Tracer : MonoBehaviour
         ClearResult();
         bkg_thresh = config.BkgThresh;
         byte[] img1d = config.VolumeData;
-        Vector3Int dim = config._scaledDim;
+        Vector3Int dim = config.scaledDim;
         var cube = config.cube;
         float time = Time.realtimeSinceStartup;
         float calculationTime = 0;
@@ -242,7 +247,7 @@ public class Tracer : MonoBehaviour
 
         Debug.Log($"FMM Reconstruction cost:{calculationTime}");
 
-        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config._somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
         Debug.Log(filteredTree.Count);
         Debug.Log($"filter complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
@@ -265,8 +270,8 @@ public class Tracer : MonoBehaviour
         //img1d = config.Origin.GetPixelData<byte>(0).ToArray();
         //dim = config._originalDim;
         time = Time.realtimeSinceStartup;
-        img1d = config.Volume.GetPixelData<byte>(0).ToArray();
-        dim = config._scaledDim;
+        img1d = config.ScaledVolume.GetPixelData<byte>(0).ToArray();
+        dim = config.scaledDim;
 
         if ( type == 0)
         {
@@ -305,7 +310,7 @@ public class Tracer : MonoBehaviour
         }
         batches = newbathces;
 
-        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config._somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
         Debug.Log($"filtered Tree nums:{filteredTree.Count} filter complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
@@ -333,7 +338,7 @@ public class Tracer : MonoBehaviour
     }
     public void Pruning(CancellationToken token)
     {
-        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config._somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
 
         var cloneTree = CloneTree(filteredTree);
         if(token.IsCancellationRequested)
@@ -344,13 +349,13 @@ public class Tracer : MonoBehaviour
     private void ReloadConfig()
     {
         img1d = config.VolumeData;
-        dim = config._scaledDim;
+        dim = config.scaledDim;
         cube = config.cube;
     }
     public void AdjustIntensity(List<Vector3> track, float intensity)
     {
         var cube = config.cube;
-        Vector3Int dim = config._scaledDim;
+        Vector3Int dim = config.scaledDim;
         Debug.Log(track.Count);
         float time = Time.realtimeSinceStartup;
         int radius = 1;
@@ -515,7 +520,7 @@ public class Tracer : MonoBehaviour
         int count = 0;
         foreach(var node in resampledTree)
         {
-            var posA = node.position.Div(config._scaledDim).Mul(config._originalDim);
+            var posA = node.position.Div(config.scaledDim).Mul(config.originalDim);
             foreach(var posB in postions)
             {
                 if (Vector3.Distance(posA, posB) <= 20)
@@ -527,7 +532,7 @@ public class Tracer : MonoBehaviour
             }
         }
         Debug.Log(count);
-        var dim = config._scaledDim;
+        var dim = config.scaledDim;
         Primitive.CreateTree(resampledTree, config.cube.transform, dim);
 
     }
@@ -535,10 +540,10 @@ public class Tracer : MonoBehaviour
     
     public void ClearResult()
     {
-        GameObject temp = GameObject.Find("Temp");
-        for (int i = 0; i < temp.transform.childCount; i++)
+        GameObject reconstruction = GameObject.Find("Reconstruction");
+        for (int i = 0; i < reconstruction.transform.childCount; i++)
         {
-            GameObject.Destroy(temp.transform.GetChild(i).gameObject);
+            GameObject.Destroy(reconstruction.transform.GetChild(i).gameObject);
         }
     }
 
@@ -565,7 +570,7 @@ public class Tracer : MonoBehaviour
     public float Confidence(List<uint> indexes)
     {
         byte[] volumeData = config.VolumeData;
-        var dim = config._scaledDim;
+        var dim = config.scaledDim;
         int foregroundCount = 0;
         foreach (uint index in indexes)
         {
@@ -611,7 +616,7 @@ public class Tracer : MonoBehaviour
         {
             Marker relocatedMarker = new Marker(marker);
             map[marker] = relocatedMarker;
-            relocatedMarker.position = marker.position.Div(config._scaledDim).Mul(config._originalDim);
+            relocatedMarker.position = marker.position.Div(config.scaledDim).Mul(config.originalDim);
             relocated.Add(relocatedMarker);
         }
 

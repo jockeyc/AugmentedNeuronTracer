@@ -1,4 +1,4 @@
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
+using MixedReality.Toolkit.SpatialManipulation;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +21,7 @@ public class Blocker : MonoBehaviour
     {
         blockerList.Add(this);
         config = GameObject.Find("Config").GetComponent<Config>();
-        dim = config._scaledDim;
+        dim = config.scaledDim;
         cubeTransform = config.cube.transform;
         tracer = config.tracer;
 

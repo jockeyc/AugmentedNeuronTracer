@@ -1,13 +1,5 @@
-using CommandStructure;
-using Microsoft.MixedReality.Toolkit.UX;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEditor;
-using UnityEngine;
+using MixedReality.Toolkit.UX;
+
 
 public class IsolateMenu : SubMenu
 {

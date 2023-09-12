@@ -1,12 +1,15 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System.Collections.Generic;
-using Microsoft.MixedReality.Toolkit.Audio;
+using MixedReality.Toolkit.Audio;
 using TMPro;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Examples
+namespace MixedReality.Toolkit.Examples
 {
     /// <summary>
     /// Example script that changes the audio fidelity of the specified emitter and
@@ -23,6 +26,9 @@ namespace Microsoft.MixedReality.Toolkit.Examples
 
         private AudioBandPassEffect effect = null;
 
+        /// <summary>
+        /// A Unity event function that is called on the frame when a script is enabled just before any of the update methods are called the first time.
+        /// </summary> 
         private void Start()
         {
             effect = audioEmitter.EnsureComponent<AudioBandPassEffect>();
@@ -34,3 +40,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples
         }
     }
 }
+#pragma warning restore CS1591

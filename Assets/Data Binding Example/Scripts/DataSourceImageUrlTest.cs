@@ -1,16 +1,19 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Data
+namespace MixedReality.Toolkit.Data
 {
     /// <summary>
     /// Test data source which programmatically triggers an update of a url that changes
     /// its reported content, in this case an image that populates a sprite.
     /// </summary>
     /// <remarks>
-    /// Using a simple <key,value> store, it's possible to separate data from view
+    /// Using a simple key-value store, it's possible to separate data from view
     /// to simplify the integration of generic view prefabs that are populated from
     /// external information.
     /// </remarks>
@@ -42,6 +45,9 @@ namespace Microsoft.MixedReality.Toolkit.Data
             _time = secondsBetweenFetches;
         }
 
+        /// <summary>
+        /// A Unity event function that is called every frame, if this object is enabled.
+        /// </summary>
         private void Update()
         {
             _time += Time.deltaTime;
@@ -56,3 +62,4 @@ namespace Microsoft.MixedReality.Toolkit.Data
         }
     }
 }
+#pragma warning restore CS1591

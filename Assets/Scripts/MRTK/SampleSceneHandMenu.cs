@@ -1,14 +1,17 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
 
-using Microsoft.MixedReality.Toolkit.Input;
-using Microsoft.MixedReality.Toolkit.UX;
-using Microsoft.MixedReality.Toolkit.Diagnostics;
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
+
+using MixedReality.Toolkit.Input;
+using MixedReality.Toolkit.UX;
+using MixedReality.Toolkit.Diagnostics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     /// <summary>
     /// Helper script to implement the demo scene hand menu actions.
@@ -37,8 +40,14 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         [SerializeField]
         private GameObject profilerObject;
 
+        /// <summary>
+        /// A Unity event function that is called when an enabled script instance is being loaded.
+        /// </summary>
         private void Awake()
         {
+            rayToggle.ForceSetToggled(GetHandRaysActive());
+            gazePinchToggle.ForceSetToggled(GetGazePinchActive());
+
             rayToggle.OnClicked.AddListener(() => SetHandRaysActive(rayToggle.IsToggled));
             gazePinchToggle.OnClicked.AddListener(() => SetGazePinchActive(gazePinchToggle.IsToggled));
             
@@ -77,6 +86,26 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         }
 
         /// <summary>
+        /// Get if all hand rays in the scene are active.
+        /// </summary>
+        private bool GetHandRaysActive()
+        {
+            bool active = true;
+            var handRays = PlayspaceUtilities.XROrigin.GetComponentsInChildren<MRTKRayInteractor>(true);
+
+            foreach (var interactor in handRays)
+            {
+                active &= interactor.gameObject.activeSelf;
+                if (!active)
+                {
+                    break;
+                }
+            }
+
+            return active;
+        }
+
+        /// <summary>
         /// Toggle gaze pinch interactors.
         /// </summary>
         public void SetGazePinchActive(bool value)
@@ -87,6 +116,26 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             {
                 interactor.gameObject.SetActive(value);
             }
+        }
+
+        /// <summary>
+        /// Get if all pinch interactors in the scene are active.
+        /// </summary>
+        private bool GetGazePinchActive()
+        {
+            bool active = true;
+            var gazePinchInteractors = PlayspaceUtilities.XROrigin.GetComponentsInChildren<GazePinchInteractor>(true);
+
+            foreach (var interactor in gazePinchInteractors)
+            {
+                active &= interactor.gameObject.activeSelf;
+                if (!active)
+                {
+                    break;
+                }
+            }
+
+            return active;
         }
 
         /// <summary>
@@ -127,3 +176,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         private bool IsSceneValid(int buildIndex) => buildIndex < SceneManager.sceneCountInBuildSettings && buildIndex >= 0;
     }
 }
+#pragma warning restore CS1591

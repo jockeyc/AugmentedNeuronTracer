@@ -1,10 +1,13 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Data
+namespace MixedReality.Toolkit.Data
 {
     [CreateAssetMenu(fileName = "Example_BatteryInformation_Profile", menuName = "MRTK/Examples/Battery Information Profile")]
     [Serializable]
@@ -45,3 +48,4 @@ namespace Microsoft.MixedReality.Toolkit.Data
         // Other battery related assets could go here such as for lifetime battery charge/discharge cycles, or battery malfunction warning icons.
     }
 }
+#pragma warning restore CS1591

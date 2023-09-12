@@ -1,8 +1,6 @@
-using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
-using Microsoft.MixedReality.Toolkit.UX;
-using System;
-using System.Collections;
+using MixedReality.Toolkit;
+using MixedReality.Toolkit.SpatialManipulation;
+using MixedReality.Toolkit.UX;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;

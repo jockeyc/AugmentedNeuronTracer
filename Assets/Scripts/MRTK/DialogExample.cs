@@ -1,16 +1,22 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using UnityEngine;
-using Microsoft.MixedReality.Toolkit.UX;
+using MixedReality.Toolkit.UX;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     public class DialogExample : MonoBehaviour
     {
         public DialogPool DialogPool;
 
-        public void Awake()
+        /// <summary>
+        /// A Unity event function that is called when an enabled script instance is being loaded.
+        /// </summary>
+        protected virtual void Awake()
         {
             if (DialogPool == null)
             {
@@ -70,3 +76,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         }
     }
 }
+#pragma warning restore CS1591

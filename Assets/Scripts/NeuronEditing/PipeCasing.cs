@@ -1,6 +1,6 @@
 using CommandStructure;
-using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.Subsystems;
+using MixedReality.Toolkit;
+using MixedReality.Toolkit.Subsystems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -166,7 +166,7 @@ public class PipeCasing : MonoBehaviour
     /// <returns></returns>
     private List<uint> GetTargets(Marker marker, float radiusBias, float pipeExtension)
     {
-        var dim = config._scaledDim;
+        var dim = config.scaledDim;
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
         ComputeShader computeShader = Resources.Load("ComputeShaders/Utility") as ComputeShader;
         var sourceSet = new ComputeBuffer(10000, sizeof(uint), ComputeBufferType.Append);

@@ -1,13 +1,16 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Data
+namespace MixedReality.Toolkit.Data
 {
     /// <summary>
-    /// Test DataController that logs a message event to the console
+    /// Test <see cref="IDataController"/> that logs a message event to the console.
     /// </summary>
     [AddComponentMenu("MRTK/Examples/Data Binding/Data Controller Test")]
     public class DataControllerTest : DataControllerGOBase
@@ -23,6 +26,9 @@ namespace Microsoft.MixedReality.Toolkit.Data
 
         private IDataSource _dataSource;
 
+        /// <summary>
+        /// A Unity event function that is called when the script component has been enabled.
+        /// </summary>
         private void OnEnable()
         {
             GetNearestDataSource("data");
@@ -65,3 +71,4 @@ namespace Microsoft.MixedReality.Toolkit.Data
         }
     }
 }
+#pragma warning restore CS1591

@@ -1,5 +1,8 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System;
 using System.Collections.Generic;
@@ -8,22 +11,27 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
-using PokePath = Microsoft.MixedReality.Toolkit.IPokeInteractor.PokePath;
+using PokePath = MixedReality.Toolkit.IPokeInteractor.PokePath;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     /// <summary>
-    /// A simple interactor that can live on inanimate/non-XRController objects.
-    /// Acts as a poking interactor through trigger intersections.
+    /// A simple interactor that can live on inanimate or on objects that
+    /// do not contain a <see cref="XRController"/>.
     /// </summary>
     /// <remarks>
-    /// The full PokeInteractor implementation used for the user's fingers
-    /// uses a much more advanced spherecast intersection system to ensure that
+    /// <para>
+    /// This interactor acts as a poking interactor through trigger intersections.
+    /// </para>
+    /// <para>
+    /// The full <see cref="IPokeInteractor"/> implementation used for the user's fingers
+    /// uses a much more advanced sphere cast intersection system to ensure that
     /// high speed pokes are always registered. This interactor, however, uses
     /// simple trigger intersections in the interest of simplicity and demonstration.
-    /// At high speeds (and low framerates) this may "miss" some intersections with
-    /// interactables. For higher fidelity intersections, consider using a spherecast
-    /// system like PokeInteractor.
+    /// At high speeds, and low frame rates, this may miss some intersections with
+    /// interactables. For higher fidelity intersections, consider using a sphere cast
+    /// system like <see cref="IPokeInteractor"/>.
+    /// </para>
     /// </remarks>
     [AddComponentMenu("MRTK/Examples/Pen Interactor")]
     internal class PenInteractor : XRBaseInteractor, IPokeInteractor
@@ -72,7 +80,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             {
                 // Update the trajectory.
                 // The PokeInteractor we use for hands does advanced
-                // spherecasting to ensure reliable pokes; as a demonstration,
+                // sphere casting to ensure reliable pokes; as a demonstration,
                 // this simple interactor only performs trigger intersections.
                 pokeTrajectory.Start = pokeTrajectory.End;
                 pokeTrajectory.End = attachTransform.position;
@@ -87,9 +95,13 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             }
         }
 
-        void FixedUpdate()
+        /// <summary>
+        /// A Unity event function that is called at an framerate independent frequency, and is only called if this object is enabled.
+        /// </summary>
+        private void FixedUpdate()
         {
             hoveredTargets.Clear();
         }
     }
 }
+#pragma warning restore CS1591

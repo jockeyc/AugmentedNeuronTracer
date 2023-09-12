@@ -1,10 +1,13 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Data
+namespace MixedReality.Toolkit.Data
 {
     [Serializable]
     [AddComponentMenu("MRTK/Examples/Data Binding/Data Source Theme Test")]
@@ -48,11 +51,17 @@ namespace Microsoft.MixedReality.Toolkit.Data
             ChangeTheme((currentTheme + 1) % availableThemes.Length);
         }
 
+        /// <summary>
+        /// A Unity Editor only event function that is called when the script is loaded or a value changes in the Unity Inspector.
+        /// </summary>
         private void OnValidate()
         {
             ChangeTheme(currentTheme);
         }
 
+        /// <summary>
+        /// A Unity event function that is called every frame, if this object is enabled.
+        /// </summary>
         private void Update()
         {
             if (_lastTheme != currentTheme)
@@ -80,3 +89,4 @@ namespace Microsoft.MixedReality.Toolkit.Data
         }
     }
 }
+#pragma warning restore CS1591

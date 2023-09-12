@@ -329,7 +329,7 @@ MonoBehaviour:
   leftInteractor: {fileID: 0}
   rightInteractor: {fileID: 0}
   trackedTargetType: 2
-  trackedHandedness: 3
+  trackedHandedness: 1
   trackedHandJoint: 2
   transformOverride: {fileID: 0}
   additionalOffset: {x: 0, y: 0, z: 0}
@@ -437,6 +437,7 @@ MonoBehaviour:
   autoMenu: {fileID: 0}
   blockerMenu: {fileID: 0}
   eyeMenu: {fileID: 0}
+  labelMenu: {fileID: 0}
 --- !u!1001 &423970929106947957
 PrefabInstance:
   m_ObjectHideFlags: 0

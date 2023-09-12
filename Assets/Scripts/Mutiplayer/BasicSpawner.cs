@@ -1,6 +1,6 @@
 using Fusion;
 using Fusion.Sockets;
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
+using MixedReality.Toolkit.SpatialManipulation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,20 +21,17 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         if (paintingBoard == null)
         {
             var boardPrefab = Resources.Load("Prefabs/PaintingBoard") as GameObject;
-            paintingBoard = _runner.Spawn(boardPrefab, new Vector3(0,0,1), Quaternion.identity).gameObject;
+            paintingBoard = _runner.Spawn(boardPrefab, new Vector3(0, 0, 1), Quaternion.identity).gameObject;
         }
 
         ObjectManipulator OM = paintingBoard.GetComponent<ObjectManipulator>();
         OM.selectEntered.AddListener((SelectEnterEventArgs args) =>
         {
-            Debug.Log("worked");
-            Debug.Log(paintingBoard.GetComponent<NetworkObject>().HasStateAuthority);
             paintingBoard.GetComponent<NetworkObject>().RequestStateAuthority();
-            Debug.Log(paintingBoard.GetComponent<NetworkObject>().HasStateAuthority);
         });
 
         GameObject configObj = GameObject.FindGameObjectWithTag("Config");
-        if(configObj == null )
+        if (configObj == null)
         {
             var configPrefab = Resources.Load("Prefabs/Config") as GameObject;
             configObj = _runner.Spawn(configPrefab, Vector3.zero, Quaternion.identity).gameObject;
@@ -43,7 +40,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         config.paintingBoard = paintingBoard;
         config.cube = paintingBoard.GetNamedChild("Cube");
-        config.cube.transform.localScale = new Vector3(config._originalDim.x, config._originalDim.y, config._originalDim.z) / MathF.Max(config._originalDim.x, MathF.Max(config._originalDim.y, config._originalDim.z));
+        config.cube.transform.localScale = new Vector3(config.originalDim.x, config.originalDim.y, config.originalDim.z) / MathF.Max(config.originalDim.x, MathF.Max(config.originalDim.y, config.originalDim.z));
         config.runner = _runner;
 
         GameObject Menu = GameObject.Find("HandMenuBase(Clone)");
@@ -52,6 +49,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Instantiate(Resources.Load("Prefabs/HandMenuBase"));
         }
 
+        GetComponent<NetworkPhysicsSimulation3D>().enabled = false;
     }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
@@ -97,28 +95,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         });
 
 
-    }
-
-    //private void OnGUI()
-    //{
-    //    if (_runner == null)
-    //    {
-    //        if (GUI.Button(new Rect(0, 0, 200, 40), "Host"))
-    //        {
-    //            StartGame(GameMode.Shared);
-    //        }
-    //        if (GUI.Button(new Rect(0, 40, 200, 40), "Join"))
-    //        {
-    //            StartGame(GameMode.Shared);
-    //        }
-    //    }
-    //}
-
-    public void SpawnPiece()
-    {
-        Vector3 pos = GameObject.Find("Board(Clone)").transform.position;
-        pos = pos + Vector3.up * 0.5f;
-        //NetworkObject networkPlayerObject = _runner.Spawn(piecePrefab, pos, Quaternion.identity);
     }
 }
 

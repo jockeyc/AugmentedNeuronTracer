@@ -1,13 +1,20 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
+
 
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
     /// <summary>
-    /// Helper script to respawn objects if they go too far from their original position. Useful for objects that will fall forever etc.
+    /// Helper script to re-spawn objects if they go too far from their original position. 
     /// </summary>
+    /// <remarks>
+    /// The helper is useful for objects that will fall forever.
+    /// </remarks>
     [AddComponentMenu("MRTK/Examples/Tethered Placement")]
     internal class TetheredPlacement : MonoBehaviour
     {
@@ -19,6 +26,9 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         private Rigidbody rigidBody;
         private float distanceThresholdSquared;
 
+        /// <summary>
+        /// A Unity event function that is called on the frame when a script is enabled just before any of the update methods are called the first time.
+        /// </summary> 
         private void Start()
         {
             rigidBody = GetComponent<Rigidbody>();
@@ -27,13 +37,16 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             distanceThresholdSquared = distanceThreshold * distanceThreshold;
         }
 
+        /// <summary>
+        /// A Unity event function that is called every frame after normal update functions, if this object is enabled.
+        /// </summary>
         private void LateUpdate()
         {
             float distanceSqr = (localRespawnPosition - transform.localPosition).sqrMagnitude;
 
             if (distanceSqr > distanceThresholdSquared)
             {
-                // Reset any velocity from falling or moving when respawning to original location
+                // Reset any velocity from falling or moving when re-spawning to original location
                 if (rigidBody != null)
                 {
                     rigidBody.velocity = Vector3.zero;
@@ -46,3 +59,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         }
     }
 }
+#pragma warning restore CS1591

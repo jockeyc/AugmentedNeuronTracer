@@ -1,15 +1,10 @@
 using CommandStructure;
-using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.SpatialManipulation;
-using Microsoft.MixedReality.Toolkit.UX;
-using System;
-using System.Collections;
+using MixedReality.Toolkit;
+using MixedReality.Toolkit.SpatialManipulation;
+using MixedReality.Toolkit.UX;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-
 public class MainMenu : MonoBehaviour
 {
     public enum ButtonFunc
@@ -34,7 +29,8 @@ public class MainMenu : MonoBehaviour
     public SubMenu subMenu;
     public AutoMenu autoMenu;
     public BlockerMenu blockerMenu;
-    public EyeMenu eyeMenu;
+    public GazeMenu eyeMenu;
+    public LabelMenu labelMenu;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +46,7 @@ public class MainMenu : MonoBehaviour
         buttons[(int)ButtonFunc.Erase].OnClicked.AddListener(() => EraseEvent());
         buttons[(int)ButtonFunc.Undo].OnClicked.AddListener(() => UndoEvent());
         buttons[(int)ButtonFunc.Redo].OnClicked.AddListener(() => RedoEvent());
+        buttons[(int)ButtonFunc.Filter].OnClicked.AddListener(() => FilterEvent());
 
 
         var toggleCollection = gameObject.AddComponent<ToggleCollection>();
@@ -59,6 +56,7 @@ public class MainMenu : MonoBehaviour
         toggles.Add(buttons[(int)ButtonFunc.Blocker]);
         toggles.Add(buttons[(int)ButtonFunc.Draw]);
         toggles.Add(buttons[(int)ButtonFunc.Erase]);
+        toggles.Add(buttons[(int)ButtonFunc.Filter]);
         toggleCollection.Toggles = toggles;
 
 
@@ -69,11 +67,13 @@ public class MainMenu : MonoBehaviour
         buttons[(int)ButtonFunc.Erase].enabled = false;
         buttons[(int)ButtonFunc.Undo].enabled = false;
         buttons[(int)ButtonFunc.Redo].enabled = false;
+
+        gameObject.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     void SaveEvent()
     {
-        config.tracer.Save();
+        Config.Instance.tracer.Save();
     }
 
     void AutoEvent()
@@ -82,27 +82,23 @@ public class MainMenu : MonoBehaviour
         {
             HideSubMenu();
         }
+
         if(subMenu == null)
         {
-            LockMove(true);
-            config.gazeController.interactionType = GazeController.EyeInteractionType.None;
             if (autoMenu == null)
             {
-                var obj = Instantiate(Resources.Load("prefabs/AutoMenu")) as GameObject;
-                autoMenu = obj.GetComponent<AutoMenu>();
+                var GO = Instantiate(Resources.Load("prefabs/AutoMenu")) as GameObject;
+                autoMenu = GO.GetComponent<AutoMenu>();
                 autoMenu.mainMenu = this;
                 subMenu = autoMenu;
             }
-            else
-            {
-                autoMenu.Show();
-            }
+            autoMenu.Show();
         }
     }
 
     public void OnAutoFinished()
     {
-        config.invoker.Execute(new AutoCommand(config.tracer, config.BkgThresh, config._somaRadius, config._rootPos));
+        config.invoker.Execute(new AutoCommand(config.tracer, config.BkgThresh, config.somaRadius, config._rootPos));
         //config.tracer.Trace(3);
         //config.tracer.Save(0);
         buttons[(int)ButtonFunc.Save].enabled = true;
@@ -119,7 +115,7 @@ public class MainMenu : MonoBehaviour
         if (buttons[(int)ButtonFunc.Eye].IsToggled)
         {
             LockMove(false);
-            if(subMenu != null && subMenu is not EyeMenu)
+            if(subMenu != null && subMenu is not GazeMenu)
             {
                 HideSubMenu();
             }
@@ -127,7 +123,7 @@ public class MainMenu : MonoBehaviour
             if (eyeMenu == null)
             {
                 var obj = Instantiate(Resources.Load("prefabs/EyeMenu")) as GameObject;
-                eyeMenu = obj.GetComponent<EyeMenu>();
+                eyeMenu = obj.GetComponent<GazeMenu>();
                 eyeMenu.mainMenu = this;
                 subMenu = eyeMenu;
             }
@@ -140,7 +136,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {  
-            if(subMenu is EyeMenu)
+            if(subMenu is GazeMenu)
             {
                 HideSubMenu();
                 config.gazeController.interactionType = GazeController.EyeInteractionType.None;
@@ -230,6 +226,41 @@ public class MainMenu : MonoBehaviour
         config.invoker.Redo();
     }
 
+    void FilterEvent()
+    {
+        Debug.Log("Label");
+        if (buttons[(int)ButtonFunc.Filter].IsToggled)
+        {
+            LockMove(false);
+            if (subMenu != null && subMenu is not LabelMenu)
+            {
+                HideSubMenu();
+            }
+
+            if (labelMenu == null)
+            {
+                var obj = Instantiate(Resources.Load("prefabs/LabelMenu")) as GameObject;
+                labelMenu = obj.GetComponent<LabelMenu>();
+                labelMenu.mainMenu = this;
+                subMenu = labelMenu;
+            }
+            else
+            {
+                labelMenu.Show();
+            }
+            config.GetComponent<GestureController>().operation = GestureController.OperationType.None;
+            config.gazeController.interactionType = GazeController.EyeInteractionType.LabelConfirm;
+        }
+        else
+        {
+            if (subMenu is LabelMenu)
+            {
+                HideSubMenu();
+                config.gazeController.interactionType = GazeController.EyeInteractionType.None;
+            }
+        }
+    }
+
     void HideSubMenu()
     {
         if (subMenu != null)
@@ -262,6 +293,8 @@ public class MainMenu : MonoBehaviour
         config.gestureController.operation = GestureController.OperationType.None;
 
     }
+
+
     // Update is called once per frame
     void Update()
     {

@@ -1,5 +1,8 @@
-﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the Apache License.
+﻿// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using System;
 using System.IO;
@@ -8,20 +11,26 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Build
+namespace MixedReality.Toolkit.Examples.Build
 {
+    /// <summary>
+    /// A static class that provides functions for compiling the example scenes via command line.
+    /// </summary>
     public static class BuildApp
     {
-        private static string[] scenes = {
-            "Assets/Scenes/Audio/AudioLoFiExample.unity",
-            "Assets/Scenes/Audio/AudioOcclusionExample.unity",
+        private static string[] scenes = 
+        {
             "Assets/Scenes/BoundsControlExamples.unity",
             "Assets/Scenes/CanvasExample.unity",
             "Assets/Scenes/CanvasUITearsheet.unity",
             "Assets/Scenes/ClippingExamples.unity",
+            "Assets/Scenes/ClippingInstancedExamples.unity",
+            "Assets/Scenes/DiagnosticsDemo.unity",
             "Assets/Scenes/DialogExample.unity",
             "Assets/Scenes/DictationExample.unity",
             "Assets/Scenes/DirectionalIndicatorExample.unity",
+            "Assets/Scenes/DisableInteractorsExample.unity",
+            "Assets/Scenes/DwellExample.unity",
             "Assets/Scenes/EyeGazeExample.unity",
             "Assets/Scenes/FontIconExample.unity",
             "Assets/Scenes/HandInteractionExamples.unity",
@@ -31,22 +40,41 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Build
             "Assets/Scenes/LegacyConstraintsExample.unity",
             "Assets/Scenes/MagicWindowExample.unity",
             "Assets/Scenes/NearMenuExamples.unity",
+            "Assets/Scenes/NonCanvasDialogExample.unity",
             "Assets/Scenes/NonCanvasObjectBarExample.unity",
             "Assets/Scenes/NonCanvasUIBackplateExample.unity",
-            "Assets/Scenes/OutlineExamples.unity",
             "Assets/Scenes/NonCanvasUITearSheet.unity",
+            "Assets/Scenes/OutlineExamples.unity",
+            "Assets/Scenes/PerformanceEvaluation.unity",
             "Assets/Scenes/SeeItSayIt Example.unity",
             "Assets/Scenes/SlateDrawingExample.unity",
             "Assets/Scenes/SolverExamples.unity",
             "Assets/Scenes/SpatialMappingExample.unity",
+            "Assets/Scenes/SpeechInputExamples.unity",
             "Assets/Scenes/TapToPlaceExample.unity",
+            "Assets/Scenes/TextPrefabExamples.unity",
+            "Assets/Scenes/TextToSpeechExamples.unity",
             "Assets/Scenes/ToggleCollectionExample.unity",
             "Assets/Scenes/TopNavigationExample.unity",
             "Assets/Scenes/VanillaUGUIExample.unity",
-            "Assets/Scenes/VirtualizedScrollRectList.unity" };
+            "Assets/Scenes/Audio/AudioLoFiExample.unity",
+            "Assets/Scenes/Audio/AudioOcclusionExample.unity",
+            "Assets/Scenes/Experimental/NonNativeKeyboard.unity",
+            "Assets/Scenes/Experimental/ScrollingExample.unity",
+            "Assets/Scenes/Experimental/SpatialMouseSample.unity",
+            "Assets/Scenes/Experimental/VirtualizedScrollRectList.unity",
+            "Assets/Scenes/EyeTracking/EyeTrackingBasicSetupExample.unity",
+            "Assets/Scenes/EyeTracking/EyeTrackingExampleNavigationExample.unity",
+            "Assets/Scenes/EyeTracking/EyeTrackingTargetPositioningExample.unity",
+            "Assets/Scenes/EyeTracking/EyeTrackingTargetSelectionExample.unity",
+            "Assets/Scenes/EyeTracking/EyeTrackingVisualizerExample.unity"
+        };
 
         private static string buildPath = "build";
 
+        /// <summary>
+        /// Build the Unity project's example scenes.
+        /// </summary>
         public static void StartCommandLineBuild()
         {
             ParseBuildCommandLine();
@@ -80,6 +108,13 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Build
             EditorApplication.Exit(success ? 0 : 1);
         }
 
+        /// <summary>
+        /// Ensure that the Text Mesh Pro assets are included in the Unity project.
+        /// </summary>
+        /// <remarks>
+        /// This is currently not functioning correctly. When running via command line,
+        /// the assets are imported, but are not available in the built application.
+        /// </remarks>
         public static void EnsureTMPro()
         {
             string assetsFullPath = Path.GetFullPath("Assets/TextMesh Pro");
@@ -127,3 +162,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Build
         }
     }
 }
+#pragma warning restore CS1591

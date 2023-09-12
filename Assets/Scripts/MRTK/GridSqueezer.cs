@@ -1,18 +1,21 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+// Copyright (c) Mixed Reality Toolkit Contributors
+// Licensed under the BSD 3-Clause
+
+// Disable "missing XML comment" warning for samples. While nice to have, this XML documentation is not required for samples.
+#pragma warning disable CS1591
 
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Microsoft.MixedReality.Toolkit.Examples.Demos
+namespace MixedReality.Toolkit.Examples.Demos
 {
-    [RequireComponent(typeof(GridLayoutGroup))]
-    [ExecuteAlways]
     /// <summary>
-    /// Demonstration script showing how to squeeze/resize
+    /// Demonstration script showing how to squeeze or resize
     /// a grid layout to fit a fixed number of columns, while
     /// resizing children to fit.
     /// </summary>
+    [RequireComponent(typeof(GridLayoutGroup))]
+    [ExecuteAlways]
     [AddComponentMenu("MRTK/Examples/Grid Squeezer")]
     public class GridSqueezer : MonoBehaviour
     {
@@ -54,7 +57,7 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         private RectTransform rectTransform;
 
         /// <summary>
-        /// The RectTransform to fit the collider onto.
+        /// The <see cref="UnityEngine.RectTransform"/> to fit the collider onto.
         /// </summary>
         public RectTransform RectTransform
         {
@@ -68,7 +71,11 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
             }
             set => rectTransform = value;
         }
-        void Update()
+
+        /// <summary>
+        /// A Unity event function that is called every frame, if this object is enabled.
+        /// </summary>
+        private void Update()
         {
             if (!(Application.isPlaying && !DynamicFitting) && GridLayoutGroup != null && RectTransform != null && RectTransform.hasChanged)
             {
@@ -80,3 +87,4 @@ namespace Microsoft.MixedReality.Toolkit.Examples.Demos
         }
     }
 }
+#pragma warning restore CS1591

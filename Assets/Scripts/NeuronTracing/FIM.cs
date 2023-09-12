@@ -14,7 +14,6 @@ using UnityEngine.XR.OpenXR.Input;
 public class FIM : MonoBehaviour
 {
     private Config config;
-    public Texture3D origin;
     public RenderTexture volume;
     public RenderTexture gwdt;
     public RenderTexture state;
@@ -42,7 +41,6 @@ public class FIM : MonoBehaviour
     public void Start()
     {
         this.config = GetComponent<Config>();
-        origin = config.Volume;
         computeShader = Resources.Load("ComputeShaders/FIM") as ComputeShader;
         PrepareDatas();
         threshold = InitThreshold();
@@ -51,16 +49,16 @@ public class FIM : MonoBehaviour
 
     public void PrepareDatas()
     {
-        dim = config._scaledDim;
+        dim = config.scaledDim;
         gwdt = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
         state = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UInt);
         parent = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RInt, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_UInt);
         phi = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
         mask = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
         visualize = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
-        threshold = InitRenderTexture3D(dim.x / config.thresholdBlockSize, dim.y / config.thresholdBlockSize, dim.z / config.thresholdBlockSize, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
+        threshold = InitRenderTexture3D(dim.x , dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         offset = InitOffset();
-        volume = CopyData(origin);
+        volume = CopyData(config.ScaledVolume);
     }
 
     //Return the part connected to soma according to the threshold
@@ -109,7 +107,7 @@ public class FIM : MonoBehaviour
 
         int kernel = computeShader.FindKernel("ApplyOffset");
         computeShader.SetTexture(kernel, "volume", volume);
-        computeShader.SetTexture(kernel, "origin", origin);
+        computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
         computeShader.SetTexture(kernel, "_offset", offset);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
@@ -172,7 +170,6 @@ public class FIM : MonoBehaviour
         while (remedyCount > 0)
         {
             remedyTime++;
-            //remedySet = new ComputeBuffer(dims.x * dims.y * dims.z, sizeof(uint), ComputeBufferType.Append);
             remedySet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateRemedy");
@@ -199,8 +196,8 @@ public class FIM : MonoBehaviour
 
         Debug.Log($"DT update times:{updateTime} remedy times:{remedyTime}");
 
-        ComputeBuffer gwdtBuffer1 = new ComputeBuffer(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
-        ComputeBuffer gwdtBuffer2 = new ComputeBuffer(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
+        ComputeBuffer gwdtBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
+        ComputeBuffer gwdtBuffer2 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
         kernel = computeShader.FindKernel("VisualizeTexture");
         computeShader.SetTexture(kernel, "gwdt", gwdt);
         computeShader.SetBuffer(kernel, "gwdtBuffer1", gwdtBuffer1);
@@ -233,7 +230,7 @@ public class FIM : MonoBehaviour
 
         if (config.forceRootCenter)
         {
-            config._rootPos = config._scaledDim / 2;
+            config._rootPos = config.scaledDim / 2;
             seedIndex = VectorToIndex(config._rootPos, dim);
         }
 
@@ -265,7 +262,7 @@ public class FIM : MonoBehaviour
     {
         int kernel = computeShader.FindKernel("ApplyOffset");
         computeShader.SetTexture(kernel, "volume", volume);
-        computeShader.SetTexture(kernel, "origin", origin);
+        computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
         computeShader.SetTexture(kernel, "_offset", offset);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
@@ -397,7 +394,7 @@ public class FIM : MonoBehaviour
 
         if (config.forceRootCenter)
         {
-            config._rootPos = config._scaledDim / 2;
+            config._rootPos = config.scaledDim / 2;
             seedIndex = VectorToIndex(config._rootPos, dim);
         }
 
@@ -522,6 +519,7 @@ public class FIM : MonoBehaviour
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
+        remedySet.Release();
 
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(uint), ComputeBufferType.Default);
@@ -540,7 +538,6 @@ public class FIM : MonoBehaviour
 
         parentBuffer1.Release();
         parentBuffer2.Release();
-        remedySet.Release();
 
         Debug.Log("GetParentData cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
@@ -719,6 +716,7 @@ public class FIM : MonoBehaviour
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
+        remedySet.Release();
 
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(uint), ComputeBufferType.Default);
@@ -737,7 +735,6 @@ public class FIM : MonoBehaviour
 
         parentBuffer1.Release();
         parentBuffer2.Release();
-        remedySet.Release();
 
         Debug.Log("GetParentData cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
@@ -958,6 +955,7 @@ public class FIM : MonoBehaviour
         }
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
+        remedySet.Release();
 
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
@@ -974,8 +972,6 @@ public class FIM : MonoBehaviour
 
         parentBuffer1.Release();
         parentBuffer2.Release();
-        sourceSet.Release();
-        remedySet.Release();
 
         afterRemedy = GetBuffer();
         SaveTexture(afterRemedy, $"Assets/Textures/FIM/afterRemedy.Asset");
@@ -1032,12 +1028,19 @@ public class FIM : MonoBehaviour
         }
 
 
-        int loopCount = 0;
-        for (int i = 0; i < parentBufferData.Length; i++)
-        {
-            if (parentBufferData[i] == i) loopCount++;
-        }
-        Debug.LogWarning("LoopCount" + loopCount);
+        //int loopCount = 0;
+        //for (int i = 0; i < parentBufferData.Length; i++)
+        //{
+        //    if (parentBufferData[i] == i)
+        //    {
+        //        loopCount++;
+        //        int x = (int)(i % dim.x);
+        //        int y = (int)((i / dim.x) % dim.y);
+        //        int z = (int)((i / dim.x / dim.y) % dim.z);
+        //        Debug.Log(x + " " + y + " " + z);
+        //    }
+        //}
+        //Debug.LogWarning("LoopCount" + loopCount);
 
         return completeTree;
     }
@@ -1148,6 +1151,7 @@ public class FIM : MonoBehaviour
         }
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
+        remedySet.Release();
 
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
@@ -1164,7 +1168,6 @@ public class FIM : MonoBehaviour
 
         parentBuffer1.Release();
         parentBuffer2.Release();
-        remedySet.Release();
 
         Debug.Log($"Incremental Calculation cost: {Time.realtimeSinceStartup - calculationTime}");
 
@@ -1338,6 +1341,7 @@ public class FIM : MonoBehaviour
         }
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
+        remedySet.Release();
 
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
@@ -1354,7 +1358,6 @@ public class FIM : MonoBehaviour
 
         parentBuffer1.Release();
         parentBuffer2.Release();
-        remedySet.Release();
 
         afterTracing = GetBuffer();
         SaveTexture(afterTracing, "Assets/Textures/FIM/afterTracing.Asset");
@@ -1398,13 +1401,6 @@ public class FIM : MonoBehaviour
             else marker1.parent = marker2;
         }
         Debug.Log(trunk.Count);
-
-        int loopCount = 0;
-        for (int i = 0; i < parentBufferData.Length; i++)
-        {
-            if (parentBufferData[i] == i) loopCount++;
-        }
-        Debug.LogWarning("LoopCount" + loopCount);
     }
 
     public List<Marker> FIMErase(HashSet<uint> modified)
@@ -1501,6 +1497,7 @@ public class FIM : MonoBehaviour
             //Get Remedy Set Count
             remedyCount = GetAppendBufferSize(remedySet);
         }
+        remedySet.Release();
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
 
@@ -1519,7 +1516,6 @@ public class FIM : MonoBehaviour
 
         parentBuffer1.Release();
         parentBuffer2.Release();
-        remedySet.Release();
 
         Debug.Log($"Incremental Calculation cost: {Time.realtimeSinceStartup - calculationTime}");
 
@@ -1672,7 +1668,7 @@ public class FIM : MonoBehaviour
         ComputeBuffer maskedVolumeBuffer = new(dim.x * dim.y * dim.z, sizeof(float), ComputeBufferType.Default);
         kernel = computeShader.FindKernel("GetMaskedVolumeData");
         computeShader.SetBuffer(kernel, "maskedVolumeBuffer", maskedVolumeBuffer);
-        computeShader.SetTexture(kernel, "origin", origin);
+        computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
         computeShader.SetTexture(kernel, "mask", mask);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
@@ -1820,7 +1816,7 @@ public class FIM : MonoBehaviour
 
             kernel = computeShader.FindKernel("UpdateCluster");
             computeShader.SetTexture(kernel, "connection", connection);
-            computeShader.SetTexture(kernel, "origin", origin);
+            computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
             computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
             computeShader.SetFloat("viewThreshold", bkgThreshold / 255.0f);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
@@ -1844,7 +1840,7 @@ public class FIM : MonoBehaviour
         var computeShader = Resources.Load<ComputeShader>("ComputeShaders/Utility");
         int kernel = computeShader.FindKernel("InitForegroundBoundary");
         computeShader.SetTexture(kernel, "connection", connection);
-        computeShader.SetTexture(kernel, "origin", origin);
+        computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
         computeShader.SetTexture(kernel, "threshold", threshold);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
@@ -1864,7 +1860,7 @@ public class FIM : MonoBehaviour
 
             kernel = computeShader.FindKernel("UpdateForeground");
             computeShader.SetTexture(kernel, "connection", connection);
-            computeShader.SetTexture(kernel, "origin", origin);
+            computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
             computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
@@ -1886,7 +1882,7 @@ public class FIM : MonoBehaviour
 
             kernel = computeShader.FindKernel("ExtendForeground");
             computeShader.SetTexture(kernel, "connection", connection);
-            computeShader.SetTexture(kernel, "origin", origin);
+            computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
             computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
@@ -2042,6 +2038,7 @@ public class FIM : MonoBehaviour
             phiMax = Math.Max(phiMax, phiData[i]);
         }
         Debug.Log($"phiMax: {phiMax}");
+        phiBuffer.Release();
 
         var buff = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         kernel = computeShader.FindKernel("GetBuff");

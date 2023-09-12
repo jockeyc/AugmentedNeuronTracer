@@ -1,13 +1,12 @@
-using Microsoft.MixedReality.Toolkit.Subsystems;
-using Microsoft.MixedReality.Toolkit;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using System.Linq;
 using CommandStructure;
+using MixedReality.Toolkit.Subsystems;
+using MixedReality.Toolkit;
 
-public class GestureController : MonoBehaviour
+public class GestureController : Singleton<GestureController>
 {
     public enum OperationType
     {
@@ -75,7 +74,7 @@ public class GestureController : MonoBehaviour
                             {
                                 var pos = _config.cube.transform.InverseTransformPoint(t) + 0.5f * Vector3.one;
 
-                                markers.Add(new Marker(new Vector3(pos.x*_config._scaledDim.x,pos.y*_config._scaledDim.y,pos.z*_config._scaledDim.z)));
+                                markers.Add(new Marker(new Vector3(pos.x*_config.scaledDim.x,pos.y*_config.scaledDim.y,pos.z*_config.scaledDim.z)));
                             }
                             //var curve = vf.RefineSketchCurve(markers, _config.Volume, 10);
                             //_config.invoker.Execute(new AdjustCommand(_config.tracer, Markers2Indexes(curve), 0));
@@ -87,7 +86,7 @@ public class GestureController : MonoBehaviour
                             foreach (var t in track)
                             {
                                 var pos = _config.cube.transform.InverseTransformPoint(t) + 0.5f * Vector3.one;
-                                pos = pos.Mul(_config._originalDim);
+                                pos = pos.Mul(_config.originalDim);
                                 positions.Add(pos);
                             }
                             _config.tracer.CloseToTrack(positions);
@@ -119,7 +118,7 @@ public class GestureController : MonoBehaviour
     private List<uint> Track2Indexes(List<Vector3> track,int radius)
     {
         var cube = _config.cube;
-        Vector3Int dim = _config._scaledDim;
+        Vector3Int dim = _config.scaledDim;
         Debug.Log(track.Count);
         HashSet<uint> targets = new();
         foreach (Vector3 v in track)
@@ -154,7 +153,7 @@ public class GestureController : MonoBehaviour
             int x = (int)marker.position.x;
             int y = (int)marker.position.y;
             int z = (int)marker.position.z;
-            Vector3Int dim = _config._scaledDim;
+            Vector3Int dim = _config.scaledDim;
             int index = x + y * dim.x + z * dim.x * dim.y;
             indexes.Add((uint)index);
         }

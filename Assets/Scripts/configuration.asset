@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50972b7922036fa4e850b74c6e517dac, type: 3}
+  m_Name: configuration
+  m_EditorClassIdentifier: 
+  path: C:\Users\80121\Desktop\MyResult\17302_00024
+  savePath: C:\Users\80121\Desktop\MyResult\
+  needImport: 0
+  scale: 1
+  gaussianSmoothing: 0
+  forceRootCenter: 0
+  volume: {fileID: 11700000, guid: 7c5e68c83742c3041b388a52b54e2d33, type: 2}
+  scaledDim: {x: 256, y: 256, z: 128}
+  somaRadius: 10
+  bkgThresh: 64
+  blockSize: 0
+  viewThresh: 25
+  useBatch: 0
+  useKeyBoard: 1
+  customThresh: 30
+  fixedBkgThresholdMaterial: {fileID: 2100000, guid: e8d7bde713b78704eae5396aea7f9f29, type: 2}
+  thresholdOffset: -50
+  viewRadius: 10
+  volumeRenderingWithChebyshev: 0
