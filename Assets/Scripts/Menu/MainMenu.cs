@@ -28,9 +28,7 @@ public class MainMenu : MonoBehaviour
 
     public SubMenu subMenu;
     public AutoMenu autoMenu;
-    public BlockerMenu blockerMenu;
     public GazeMenu eyeMenu;
-    public LabelMenu labelMenu;
     // Start is called before the first frame update
     void Start()
     {
@@ -176,35 +174,6 @@ public class MainMenu : MonoBehaviour
 
     void BlockerEvent()
     {
-        if (buttons[(int)ButtonFunc.Blocker].IsToggled)
-        {
-            LockMove(true);
-            if (subMenu != null && subMenu is not BlockerMenu)
-            {
-                HideSubMenu();
-            }
-            if (subMenu == null)
-            {
-                if (blockerMenu == null)
-                {
-                    GameObject obj = Instantiate(Resources.Load("prefabs/BlockerMenu")) as GameObject;
-                    blockerMenu = obj.GetComponent<BlockerMenu>();
-                    blockerMenu.mainMenu = this;
-                    subMenu = blockerMenu;
-                }
-                else
-                {
-                    blockerMenu.Show();
-                }
-            }
-        }
-        else
-        {
-            if(subMenu is BlockerMenu)
-            {
-                HideSubMenu();
-            }
-        }
     }
 
     void MoveEvent()
@@ -228,37 +197,6 @@ public class MainMenu : MonoBehaviour
 
     void FilterEvent()
     {
-        Debug.Log("Label");
-        if (buttons[(int)ButtonFunc.Filter].IsToggled)
-        {
-            LockMove(false);
-            if (subMenu != null && subMenu is not LabelMenu)
-            {
-                HideSubMenu();
-            }
-
-            if (labelMenu == null)
-            {
-                var obj = Instantiate(Resources.Load("prefabs/LabelMenu")) as GameObject;
-                labelMenu = obj.GetComponent<LabelMenu>();
-                labelMenu.mainMenu = this;
-                subMenu = labelMenu;
-            }
-            else
-            {
-                labelMenu.Show();
-            }
-            config.GetComponent<GestureController>().operation = GestureController.OperationType.None;
-            config.gazeController.interactionType = GazeController.EyeInteractionType.LabelConfirm;
-        }
-        else
-        {
-            if (subMenu is LabelMenu)
-            {
-                HideSubMenu();
-                config.gazeController.interactionType = GazeController.EyeInteractionType.None;
-            }
-        }
     }
 
     void HideSubMenu()

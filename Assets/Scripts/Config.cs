@@ -48,8 +48,6 @@ public class Config : Singleton<Config>
 
     private byte[] volumeData;
 
-    public List<Blocker> _blockers = new();
-
     public Tracer tracer;
     public GestureController gestureController;
     public GazeController gazeController;
