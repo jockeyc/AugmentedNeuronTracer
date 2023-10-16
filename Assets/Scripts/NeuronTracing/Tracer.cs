@@ -12,7 +12,10 @@ public class Tracer : MonoBehaviour
     public bool isMsfm = true;
     public int bkg_thresh = 30;
 
-    double SR_ratio = 9.0 / 9.0;
+    public double SR_ratio = 9.0 / 9.0;
+    public float lengthFactor = 4;
+    public float lengthThreshold = 0.5f
+        ;
 
     public HashSet<int> targets = new();
     
@@ -23,7 +26,7 @@ public class Tracer : MonoBehaviour
     List<Marker> outTree;
 
     private FastMarching fm = new();
-    private HierarchyPrune hp = new();
+    private HierarchyPruning hp = new();
 
     private List<Marker> completeTree;
     List<Marker> resampledTree;
@@ -247,7 +250,7 @@ public class Tracer : MonoBehaviour
 
         Debug.Log($"FMM Reconstruction cost:{calculationTime}");
 
-        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
         Debug.Log(filteredTree.Count);
         Debug.Log($"filter complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
@@ -310,13 +313,13 @@ public class Tracer : MonoBehaviour
         }
         batches = newbathces;
 
-        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio, lengthFactor, lengthThreshold);
         Debug.Log($"filtered Tree nums:{filteredTree.Count} filter complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
         var cloneTree = CloneTree(filteredTree);
 
-        resampledTree = hp.Resample(cloneTree, img1d, dim.x, dim.y, dim.z, 5);
+        resampledTree = hp.Resample(cloneTree, img1d, dim.x, dim.y, dim.z, config.resampleFactor);
         Debug.Log($"resample Tree nums:{resampledTree.Count} resample complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
@@ -338,12 +341,12 @@ public class Tracer : MonoBehaviour
     }
     public void Pruning(CancellationToken token)
     {
-        filteredTree = hp.hierarchy_prune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio, lengthFactor, lengthThreshold);
 
         var cloneTree = CloneTree(filteredTree);
         if(token.IsCancellationRequested)
             return;
-        resampledTree = hp.Resample(cloneTree, img1d, dim.x, dim.y, dim.z, 5);
+        resampledTree = hp.Resample(cloneTree, img1d, dim.x, dim.y, dim.z, config.resampleFactor);
     }
 
     private void ReloadConfig()
@@ -399,6 +402,12 @@ public class Tracer : MonoBehaviour
             //type blocker
             Trace(type);
         }
+    }
+
+    public void ModifySelection(List<uint> target)
+    {
+        var selection = fim.ModifySelection(target);
+        config.ApplySelection(selection);
     }
 
     /// <summary>
@@ -628,5 +637,12 @@ public class Tracer : MonoBehaviour
             }
         }
         return relocated;
+    }
+
+    public void HighlightNoise()
+    {
+        List<uint> _indexes = GetCluster(Config.Instance.selectedIndex);
+        Debug.Log(_indexes.Count);
+        ModifySelection(_indexes);
     }
 }

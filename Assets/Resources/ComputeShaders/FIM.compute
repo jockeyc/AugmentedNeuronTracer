@@ -35,6 +35,7 @@
 #pragma kernel ApplyOffset
 
 #pragma kernel ModifyMask
+#pragma kernel ModifySelection
 
 //Get ConnectPart
 #pragma kernel InitConnectionSeed
@@ -88,6 +89,7 @@ RWTexture3D<uint> state;
 RWTexture3D<float> gwdt;
 RWTexture3D<float> visualize;
 RWTexture3D<float> mask;
+RWTexture3D<float> selection;
 RWTexture3D<float> volume;
 Texture3D<float> origin;
 RWTexture3D<float> _offset;
@@ -265,18 +267,18 @@ void InitRemedy(uint3 id : SV_DispatchThreadID)
     for (int i = -1; i <= 1; i++)
     {
         int x2 = (int) id.x + i;
-        //if (x2 < 0 || x2 >= (int) dims.x)
-        //    continue;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
         for (int j = -1; j <= 1; j++)
         {
             int y2 = (int) id.y + j;
-            //if (y2 < 0 || y2 >= (int) dims.y)
-            //    continue;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
             for (int k = -1; k <= 1; k++)
             {
                 int z2 = (int) id.z + k;
-                //if (z2 < 0 || z2 >= (int) dims.z)
-                //    continue;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
                 int diff = abs(i) + abs(j) + abs(k);
                 //if (diff > max_diff)
                 //    continue;
@@ -319,18 +321,18 @@ void UpdateRemedy(uint3 id : SV_DispatchThreadID)
         for (int i = -1; i <= 1; i++)
         {
             int x2 = (int) id.x + i;
-            //if (x2 < 0 || x2 >= (int) dims.x)
-            //    continue;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
             for (int j = -1; j <= 1; j++)
             {
                 int y2 = (int) id.y + j;
-                //if (y2 < 0 || y2 >= (int) dims.y)
-                //    continue;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
                 for (int k = -1; k <= 1; k++)
                 {
                     int z2 = (int) id.z + k;
-                    //if (z2 < 0 || z2 >= (int) dims.z)
-                    //    continue;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
                     int diff = abs(i) + abs(j) + abs(k);
                     //if (diff > max_diff)
                     //    continue;
@@ -373,18 +375,18 @@ void UpdateRemedyNeighbor(uint3 id : SV_DispatchThreadID)
     for (int i = -1; i <= 1; i++)
     {
         int x2 = (int) id.x + i;
-        //if (x2 < 0 || x2 >= (int) dims.x)
-        //    continue;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
         for (int j = -1; j <= 1; j++)
         {
             int y2 = (int) id.y + j;
-            //if (y2 < 0 || y2 >= (int) dims.y)
-            //    continue;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
             for (int k = -1; k <= 1; k++)
             {
                 int z2 = (int) id.z + k;
-                //if (z2 < 0 || z2 >= (int) dims.z)
-                //    continue;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
                 int diff = abs(i) + abs(j) + abs(k);
                 //if (diff > max_diff)
                 //    continue;
@@ -525,18 +527,18 @@ void UpdateSourceValueTree(uint3 id : SV_DispatchThreadID)
         for (int i = -1; i <= 1; i++)
         {
             int x2 = (int) id.x + i;
-            //if (x2 < 0 || x2 >= (int) dims.x)
-            //    continue;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
             for (int j = -1; j <= 1; j++)
             {
                 int y2 = (int) id.y + j;
-                //if (y2 < 0 || y2 >= (int) dims.y)
-                //    continue;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
                 for (int k = -1; k <= 1; k++)
                 {
                     int z2 = (int) id.z + k;
-                    //if (z2 < 0 || z2 >= (int) dims.z)
-                    //    continue;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
                     int diff = abs(i) + abs(j) + abs(k);
                     //if (diff > max_diff)
                     //    continue;
@@ -642,18 +644,18 @@ void UpdateRemedyTree(uint3 id : SV_DispatchThreadID)
         for (int i = -1; i <= 1; i++)
         {
             int x2 = (int) id.x + i;
-            //if (x2 < 0 || x2 >= (int) dims.x)
-            //    continue;
+            if (x2 < 0 || x2 >= (int) dims.x)
+                continue;
             for (int j = -1; j <= 1; j++)
             {
                 int y2 = (int) id.y + j;
-                //if (y2 < 0 || y2 >= (int) dims.y)
-                //    continue;
+                if (y2 < 0 || y2 >= (int) dims.y)
+                    continue;
                 for (int k = -1; k <= 1; k++)
                 {
                     int z2 = (int) id.z + k;
-                    //if (z2 < 0 || z2 >= (int) dims.z)
-                    //    continue;
+                    if (z2 < 0 || z2 >= (int) dims.z)
+                        continue;
                     int diff = abs(i) + abs(j) + abs(k);
                     //if (diff > max_diff)
                     //    continue;
@@ -707,18 +709,18 @@ void UpdateRemedyNeighborTree(uint3 id : SV_DispatchThreadID)
     for (int i = -1; i <= 1; i++)
     {
         int x2 = (int) id.x + i;
-        //if (x2 < 0 || x2 >= (int) dims.x)
-        //    continue;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
         for (int j = -1; j <= 1; j++)
         {
             int y2 = (int) id.y + j;
-            //if (y2 < 0 || y2 >= (int) dims.y)
-            //    continue;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
             for (int k = -1; k <= 1; k++)
             {
                 int z2 = (int) id.z + k;
-                //if (z2 < 0 || z2 >= (int) dims.z)
-                //    continue;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
                 int diff = abs(i) + abs(j) + abs(k);
                 //if (diff > max_diff)
                 //    continue;
@@ -1103,6 +1105,18 @@ void ModifyMask(uint3 id : SV_DispatchThreadID)
         uint3 pos = IndexToPos(maskTargetBuffer[id.x]);
         if(undo) mask[pos]-=1;
         else    mask[pos]+=1;
+    }
+}
+
+StructuredBuffer<int> selectionTargetBuffer;
+//Calculating the altered mask due to blocker
+[numthreads(128, 1, 1)]
+void ModifySelection(uint3 id : SV_DispatchThreadID)
+{
+    if(id.x<targetNum)
+    {
+        uint3 pos = IndexToPos(selectionTargetBuffer[id.x]);
+        selection[pos] =1;
     }
 }
 

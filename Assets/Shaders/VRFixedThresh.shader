@@ -20,6 +20,7 @@ Shader "VolumeRendering/FixedThreshold"
 			TEXTURE2D_SAMPLER2D(_MainTex, sampler_MainTex);
 			sampler3D _Volume; 
 			sampler3D _Mask; 
+            sampler3D _Selection; 
             float _viewThreshold;
 
             float4 _CameraDepthTexture_TexelSize;
@@ -65,11 +66,10 @@ Shader "VolumeRendering/FixedThreshold"
                     float4 uv = float4(p + 0.5, 1);
                     float val = tex3Dlod(_Volume, uv);
                     float masked = tex3Dlod(_Mask, uv);
-                    if(masked) {
-                        //val = 0;
-                        col.g = 1;
-                    }
-                    if(val>=_viewThreshold){
+                    float selected =  tex3Dlod(_Selection, uv);
+                    if(masked) col.g = 1;
+                    else if(selected) col.g = 0.5;
+                    else if(val>=_viewThreshold){
                         col.b = max(val,col.b);
                     }
                     else{
@@ -133,10 +133,16 @@ Shader "VolumeRendering/FixedThreshold"
                 {
                     float4 result =  RayMarching(localRayPos,localViewDir,dstToBox,dstLimit);
                     result.a = min(0.85,result.a);
-                    result.a = max(0.1,result.a);
-                    if(result.g ==1) result = float4(0,result.b,0,result.a);
+                    //result.a = max(0.1,result.a);
+                    //result = max(0.1,result);
+
+                    if(result.g ==1) result = float4(0,0,0,result.a);
+                    else if(result.g ==0.5) result = float4(0,result.b,0,result.a);
                     else if(result.b >= result.r) result = float4(result.b,result.b,result.b,result.a);
-                    else result = float4(result.r,0,0,result.a);
+                    //else result = float4(result.r,0,0,result.a);
+
+                    //result = min(float4(0.8),result);
+                    //color = float4(result + (1-result.a)*color.rgb,1);
                     //if(color.r>0||color.b>0||color.g>0)
                     //{
                     //    color = float4(result.rgb * result.a + color.rgb * (1-result.a),1);
@@ -145,27 +151,29 @@ Shader "VolumeRendering/FixedThreshold"
                     //{
                     //    color = result;
                     //}
-                    if(result.a>_viewThreshold)
+
+                    if(result.a > _viewThreshold)
                     {                    
                         if(result.a<0.1)
                         {
                             float3 base = lerp(float3(1,1,1),float3(0.5,0.7,0.9),(result.a)/0.1);
-                            color = float4(result.a * base + (1-result.a)*color.rgb,1);
+                            color = float4(result * base + (1-result.a)*color.rgb,1);
                         }
                         else if(result.a>0.1 && result.a<0.5)
                         {
                             float3 base = lerp(float3(0.5,0.7,0.9),float3(0.6,0.7,1),(result.a-0.1)/0.4);
-                            color = float4(result.a * base + (1-result.a)*color.rgb,1);
+                            color = float4(result * base + (1-result.a)*color.rgb,1);
                         }
                         else
                         {
                             float3 base = lerp(float3(0.6,0.7,1),float3(1,1,1),(result.a-0.5)/0.5);
-                            color = float4(result.a * base + (1-result.a)*color.rgb,1);
+                            color = float4(result * base + (1-result.a)*color.rgb,1);
                         }
                     }
-                    else{
-                        color = float4(result.a * float3(1,1,1) + (1-result.a)*color.rgb,1);
-                    }
+                    color = max(color,0.1);
+                    //else{
+                    //    color = float4(result * float3(1,1,1) + (1-result.a)*color.rgb,1);
+                    //}
                 }
                 return color;
             }

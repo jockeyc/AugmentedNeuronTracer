@@ -95,15 +95,27 @@ Shader "VolumeRendering/Base"
                 float dstToBox = rayToContainerInfo.x; // distance from camera to box in local space
                 float dstInsideBox = rayToContainerInfo.y; //distance of ray inside box
                 float dstLimit = min(depthEyeLinear - dstToBox, dstInsideBox);//actual ray distance in box
+                //float dstLimit = dstInsideBox;//actual ray distance in box
 
                 float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);
+
+                float2 xy = i.vertex.xy;
+                if(xy.x<540)
+                {
+                    dstLimit = min(depthEyeLinear - dstToBox, dstInsideBox);
+                }
+                
                 if(dstLimit>0)
                 {
                     float4 result =  RayMarching(localRayPos,localViewDir,dstToBox,dstLimit);
                     //result.a = (result.a*result.a+result.a);
                     //color = float4(result.a * float3(1,1,1) + (1-result.a)*color.rgb,1);
-                    result.a = min(0.9,result.a);
+                    //if(color.r>0&&xy.x<720) return color;
+
+                    //result.a = min(0.7,result.a);
                     result.a = max(result.a,25/255.0f);
+                    //color = float4(result.a * float4(1,1,1,1) + (1-result.a)*color.rgb,1);
+
                     if(result.a<0.1)
                     {
                         float3 base = lerp(float3(1,1,1),float3(0.5,0.7,0.9),(result.a)/0.1);
@@ -120,46 +132,6 @@ Shader "VolumeRendering/Base"
                         color = float4(result.a * base + (1-result.a)*color.rgb,1);
                     }
 
-
-
-                        //color = float4(result.a* float3(0.7,0.9,1) + (1-result.a)*color.rgb,1);
-                   
-                    //color = float4(result.a* float3(1,1,1) + (1-result.a)*color.rgb,1);
-                    //color = float4(result.a* float3(1,1,1) + (1-result.a)*color.rgb,1);
-                    //if(color.a==0)
-                    //{
-                    //    //color = float4(float3(1,1,1) * result.rgb + color.rgb * (1-result.a),1);
-                    //    //if(result.r>35/255.0f)
-                    //    if(result.r>=35/255.0f)
-                    //    {
-                    //        color = float4((1-color.a)*result.rgb+ color.a*color.rgb,1);
-                    //    }
-                    //}
-                    
-                    //if(color.r>0&&color.r<0.999&&color.b<0.999&&color.g<0.999)color = float4(result.rgb+ (1-result.a)*color.rgb,1);
-                    //else color = float4(result.rgb,1);
-
-                    //if(color.r>0&&result.r>20) color = float4(result.rgb,1);
-                    //else color = float4(result.rgb+color.rgb,1);
-                    //color = float4(1,0,0,1);
-                    //result.a = min(0.5,result.a);
-                    //if(color.r>0||color.b>0||color.g>0)
-                    //if(depthEyeLinear - dstToBox > dstInsideBox)
-                    //{
-                    //    color = result;
-                    //}
-                    //else
-                    //{
-                    //    color = float4(result.rgb * result.a + color.rgb * (1-result.a),1);
-                    //}
-                    //color = float4(float3(1,1,1) * result.a + color.rgb * (1-result.a),1);
-                    //if(color.r>0||color.b>0||color.g>0)
-                    //else
-                    //{
-                    //    //color = result;
-                    //    color = float4(float3(1,1,1) * result.a + color.rgb * (1-result.a),1);
-                    //    color = float4(0,0,0,1);
-                    //}
                 }
                 return color;
             }

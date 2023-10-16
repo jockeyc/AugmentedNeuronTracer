@@ -17,6 +17,15 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        GameObject director = GameObject.Find("director(Clone)");
+        if (director == null)
+        {
+            Debug.Log("create director");
+            var prefab = Resources.Load("Prefabs/director") as GameObject;
+            director =  _runner.Spawn(prefab, new Vector3(0, 0, 0), Quaternion.identity).gameObject;
+        }
+
+        Debug.Log("OnPlayerJoined");
         GameObject paintingBoard = GameObject.Find("PaintingBoard(Clone)");
         if (paintingBoard == null)
         {
@@ -49,12 +58,18 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             GameObject.Instantiate(Resources.Load("Prefabs/HandMenuBase"));
         }
 
+
+
         GetComponent<NetworkPhysicsSimulation3D>().enabled = false;
     }
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
     public void OnInput(NetworkRunner runner, NetworkInput input) { }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) 
+    {
+        Debug.Log("shutdown");
+        Debug.Log(shutdownReason.ToString());
+    }
     public void OnConnectedToServer(NetworkRunner runner) { }
     public void OnDisconnectedFromServer(NetworkRunner runner) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }

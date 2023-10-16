@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class HierarchyPrune
+public class HierarchyPruning
 {
     public class HierarchySegment
     {
@@ -142,8 +142,12 @@ public class HierarchyPrune
             else
             {
                 Marker leaf_marker2 = topoLeafs[swcMap[rootParent]];
-                int leaf_index2 = leafMap[leaf_marker2];
-                topoSegs[i].parent = topoSegs[leaf_index2];
+                if (leaf_marker2 != null)
+                {
+                    int leaf_index2 = leafMap[leaf_marker2];
+                    topoSegs[i].parent = topoSegs[leaf_index2];
+                    //... rest of the code
+                }
             }
         }
 
@@ -206,7 +210,7 @@ public class HierarchyPrune
         }
     }
 
-    public List<Marker> hierarchy_prune(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2, ref float somaRadius, double bkg_thresh = 30.0, double length_thresh = 5.0, bool isSoma = true, double SR_ratio = 1.0 / 9.0)
+    public List<Marker> HierarchyPrune(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2, ref float somaRadius, double bkg_thresh = 30.0, double length_thresh = 5.0, bool isSoma = true, double SR_ratio = 1.0 / 9.0, float lengthFactor = 4, float lengthThreshold = 0.5f)
     {
         int sz01 = sz0 * sz1;
         int tol_sz = sz01 * sz2;
@@ -230,14 +234,14 @@ public class HierarchyPrune
             Marker leafMarker = topoSeg.leafMarker;
             if (Vector3.Distance(leafMarker.position, root.position) < 3 * somaRadius)
             {
-                if (topoSeg.length >= somaRadius * 4)
+                if (topoSeg.length >= somaRadius * lengthFactor)
                 {
                     filterSegs.Add(topoSeg);
                 }
             }
             else
             {
-                if (topoSeg.length >= 0.5)
+                if (topoSeg.length >= lengthThreshold)
                 {
                     filterSegs.Add(topoSeg);
                 }
@@ -254,7 +258,9 @@ public class HierarchyPrune
             Marker p = leaf_marker;
             while (p != root_marker.parent)
             {
-                p.radius = MathF.Min(somaRadius/7,Marker.markerRadius(img, sz0, sz1, sz2, p, real_thresh));
+                p.radius = MathF.Max(p.radius,1.5f);
+                //p.radius = Marker.markerRadius(img, sz0, sz1, sz2, p, real_thresh);
+                p.radius = MathF.Min(somaRadius / 6, Marker.markerRadius(img, sz0, sz1, sz2, p, real_thresh));
                 p = p.parent;
             }
         }
@@ -327,7 +333,8 @@ public class HierarchyPrune
                 p = p.parent;
             }
 
-            if (seg.parent == null || sum_rdc == 0 || (sum_sig / sum_rdc >= SR_ratio && sum_sig >= byte.MaxValue))
+            //if (seg.parent == null || sum_rdc == 0 || (sum_sig / sum_rdc >= SR_ratio && sum_sig >= byte.MaxValue))
+            if (seg.parent == null || sum_rdc == 0 || (sum_sig / sum_rdc >= SR_ratio))
             {
                 tolSumSig += sum_sig;
                 tolSumRdc += sum_rdc;

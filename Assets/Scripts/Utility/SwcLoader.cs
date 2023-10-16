@@ -1,6 +1,7 @@
 ﻿using ANT;
 using Cysharp.Threading.Tasks;
-using GLTFast.FakeSchema;
+using Fusion.Profiling;
+using MixedReality.Toolkit.SpatialManipulation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Fusion.Allocator;
 using Random = UnityEngine.Random;
 
@@ -22,6 +24,7 @@ public class SwcLoader : Singleton<SwcLoader>
     //private Dictionary<int, int> swc_map;
     public string filePath;
     public string directoryPath;
+    public int nodeType;
     public bool useBatch;
     private int batchMax = 0;
     public float updateTime = 0.18f;
@@ -31,9 +34,9 @@ public class SwcLoader : Singleton<SwcLoader>
     public Vector3[] postions = new Vector3[10];
     public int annotateNumber = 0;
 
-    public bool loadNextSwc = false;
+    public bool loadNext = false;
     string[] swcFiles;
-
+    
     //Start is called before the first frame update
     async void Start()
     {
@@ -58,8 +61,9 @@ public class SwcLoader : Singleton<SwcLoader>
         //}
 
 
-        //CreateNeuron(config.cube.transform, config.originalDim, config.Origin);
-        LoadDirectory(directoryPath);
+        //LoadDirectory(directoryPath);
+        await LoadSwc(filePath);
+        CreateNeuron(Config.Instance.cube.transform, Config.Instance.originalDim, Config.Instance.Origin);
     }
 
     [InspectorButton]
@@ -114,7 +118,10 @@ public class SwcLoader : Singleton<SwcLoader>
             if (strs[i].StartsWith("#")) continue;
             string[] words = strs[i].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             int index = int.Parse(words[0]);
-            typeDict[index] = int.Parse(words[1]);
+
+            typeDict[index] = nodeType >= 0 ? nodeType : int.Parse(words[1]);
+            //typeDict[index] = nodeType;
+            
             Vector3 swc = new(float.Parse(words[2]), float.Parse(words[3]), float.Parse(words[4]));
             //swcList[index] = swc.Div(config._originalDim).Mul(config._scaledDim);
             swcDict[index] = swc;
@@ -129,7 +136,7 @@ public class SwcLoader : Singleton<SwcLoader>
 
         print($"load {Path.GetFileName(path)} success");
 
-        await Config.Instance.ReplaceTexture(Path.GetFileNameWithoutExtension(path));
+        //await Config.Instance.ReplaceTexture(Path.GetFileNameWithoutExtension(path));
     }
 
     private void LoadDirectory(string path)
@@ -243,46 +250,80 @@ public class SwcLoader : Singleton<SwcLoader>
         }
     }
 
-    private async void  RandomGenerate()
+    private async void RandomGenerate()
     {
         Random.InitState(1802);
         List<int> seedList = new();
+        GameObject chevron = GameObject.Find("Chevron");
 
-        for(int i=0;i< swcFiles.Length; i++)
+        for (int i = 0; i < swcFiles.Length; i++)
         {
-            seedList.Add(Random.Range(1,10000));
+            seedList.Add(Random.Range(1, 10000));
         }
 
-        for(int i=0;i< swcFiles.Length;i++)
+        for (int i = 0; i < swcFiles.Length; i++)
         {
             Random.InitState(seedList[i]);
             Debug.Log(seedList[i]);
             await LoadSwc(swcFiles[i]);
 
+            imageIndex = i;
             BoardManager.Instance.ClearTargets();
             BoardManager.Instance.ClearReconstruction();
 
             Config.Instance.gazeController.enabled = true;
             Config.Instance.gazeController.interactionType = GazeController.EyeInteractionType.LabelRefine;
 
-            CreateNeuron(Config.Instance.cube.transform, Config.Instance.originalDim, Config.Instance.Origin);
+            //CreateNeuron(Config.Instance.cube.transform, Config.Instance.originalDim, Config.Instance.Origin);
 
-            List<Vector3> filtered = FilterBranchAndLeaf();
-            for (int j=0; j < 10; j++)
+            await UniTask.WaitUntil(() => loadNext);
+            loadNext = false;
+            
+            List<TargetInfo> filtered = FilterBranchAndLeaf();
+            for (int j = 0; j < 10; j++)
             {
                 int index = Random.Range(0, filtered.Count - j);
-                BoardManager.Instance.CreatePoint(filtered[index], Config.Instance.originalDim, Color.blue);
+                GameObject targetGO = BoardManager.Instance.CreatePoint(filtered[index].position, Config.Instance.originalDim, new Color(1, 0.4f, 0.0f,1));
+                labelIndex = j;
+                target = filtered[index];
+                preTime = Time.realtimeSinceStartup;
                 filtered.SwapAtIndices(index, filtered.Count - 1 - j);
+                chevron.GetComponent<DirectionalIndicator>().DirectionalTarget = targetGO.transform;
+                await UniTask.WaitUntil(() => loadNext);
+                loadNext = false;
+                GameObject.Destroy(targetGO);
+                BoardManager.Instance.ClearTargets();
             }
-            await UniTask.WaitUntil(() => loadNextSwc);
-            loadNextSwc = false;
+            //await UniTask.WaitUntil(() => loadNext);
+            target = null;
+            loadNext = false;
         }
+        LabelInfo[] labelInfoArray = labelInfoList.ToArray();
+        string listJson = JsonUtility.ToJson(new SerializableLabelInfoArray(labelInfoArray), true);
+        DirectoryInfo folder = new DirectoryInfo("./LabelInfo");
+        FileInfo fileInfo = new($"./LabelInfo/{folder.GetFiles().Length}.json");
+        StreamWriter sw= fileInfo.CreateText();
+        sw.WriteLine(listJson);
+        sw.Close();
+        sw.Dispose();
     }
 
-    private List<Vector3> FilterBranchAndLeaf()
+    [InspectorButton]
+    public void NextLabel()
+    {
+        loadNext = true;
+    }
+
+    [InspectorButton]
+    public void ResetTime()
+    {
+        preTime = Time.realtimeSinceStartup;
+    }
+
+    private List<TargetInfo> FilterBranchAndLeaf()
     {
         Vector3 rootCoordinate = swcDict[0].Divide(Config.Instance.originalDim).Multiply(Config.Instance.scaledDim);
-        List<Vector3> nodeList = new();
+        List<TargetInfo> result = new();
         Dictionary<int,int> childCount = new();
         foreach(var pair in parentDict)
         {
@@ -297,20 +338,79 @@ public class SwcLoader : Singleton<SwcLoader>
         {
             if (pair.Value == 0 || pair.Value == 2)
             {
-                nodeList.Add(swcDict[pair.Key]);
+                Vector3 position = swcDict[pair.Key];
+                Vector3 cubicCoordinate = position.Divide(Config.Instance.originalDim);
+                Vector3 scaledCoordinate = cubicCoordinate.Multiply(Config.Instance.scaledDim);
+                int index = Utils.CoordinateToIndex(scaledCoordinate, Config.Instance.scaledDim);
+                if (Config.Instance.VolumeData[index] >= 30 && Vector3.Distance(rootCoordinate, scaledCoordinate) >= 40)
+                {
+                    result.Add(new(position, Config.Instance.VolumeData[index], pair.Value==0));
+                }
             }
         }
-        List<Vector3> result = new();
-        foreach(Vector3 swc in nodeList)
-        {
-            Vector3 cubicCoordinate = swc.Divide(Config.Instance.originalDim);
-            Vector3 scaledCoordinate = cubicCoordinate.Multiply(Config.Instance.scaledDim);
-            int index = Utils.CoordinateToIndex(scaledCoordinate, Config.Instance.scaledDim);
-            Debug.Log(Vector3.Distance(rootCoordinate, scaledCoordinate));
-            if (Config.Instance.VolumeData[index]>=25 && Vector3.Distance(rootCoordinate,scaledCoordinate)>=40) result.Add(swc);
-        }
-        Debug.Log(nodeList.Count);
-        Debug.Log(result.Count);
         return result;
+    }
+
+    public void AddLabel(Vector3 position)
+    {
+        if (target == null) return;
+        LabelInfo labelInfo = new LabelInfo(imageIndex, labelIndex, target.position, position, Time.realtimeSinceStartup - preTime, target.intensity, target.isLeaf);
+        labelInfoList.Add(labelInfo);
+
+        Debug.Log($"distance:{Vector3.Distance(target.position,position)},time:{Time.realtimeSinceStartup - preTime}, intensity:{target.intensity}");
+    }
+
+    [Serializable]
+    public class SerializableLabelInfoArray
+    {
+        public LabelInfo[] array;
+
+        public SerializableLabelInfoArray(LabelInfo[] array)
+        {
+            this.array = array;
+        }
+    }
+
+    public List<LabelInfo> labelInfoList = new();
+    public int imageIndex;
+    public int labelIndex;
+    public TargetInfo target;
+    public float preTime;
+
+    public class TargetInfo
+    {
+        public Vector3 position;
+        public int intensity;
+        public bool isLeaf;
+
+        public TargetInfo(Vector3 position, int intensity, bool isLeaf)
+        {
+            this.position = position;
+            this.intensity = intensity;
+            this.isLeaf = isLeaf;
+        }
+    }
+
+    [Serializable]
+    public class LabelInfo
+    {
+        public int imageIndex;
+        public int labelIndex;
+        public Vector3 targetPosition;
+        public Vector3 labelPosition;
+        public float time;
+        public int targetIntensity;
+        public bool isLeaf;
+
+        public LabelInfo(int imageIndex, int labelIndex, Vector3 targetPosition, Vector3 labelPosition, float time, int targetIntensity, bool isLeaf)
+        {
+            this.imageIndex = imageIndex;
+            this.labelIndex = labelIndex;
+            this.targetPosition = targetPosition;
+            this.labelPosition = labelPosition;
+            this.time = time;
+            this.targetIntensity = targetIntensity;
+            this.isLeaf = isLeaf;
+        }
     }
 }

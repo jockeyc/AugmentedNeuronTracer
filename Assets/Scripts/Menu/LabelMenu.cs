@@ -43,7 +43,7 @@ public class LabelMenu : SubMenu
 
     private void Delete()
     {
-        config.invoker.Execute(new DeleteCommand(config.invoker, config.tracer, config.curIndex));
+        config.invoker.Execute(new DeleteCommand(config.tracer, config.curIndex));
     }
 
     void UpdateViewValue(SliderEventData data)

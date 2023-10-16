@@ -1,0 +1,3214 @@
+{
+    "array": [
+        {
+            "imageIndex": 0,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 187.0,
+                "y": 297.0,
+                "z": 59.0
+            },
+            "labelPosition": {
+                "x": 186.0,
+                "y": 299.0,
+                "z": 59.0
+            },
+            "time": 5.20783805847168
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "time": 5.960071563720703
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "time": 6.82258415222168
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 272.0,
+                "y": 260.0,
+                "z": 29.0
+            },
+            "labelPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "time": 0.6485862731933594
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 272.0,
+                "y": 260.0,
+                "z": 29.0
+            },
+            "labelPosition": {
+                "x": 271.0,
+                "y": 288.0,
+                "z": 68.0
+            },
+            "time": 15.294790267944336
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 272.0,
+                "y": 260.0,
+                "z": 29.0
+            },
+            "labelPosition": {
+                "x": 275.0,
+                "y": 261.0,
+                "z": 52.0
+            },
+            "time": 16.044740676879884
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 272.0,
+                "y": 260.0,
+                "z": 29.0
+            },
+            "labelPosition": {
+                "x": 272.0,
+                "y": 269.0,
+                "z": 53.0
+            },
+            "time": 19.24531364440918
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 272.0,
+                "y": 260.0,
+                "z": 29.0
+            },
+            "labelPosition": {
+                "x": 286.0,
+                "y": 33.0,
+                "z": 47.0
+            },
+            "time": 19.81169319152832
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "time": 2.916698455810547
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 200.0,
+                "y": 333.0,
+                "z": 31.000001907348634
+            },
+            "time": 3.249370574951172
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 200.0,
+                "y": 333.0,
+                "z": 31.000001907348634
+            },
+            "time": 3.63372802734375
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 3.8330459594726564
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 3.916980743408203
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 4.051368713378906
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 4.249504089355469
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 342.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 4.334407806396484
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 0.2926445007324219
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 0.4422454833984375
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 0.4757423400878906
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 46.0,
+                "z": 34.0
+            },
+            "time": 0.6757278442382813
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 216.0,
+                "y": 185.0,
+                "z": 29.0
+            },
+            "time": 2.776153564453125
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 216.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "time": 6.8638153076171879
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 185.0,
+                "y": 191.0,
+                "z": 40.0
+            },
+            "labelPosition": {
+                "x": 270.0,
+                "y": 14.0,
+                "z": 36.0
+            },
+            "time": 1.9991950988769532
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 185.0,
+                "y": 191.0,
+                "z": 40.0
+            },
+            "labelPosition": {
+                "x": 186.0,
+                "y": 192.0,
+                "z": 40.0
+            },
+            "time": 8.567760467529297
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 198.0,
+                "y": 313.0,
+                "z": 75.0
+            },
+            "labelPosition": {
+                "x": 134.0,
+                "y": 324.0,
+                "z": 29.999998092651368
+            },
+            "time": 11.933723449707032
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 198.0,
+                "y": 313.0,
+                "z": 75.0
+            },
+            "labelPosition": {
+                "x": 199.0,
+                "y": 313.0,
+                "z": 73.0
+            },
+            "time": 17.31690216064453
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 340.0,
+                "y": 415.0,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 321.0,
+                "y": 417.0,
+                "z": 35.0
+            },
+            "time": 5.1421356201171879
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 340.0,
+                "y": 415.0,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 321.0,
+                "y": 417.0,
+                "z": 35.0
+            },
+            "time": 9.12591552734375
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 340.0,
+                "y": 415.0,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 329.0,
+                "y": 408.0,
+                "z": 42.0
+            },
+            "time": 14.0291748046875
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 283.0,
+                "y": 334.0,
+                "z": 27.000001907348634
+            },
+            "time": 11.082595825195313
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 285.0,
+                "y": 331.0,
+                "z": 29.0
+            },
+            "time": 22.899627685546876
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 304.0,
+                "y": 300.0,
+                "z": 22.0
+            },
+            "time": 27.711212158203126
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 305.0,
+                "y": 315.0,
+                "z": 20.0
+            },
+            "time": 33.61225891113281
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 321.0,
+                "y": 315.0,
+                "z": 27.000001907348634
+            },
+            "time": 47.04905700683594
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 322.0,
+                "y": 409.0,
+                "z": 43.0
+            },
+            "time": 47.11363220214844
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 322.0,
+                "y": 408.0,
+                "z": 45.0
+            },
+            "time": 47.199310302734378
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 322.0,
+                "y": 408.0,
+                "z": 45.0
+            },
+            "time": 47.86347961425781
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 153.0,
+                "y": 225.0,
+                "z": 29.999998092651368
+            },
+            "time": 50.39680480957031
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 181.0,
+                "y": 343.0,
+                "z": 34.0
+            },
+            "labelPosition": {
+                "x": 181.0,
+                "y": 344.0,
+                "z": 34.0
+            },
+            "time": 4.9074859619140629
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 414.0,
+                "y": 169.0,
+                "z": 68.0
+            },
+            "labelPosition": {
+                "x": 181.0,
+                "y": 344.0,
+                "z": 44.09375
+            },
+            "time": 1.200469970703125
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 414.0,
+                "y": 169.0,
+                "z": 68.0
+            },
+            "labelPosition": {
+                "x": 181.0,
+                "y": 344.0,
+                "z": 44.09375
+            },
+            "time": 1.3984222412109376
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 414.0,
+                "y": 169.0,
+                "z": 68.0
+            },
+            "labelPosition": {
+                "x": 415.0,
+                "y": 171.0,
+                "z": 66.140625
+            },
+            "time": 3.949676513671875
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 265.0,
+                "y": 180.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 265.0,
+                "y": 180.0,
+                "z": 35.015625
+            },
+            "time": 3.57647705078125
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 129.0,
+                "y": 167.0,
+                "z": 47.0
+            },
+            "labelPosition": {
+                "x": 129.0,
+                "y": 168.0,
+                "z": 46.6875
+            },
+            "time": 4.6990203857421879
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 392.0,
+                "y": 241.0,
+                "z": 125.0
+            },
+            "labelPosition": {
+                "x": 386.0,
+                "y": 265.0,
+                "z": 88.1875
+            },
+            "time": 6.59271240234375
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 392.0,
+                "y": 241.0,
+                "z": 125.0
+            },
+            "labelPosition": {
+                "x": 362.0,
+                "y": 254.0,
+                "z": 98.5625
+            },
+            "time": 16.529067993164064
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 392.0,
+                "y": 241.0,
+                "z": 125.0
+            },
+            "labelPosition": {
+                "x": 370.0,
+                "y": 255.0,
+                "z": 99.859375
+            },
+            "time": 48.49903869628906
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 392.0,
+                "y": 241.0,
+                "z": 125.0
+            },
+            "labelPosition": {
+                "x": 371.0,
+                "y": 285.0,
+                "z": 89.484375
+            },
+            "time": 65.96235656738281
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 174.0,
+                "y": 337.0,
+                "z": 53.0
+            },
+            "labelPosition": {
+                "x": 185.0,
+                "y": 320.0,
+                "z": 35.015625
+            },
+            "time": 4.148101806640625
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 174.0,
+                "y": 337.0,
+                "z": 53.0
+            },
+            "labelPosition": {
+                "x": 176.0,
+                "y": 336.0,
+                "z": 53.171875
+            },
+            "time": 6.747650146484375
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 402.0,
+                "y": 206.0,
+                "z": 79.0
+            },
+            "labelPosition": {
+                "x": 375.0,
+                "y": 202.0,
+                "z": 32.421875
+            },
+            "time": 6.26312255859375
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 402.0,
+                "y": 206.0,
+                "z": 79.0
+            },
+            "labelPosition": {
+                "x": 393.0,
+                "y": 213.0,
+                "z": 77.8125
+            },
+            "time": 14.06451416015625
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 262.0,
+                "y": 195.0,
+                "z": 20.0
+            },
+            "labelPosition": {
+                "x": 252.0,
+                "y": 219.0,
+                "z": 53.171875
+            },
+            "time": 2.5487060546875
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 262.0,
+                "y": 195.0,
+                "z": 20.0
+            },
+            "labelPosition": {
+                "x": 273.0,
+                "y": 200.0,
+                "z": 33.71875
+            },
+            "time": 4.714752197265625
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 262.0,
+                "y": 195.0,
+                "z": 20.0
+            },
+            "labelPosition": {
+                "x": 264.0,
+                "y": 192.0,
+                "z": 33.71875
+            },
+            "time": 9.615814208984375
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 313.0,
+                "y": 315.0,
+                "z": 19.0
+            },
+            "labelPosition": {
+                "x": 314.0,
+                "y": 315.0,
+                "z": 16.859375
+            },
+            "time": 4.847381591796875
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 232.0,
+                "y": 381.0,
+                "z": 54.0
+            },
+            "labelPosition": {
+                "x": 231.0,
+                "y": 382.0,
+                "z": 53.171875
+            },
+            "time": 5.0328369140625
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 98.0,
+                "y": 290.0,
+                "z": 31.0
+            },
+            "labelPosition": {
+                "x": 104.0,
+                "y": 294.0,
+                "z": 33.71875
+            },
+            "time": 16.66619873046875
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 159.0,
+                "y": 261.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 165.0,
+                "y": 302.0,
+                "z": 46.5390625
+            },
+            "time": 2.182220458984375
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 159.0,
+                "y": 261.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 160.0,
+                "y": 261.0,
+                "z": 57.859375
+            },
+            "time": 4.431610107421875
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 265.0,
+                "y": 311.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 262.0,
+                "y": 311.0,
+                "z": 50.3125
+            },
+            "time": 5.50128173828125
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 98.0,
+                "y": 240.0,
+                "z": 44.0
+            },
+            "labelPosition": {
+                "x": 50.0,
+                "y": 252.0,
+                "z": 59.1171875
+            },
+            "time": 17.048126220703126
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 98.0,
+                "y": 240.0,
+                "z": 44.0
+            },
+            "labelPosition": {
+                "x": 97.0,
+                "y": 241.0,
+                "z": 45.28125
+            },
+            "time": 20.714996337890626
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 217.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 218.0,
+                "z": 69.1796875
+            },
+            "time": 5.04852294921875
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 101.0,
+                "y": 342.0,
+                "z": 70.0
+            },
+            "labelPosition": {
+                "x": 101.0,
+                "y": 342.0,
+                "z": 70.4375
+            },
+            "time": 6.483306884765625
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 255.0,
+                "y": 311.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 254.0,
+                "y": 311.0,
+                "z": 50.3125
+            },
+            "time": 4.00701904296875
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 258.0,
+                "y": 317.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 262.0,
+                "y": 314.0,
+                "z": 49.0546875
+            },
+            "time": 3.62420654296875
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 261.0,
+                "y": 312.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 264.0,
+                "y": 313.0,
+                "z": 49.0546875
+            },
+            "time": 4.548583984375
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 152.0,
+                "y": 208.0,
+                "z": 74.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 213.0,
+                "z": 70.4375
+            },
+            "time": 4.970947265625
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 123.0,
+                "y": 236.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 124.0,
+                "y": 238.0,
+                "z": 51.5703125
+            },
+            "time": 5.139007568359375
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 252.0,
+                "y": 420.0,
+                "z": 68.0
+            },
+            "labelPosition": {
+                "x": 259.0,
+                "y": 432.0,
+                "z": 77.59375
+            },
+            "time": 5.34368896484375
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 138.0,
+                "z": 108.0
+            },
+            "labelPosition": {
+                "x": 208.0,
+                "y": 134.0,
+                "z": 108.9296875
+            },
+            "time": 5.660858154296875
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 138.0,
+                "z": 108.0
+            },
+            "labelPosition": {
+                "x": 63.0,
+                "y": 89.0,
+                "z": 98.484375
+            },
+            "time": 6.741180419921875
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 138.0,
+                "z": 108.0
+            },
+            "labelPosition": {
+                "x": 210.0,
+                "y": 140.0,
+                "z": 107.4375
+            },
+            "time": 13.309112548828125
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 385.0,
+                "y": 288.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 403.0,
+                "y": 304.0,
+                "z": 120.8671875
+            },
+            "time": 2.677581787109375
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 385.0,
+                "y": 288.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 408.0,
+                "y": 300.0,
+                "z": 113.40625
+            },
+            "time": 2.742156982421875
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 385.0,
+                "y": 288.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 367.0,
+                "y": 272.0,
+                "z": 58.1953125
+            },
+            "time": 17.38616943359375
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 302.0,
+                "y": 344.0,
+                "z": 117.0
+            },
+            "labelPosition": {
+                "x": 302.0,
+                "y": 341.0,
+                "z": 113.40625
+            },
+            "time": 5.51422119140625
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 168.0,
+                "z": 79.0
+            },
+            "labelPosition": {
+                "x": 127.0,
+                "y": 171.0,
+                "z": 79.0859375
+            },
+            "time": 5.760467529296875
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 225.0,
+                "y": 162.0,
+                "z": 104.453125
+            },
+            "time": 6.09808349609375
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 256.0,
+                "y": 38.0,
+                "z": 104.0
+            },
+            "labelPosition": {
+                "x": 249.0,
+                "y": 57.0,
+                "z": 80.578125
+            },
+            "time": 6.3177490234375
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 256.0,
+                "y": 38.0,
+                "z": 104.0
+            },
+            "labelPosition": {
+                "x": 257.0,
+                "y": 58.0,
+                "z": 38.796875
+            },
+            "time": 8.85235595703125
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 256.0,
+                "y": 38.0,
+                "z": 104.0
+            },
+            "labelPosition": {
+                "x": 251.0,
+                "y": 46.0,
+                "z": 104.453125
+            },
+            "time": 9.71759033203125
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 284.0,
+                "y": 366.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 311.0,
+                "y": 394.0,
+                "z": 159.6640625
+            },
+            "time": 2.097869873046875
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 284.0,
+                "y": 366.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 306.0,
+                "y": 401.0,
+                "z": 156.6796875
+            },
+            "time": 2.14794921875
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 284.0,
+                "y": 366.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 286.0,
+                "y": 362.0,
+                "z": 80.578125
+            },
+            "time": 7.781280517578125
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 246.0,
+                "y": 151.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 246.0,
+                "y": 151.0,
+                "z": 114.8984375
+            },
+            "time": 7.263916015625
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 157.0,
+                "y": 172.0,
+                "z": 73.0
+            },
+            "labelPosition": {
+                "x": 157.0,
+                "y": 172.0,
+                "z": 73.1171875
+            },
+            "time": 4.38677978515625
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 292.0,
+                "y": 346.0,
+                "z": 147.0
+            },
+            "labelPosition": {
+                "x": 283.0,
+                "y": 361.0,
+                "z": 135.046875
+            },
+            "time": 34.36639404296875
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 292.0,
+                "y": 346.0,
+                "z": 147.0
+            },
+            "labelPosition": {
+                "x": 286.0,
+                "y": 360.0,
+                "z": 158.6015625
+            },
+            "time": 43.73333740234375
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 292.0,
+                "y": 346.0,
+                "z": 147.0
+            },
+            "labelPosition": {
+                "x": 292.0,
+                "y": 344.0,
+                "z": 146.0390625
+            },
+            "time": 47.29693603515625
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 73.0,
+                "y": 178.0,
+                "z": 87.0
+            },
+            "labelPosition": {
+                "x": 34.0,
+                "y": 180.0,
+                "z": 149.1796875
+            },
+            "time": 3.4761962890625
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 73.0,
+                "y": 178.0,
+                "z": 87.0
+            },
+            "labelPosition": {
+                "x": 74.0,
+                "y": 177.0,
+                "z": 92.6484375
+            },
+            "time": 14.55364990234375
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 225.0,
+                "y": 284.0,
+                "z": 91.0
+            },
+            "labelPosition": {
+                "x": 74.0,
+                "y": 177.0,
+                "z": 92.6484375
+            },
+            "time": 0.78887939453125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 225.0,
+                "y": 284.0,
+                "z": 91.0
+            },
+            "labelPosition": {
+                "x": 224.0,
+                "y": 283.0,
+                "z": 94.21875
+            },
+            "time": 38.15118408203125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 140.0,
+                "y": 235.0,
+                "z": 95.0
+            },
+            "labelPosition": {
+                "x": 136.0,
+                "y": 236.0,
+                "z": 95.7890625
+            },
+            "time": 6.174560546875
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 290.0,
+                "z": 121.0
+            },
+            "labelPosition": {
+                "x": 201.0,
+                "y": 323.0,
+                "z": 152.3203125
+            },
+            "time": 15.1593017578125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 290.0,
+                "z": 121.0
+            },
+            "labelPosition": {
+                "x": 208.0,
+                "y": 292.0,
+                "z": 122.484375
+            },
+            "time": 20.5748291015625
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 168.0,
+                "y": 127.0,
+                "z": 123.0
+            },
+            "labelPosition": {
+                "x": 168.0,
+                "y": 128.0,
+                "z": 120.9140625
+            },
+            "time": 11.6495361328125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 172.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 35.0,
+                "y": 180.0,
+                "z": 149.1796875
+            },
+            "time": 10.382568359375
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 172.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 39.0,
+                "y": 172.0,
+                "z": 150.75
+            },
+            "time": 25.00048828125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 172.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 45.0,
+                "y": 177.0,
+                "z": 147.609375
+            },
+            "time": 40.10174560546875
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 172.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 1.0,
+                "y": 183.0,
+                "z": 84.796875
+            },
+            "time": 41.35284423828125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 133.0,
+                "y": 86.0,
+                "z": 135.0
+            },
+            "labelPosition": {
+                "x": 146.0,
+                "y": 99.0,
+                "z": 131.90625
+            },
+            "time": 5.1669921875
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 133.0,
+                "y": 86.0,
+                "z": 135.0
+            },
+            "labelPosition": {
+                "x": 134.0,
+                "y": 89.0,
+                "z": 135.046875
+            },
+            "time": 10.7060546875
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 173.0,
+                "y": 155.0,
+                "z": 105.2109375
+            },
+            "time": 4.00048828125
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 139.0,
+                "y": 88.0,
+                "z": 106.78125
+            },
+            "time": 15.66253662109375
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 116.0,
+                "y": 80.0,
+                "z": 127.1953125
+            },
+            "time": 18.33837890625
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 110.0,
+                "y": 71.0,
+                "z": 133.4765625
+            },
+            "time": 21.5054931640625
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 134.0,
+                "y": 90.0,
+                "z": 87.9375
+            },
+            "time": 27.87298583984375
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 100.0,
+                "y": 79.0,
+                "z": 122.484375
+            },
+            "time": 32.639404296875
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 128.0,
+                "y": 80.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 110.0,
+                "y": 63.0,
+                "z": 138.1875
+            },
+            "time": 33.73870849609375
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 245.0,
+                "y": 366.0,
+                "z": 117.0
+            },
+            "labelPosition": {
+                "x": 245.0,
+                "y": 370.0,
+                "z": 119.34375
+            },
+            "time": 6.89764404296875
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 177.734375,
+                "y": 250.1953125,
+                "z": 114.0
+            },
+            "time": 9.57171630859375
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 173.6328125,
+                "y": 241.9921875,
+                "z": 108.0
+            },
+            "time": 16.95709228515625
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 175.0,
+                "y": 239.2578125,
+                "z": 111.0
+            },
+            "time": 20.3590087890625
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 173.6328125,
+                "y": 241.9921875,
+                "z": 108.0
+            },
+            "time": 23.8875732421875
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 170.8984375,
+                "y": 243.359375,
+                "z": 127.0
+            },
+            "time": 28.50579833984375
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 158.5937957763672,
+                "y": 292.5780944824219,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 155.859375,
+                "y": 300.78125,
+                "z": 127.0
+            },
+            "time": 8.362548828125
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 158.5937957763672,
+                "y": 292.5780944824219,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 164.0625,
+                "y": 288.4765625,
+                "z": 126.0
+            },
+            "time": 14.14825439453125
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 492.1875,
+                "y": 391.0155944824219,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 492.1875,
+                "y": 389.6484375,
+                "z": 51.0
+            },
+            "time": 3.7679443359375
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 285.7421875,
+                "y": 291.2109069824219,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 291.2109375,
+                "y": 291.2109375,
+                "z": 74.0
+            },
+            "time": 2.74932861328125
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 442.96881103515627,
+                "y": 460.7421875,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 12.3046875,
+                "y": 165.4296875,
+                "z": 126.0
+            },
+            "time": 0.08135986328125
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 442.96881103515627,
+                "y": 460.7421875,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 32.8125,
+                "y": 180.46875,
+                "z": 125.0
+            },
+            "time": 0.5821533203125
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 442.96881103515627,
+                "y": 460.7421875,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 437.5,
+                "y": 460.7421875,
+                "z": 68.0
+            },
+            "time": 4.9195556640625
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 525.0,
+                "y": 191.4062957763672,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 531.8359375,
+                "y": 191.40625,
+                "z": 59.0
+            },
+            "time": 6.748779296875
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 525.0,
+                "y": 191.4062957763672,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 529.1015625,
+                "y": 183.203125,
+                "z": 39.0
+            },
+            "time": 9.24676513671875
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 514.0625,
+                "y": 149.02340698242188,
+                "z": 86.0
+            },
+            "labelPosition": {
+                "x": 507.2265625,
+                "y": 147.65625,
+                "z": 96.0
+            },
+            "time": 4.93084716796875
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 514.0625,
+                "y": 149.02340698242188,
+                "z": 86.0
+            },
+            "labelPosition": {
+                "x": 519.53125,
+                "y": 149.0234375,
+                "z": 87.0
+            },
+            "time": 8.0311279296875
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 695.8983764648438,
+                "y": 173.63279724121095,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 691.796875,
+                "y": 172.265625,
+                "z": 36.0
+            },
+            "time": 5.3018798828125
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 321.2890930175781,
+                "y": 262.5,
+                "z": 77.0
+            },
+            "labelPosition": {
+                "x": 321.2890625,
+                "y": 266.6015625,
+                "z": 77.0
+            },
+            "time": 4.717041015625
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 399.21881103515627,
+                "y": 399.21881103515627,
+                "z": 60.0
+            },
+            "labelPosition": {
+                "x": 400.5859375,
+                "y": 400.5859375,
+                "z": 60.0
+            },
+            "time": 4.39715576171875
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 632.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 372.0,
+                "y": 188.0,
+                "z": 65.0
+            },
+            "time": 0.53924560546875
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 632.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 372.0,
+                "y": 188.0,
+                "z": 65.0
+            },
+            "time": 0.588623046875
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 632.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 338.0,
+                "y": 630.0,
+                "z": 38.0
+            },
+            "time": 5.66802978515625
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 620.0,
+                "y": 484.0,
+                "z": 57.0
+            },
+            "labelPosition": {
+                "x": 610.0,
+                "y": 482.0,
+                "z": 58.0
+            },
+            "time": 5.36688232421875
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 612.0,
+                "y": 420.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 612.0,
+                "y": 420.0,
+                "z": 71.0
+            },
+            "time": 5.23089599609375
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 624.0,
+                "y": 548.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 626.0,
+                "y": 548.0,
+                "z": 127.0
+            },
+            "time": 4.79833984375
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 402.0,
+                "y": 264.0,
+                "z": 8.0
+            },
+            "labelPosition": {
+                "x": 384.0,
+                "y": 266.0,
+                "z": 27.0
+            },
+            "time": 9.68414306640625
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 402.0,
+                "y": 264.0,
+                "z": 8.0
+            },
+            "labelPosition": {
+                "x": 458.0,
+                "y": 348.0,
+                "z": 19.0
+            },
+            "time": 10.51806640625
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 350.0,
+                "y": 362.0,
+                "z": 9.0
+            },
+            "labelPosition": {
+                "x": 350.0,
+                "y": 362.0,
+                "z": 9.0
+            },
+            "time": 5.38385009765625
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 806.0,
+                "y": 256.0,
+                "z": 124.0
+            },
+            "labelPosition": {
+                "x": 806.0,
+                "y": 256.0,
+                "z": 124.0
+            },
+            "time": 6.72802734375
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 316.0,
+                "y": 468.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 316.0,
+                "y": 468.0,
+                "z": 50.0
+            },
+            "time": 3.92144775390625
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 148.0,
+                "y": 332.0,
+                "z": 57.0
+            },
+            "labelPosition": {
+                "x": 146.0,
+                "y": 338.0,
+                "z": 57.0
+            },
+            "time": 5.24658203125
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 776.0,
+                "y": 426.0,
+                "z": 84.0
+            },
+            "labelPosition": {
+                "x": 772.0,
+                "y": 424.0,
+                "z": 15.0
+            },
+            "time": 4.06634521484375
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 776.0,
+                "y": 426.0,
+                "z": 84.0
+            },
+            "labelPosition": {
+                "x": 778.0,
+                "y": 442.0,
+                "z": 85.0
+            },
+            "time": 10.8680419921875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 668.0,
+                "y": 636.0,
+                "z": 20.0
+            },
+            "labelPosition": {
+                "x": 674.0,
+                "y": 650.0,
+                "z": 55.0
+            },
+            "time": 5.93896484375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 668.0,
+                "y": 636.0,
+                "z": 20.0
+            },
+            "labelPosition": {
+                "x": 670.0,
+                "y": 628.0,
+                "z": 24.0
+            },
+            "time": 12.37164306640625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 642.0,
+                "y": 884.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 644.0,
+                "y": 880.0,
+                "z": 2.0
+            },
+            "time": 4.232421875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 416.0,
+                "y": 320.0,
+                "z": 60.0
+            },
+            "labelPosition": {
+                "x": 418.0,
+                "y": 320.0,
+                "z": 60.0
+            },
+            "time": 3.25518798828125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 238.0,
+                "y": 758.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 760.0,
+                "z": 3.0
+            },
+            "time": 3.62908935546875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 966.0,
+                "y": 240.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 966.0,
+                "y": 234.0,
+                "z": 37.0
+            },
+            "time": 2.9605712890625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 602.0,
+                "y": 1014.0,
+                "z": 49.0
+            },
+            "labelPosition": {
+                "x": 966.0,
+                "y": 238.0,
+                "z": 35.0
+            },
+            "time": 0.64886474609375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 602.0,
+                "y": 1014.0,
+                "z": 49.0
+            },
+            "labelPosition": {
+                "x": 604.0,
+                "y": 1012.0,
+                "z": 50.0
+            },
+            "time": 4.19073486328125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 478.0,
+                "y": 608.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 476.0,
+                "y": 628.0,
+                "z": 57.0
+            },
+            "time": 9.63201904296875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 478.0,
+                "y": 608.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 478.0,
+                "y": 598.0,
+                "z": 125.0
+            },
+            "time": 16.865966796875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 116.0,
+                "y": 50.0,
+                "z": 66.0
+            },
+            "time": 4.347412109375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 90.0,
+                "y": 40.0,
+                "z": 87.0
+            },
+            "time": 4.547607421875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 90.0,
+                "y": 40.0,
+                "z": 87.0
+            },
+            "time": 4.6651611328125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 80.0,
+                "y": 6.0,
+                "z": 81.0
+            },
+            "time": 11.5108642578125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 80.0,
+                "y": 6.0,
+                "z": 81.0
+            },
+            "time": 11.9775390625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 80.0,
+                "y": 6.0,
+                "z": 81.0
+            },
+            "time": 12.0784912109375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 74.0,
+                "y": 2.0,
+                "z": 80.0
+            },
+            "labelPosition": {
+                "x": 86.0,
+                "y": 94.0,
+                "z": 7.0
+            },
+            "time": 12.39404296875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 714.0,
+                "y": 402.0,
+                "z": 83.0
+            },
+            "labelPosition": {
+                "x": 702.0,
+                "y": 410.0,
+                "z": 63.0
+            },
+            "time": 5.716552734375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 54.0,
+                "z": 38.0
+            },
+            "time": 4.578369140625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 54.0,
+                "z": 38.0
+            },
+            "time": 4.7119140625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 54.0,
+                "z": 38.0
+            },
+            "time": 5.0623779296875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 54.0,
+                "z": 38.0
+            },
+            "time": 5.8447265625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 54.0,
+                "z": 38.0
+            },
+            "time": 6.393798828125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 54.0,
+                "z": 38.0
+            },
+            "time": 6.544921875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 50.0,
+                "z": 39.0
+            },
+            "time": 6.72900390625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 350.0,
+                "y": 166.0,
+                "z": 120.0
+            },
+            "time": 6.9454345703125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 7.22802734375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 7.6773681640625
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 7.812255859375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 8.1611328125
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 8.3275146484375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 8.660888671875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 17.2021484375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 17.6185302734375
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 48.0,
+                "z": 40.0
+            },
+            "time": 17.9013671875
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 304.0,
+                "y": 34.0,
+                "z": 42.0
+            },
+            "labelPosition": {
+                "x": 314.0,
+                "y": 44.0,
+                "z": 39.0
+            },
+            "time": 18.353515625
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 386.0,
+                "y": 694.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 386.0,
+                "y": 694.0,
+                "z": 75.0
+            },
+            "time": 7.2166748046875
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 610.0,
+                "y": 510.0,
+                "z": 44.0
+            },
+            "labelPosition": {
+                "x": 610.0,
+                "y": 512.0,
+                "z": 44.0
+            },
+            "time": 4.915283203125
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 610.0,
+                "y": 702.0,
+                "z": 97.0
+            },
+            "time": 3.006103515625
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 558.0,
+                "y": 636.0,
+                "z": 49.0
+            },
+            "time": 4.405517578125
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 578.0,
+                "y": 674.0,
+                "z": 64.0
+            },
+            "time": 22.2630615234375
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 594.0,
+                "y": 694.0,
+                "z": 16.0
+            },
+            "time": 30.1531982421875
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 616.0,
+                "y": 690.0,
+                "z": 24.0
+            },
+            "time": 30.88720703125
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 594.0,
+                "y": 694.0,
+                "z": 16.0
+            },
+            "time": 31.036865234375
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 582.0,
+                "y": 692.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 604.0,
+                "y": 668.0,
+                "z": 33.0
+            },
+            "time": 33.3106689453125
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 704.0,
+                "y": 1018.0,
+                "z": 9.0
+            },
+            "labelPosition": {
+                "x": 698.0,
+                "y": 998.0,
+                "z": 71.0
+            },
+            "time": 4.13720703125
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 704.0,
+                "y": 1018.0,
+                "z": 9.0
+            },
+            "labelPosition": {
+                "x": 706.0,
+                "y": 998.0,
+                "z": 13.0
+            },
+            "time": 7.190185546875
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 386.0,
+                "y": 690.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 384.0,
+                "y": 690.0,
+                "z": 126.0
+            },
+            "time": 6.783447265625
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 960.0,
+                "y": 676.0,
+                "z": 83.0
+            },
+            "labelPosition": {
+                "x": 956.0,
+                "y": 674.0,
+                "z": 83.0
+            },
+            "time": 4.781494140625
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 802.0,
+                "y": 584.0,
+                "z": 72.0
+            },
+            "time": 5.2135009765625
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 682.0,
+                "y": 586.0,
+                "z": 70.0
+            },
+            "labelPosition": {
+                "x": 682.0,
+                "y": 590.0,
+                "z": 69.0
+            },
+            "time": 4.76611328125
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 416.0,
+                "z": 17.0
+            },
+            "labelPosition": {
+                "x": 716.0,
+                "y": 416.0,
+                "z": 15.0
+            },
+            "time": 4.081787109375
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 590.0,
+                "y": 700.0,
+                "z": 64.0
+            },
+            "labelPosition": {
+                "x": 582.0,
+                "y": 684.0,
+                "z": 2.0
+            },
+            "time": 3.4066162109375
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 556.25,
+                "y": 407.8125,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 550.0,
+                "y": 409.375,
+                "z": 70.0
+            },
+            "time": 4.721435546875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 200.0,
+                "y": 579.6875,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 196.875,
+                "y": 565.625,
+                "z": 111.0
+            },
+            "time": 7.494873046875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 479.6875,
+                "y": 381.25,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 479.6875,
+                "y": 381.25,
+                "z": 81.0
+            },
+            "time": 9.0361328125
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 665.625,
+                "y": 518.75,
+                "z": 1.0
+            },
+            "labelPosition": {
+                "x": 667.1875,
+                "y": 518.75,
+                "z": 2.0
+            },
+            "time": 3.397216796875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 331.25,
+                "y": 623.4375,
+                "z": 77.0
+            },
+            "labelPosition": {
+                "x": 334.375,
+                "y": 620.3125,
+                "z": 76.0
+            },
+            "time": 3.61572265625
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 323.4375,
+                "y": 579.6875,
+                "z": 96.0
+            },
+            "labelPosition": {
+                "x": 325.0,
+                "y": 575.0,
+                "z": 96.0
+            },
+            "time": 3.94921875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 351.5625,
+                "y": 0.0,
+                "z": 18.0
+            },
+            "labelPosition": {
+                "x": 325.0,
+                "y": 575.0,
+                "z": 96.0
+            },
+            "time": 2.8363037109375
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 351.5625,
+                "y": 0.0,
+                "z": 18.0
+            },
+            "labelPosition": {
+                "x": 467.1875,
+                "y": 237.5,
+                "z": 57.0
+            },
+            "time": 4.51904296875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 351.5625,
+                "y": 0.0,
+                "z": 18.0
+            },
+            "labelPosition": {
+                "x": 467.1875,
+                "y": 237.5,
+                "z": 57.0
+            },
+            "time": 4.81982421875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 351.5625,
+                "y": 0.0,
+                "z": 18.0
+            },
+            "labelPosition": {
+                "x": 467.1875,
+                "y": 237.5,
+                "z": 57.0
+            },
+            "time": 7.0360107421875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 351.5625,
+                "y": 0.0,
+                "z": 18.0
+            },
+            "labelPosition": {
+                "x": 321.875,
+                "y": 164.0625,
+                "z": 28.0
+            },
+            "time": 9.62060546875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 351.5625,
+                "y": 0.0,
+                "z": 18.0
+            },
+            "labelPosition": {
+                "x": 353.125,
+                "y": 56.25,
+                "z": 19.0
+            },
+            "time": 13.5078125
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 364.0625,
+                "y": 157.8125,
+                "z": 22.0
+            },
+            "labelPosition": {
+                "x": 368.75,
+                "y": 165.625,
+                "z": 26.0
+            },
+            "time": 3.04638671875
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 459.375,
+                "y": 409.375,
+                "z": 53.0
+            },
+            "labelPosition": {
+                "x": 460.9375,
+                "y": 415.625,
+                "z": 52.0
+            },
+            "time": 4.3321533203125
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 442.1875,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 440.625,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "time": 3.6849365234375
+        }
+    ]
+}

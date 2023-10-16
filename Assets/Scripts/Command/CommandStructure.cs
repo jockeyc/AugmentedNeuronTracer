@@ -151,31 +151,25 @@ namespace CommandStructure
     class DeleteCommand : Command
     {
         public List<uint> _indexes;
-        CMDInvoker _invoker;
-        AdjustCommand _preCommand;
-        
+
         public DeleteCommand ()
         {
         }
-        public DeleteCommand(CMDInvoker invoker, Tracer tracer, uint index) : base(tracer)
+        public DeleteCommand(Tracer tracer, uint index) : base(tracer)
         {
             _indexes = tracer.GetCluster(index);
             Debug.Log(_indexes.Count);
-            _invoker = invoker;
-            _preCommand = _invoker.LastCammond() as AdjustCommand;
             commandType = "Delete";
         }
 
         public override void Execute()
         {
-            _invoker.Undo();
             tracer.ModifyMask(_indexes, false, 4);
         }
 
         public override void UnExecute()
         {
             tracer.ModifyMask(_indexes, true, 4);
-            _invoker.Execute(_preCommand);
         }
     }
 

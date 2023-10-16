@@ -1,5 +1,6 @@
 using Fusion;
 using MixedReality.Toolkit;
+using MixedReality.Toolkit.SpatialManipulation;
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine;
@@ -31,7 +32,7 @@ public class Primitive : NetworkBehaviour
         List<Vector3> verts = new List<Vector3>();
         List<Vector2> uvs = new List<Vector2>();
         List<Color> colors = new List<Color>();
-        const int cnt = 20;
+        const int cnt = 100;
         float deltaRad = Mathf.PI * 2 / cnt;
         for (int i = 0; i < cnt; i++)
         {
@@ -184,10 +185,10 @@ public class Primitive : NetworkBehaviour
         return myCylinder;
     }
 
-    public static GameObject CreateSphere(Marker marker, Vector3Int dim, Transform parentTransform)
+    public static GameObject CreateSphere(Marker marker, Vector3Int dim, Transform parentTransform, float radiusBias = 0)
     {
         var position = marker.position.Div(dim) - 0.5f * Vector3.one;
-        var radius = marker.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z));
+        var radius = (marker.radius+ radiusBias) * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z));
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         if (marker.type > 4) marker.type = 0;
         sphere.GetComponent<MeshRenderer>().material = materials[marker.type];
@@ -309,10 +310,10 @@ public class Primitive : NetworkBehaviour
         return sphere;
     }
 
-    public static GameObject CreateSphere(Marker marker, Vector3Int dim, Transform parentTransform, float colorIntensity)
+    public static GameObject CreateSphere(Marker marker, Vector3Int dim, Transform parentTransform, float colorIntensity, float radiusBias = 0)
     {
         var position = marker.position.Div(dim) - 0.5f * Vector3.one;
-        var radius = marker.radius * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z));
+        var radius = (marker.radius+ radiusBias) * Mathf.Min(1.0f / dim.x, Mathf.Min(1.0f / dim.y, 1.0f / dim.z));
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
         sphere.GetComponent<MeshRenderer>().material.shader = Shader.Find("Unlit/Color");
@@ -355,29 +356,39 @@ public class Primitive : NetworkBehaviour
         {
             Vector3 positionA = marker.position.Div(dim) - 0.5f * Vector3.one;
             positionA = parentTransform.TransformPoint(positionA);
-            float radiusA = marker.radius * Vector3.one.Divide(dim).MinComponent() * parentTransform.parent.transform.localScale.x;
+            float radiusA = marker.radius * Vector3.one.Divide(dim).MinComponent() * parentTransform.parent.transform.localScale.x * Config.Instance.radiusScale ;
 
             RpcCreateSphere(runner, positionA, radiusA, marker.type);
             var sphere = CreateSphere(positionA, radiusA, marker.type);
-            //if (marker.isLeaf)
-            //{
-            //    var si = sphere.AddComponent<StatefulInteractable>();
-            //    si.ToggleMode = StatefulInteractable.ToggleType.Toggle;
-            //    var pipeCasing = sphere.AddComponent<PipeCasing>();
-            //    pipeCasing.Initial(marker, dim, parentTransform);
-            //    si.IsToggled.OnEntered.AddListener((args) =>
-            //    {
-            //        GameObject menu = GameObject.Find("IsolateMenu(Clone)") ?? GameObject.Instantiate(Resources.Load("Prefabs/IsolateMenu")) as GameObject;
-            //        menu.SetActive(true);
-            //        menu.GetComponent<IsolateMenu>().pipeCasing = pipeCasing;
-            //        pipeCasing.ClearPipes();
-            //    });
-            //}
+            if (marker.isLeaf)
+            {
+                var si = sphere.AddComponent<StatefulInteractable>();
+                si.ToggleMode = StatefulInteractable.ToggleType.Toggle;
+                var pipeCasing = sphere.AddComponent<PipeCasing>();
+                pipeCasing.Initial(marker, dim, parentTransform);
+                si.IsToggled.OnEntered.AddListener((args) =>
+                {
+                    if (Config.Instance.isIsolating) return;
+                    Config.Instance.isIsolating = true;
+                    GameObject menu = GameObject.Find("IsolateMenu(Clone)") ?? GameObject.Instantiate(Resources.Load("Prefabs/IsolateMenu")) as GameObject;
+                    SolverHandler sh = menu.GetComponent<SolverHandler>();
+                    sh.TrackedTargetType = TrackedObjectType.CustomOverride;
+                    sh.TransformOverride = sphere.transform;
+                    Orbital orbital = menu.GetComponent<Orbital>();
+                    Vector3 offset = -0.1f * (marker.position - Config.Instance._rootPos).normalized;
+                    orbital.LocalOffset = new Vector3(offset.x, offset.y, 0);
+                    menu.SetActive(true);
+                    menu.GetComponent<IsolateMenu>().pipeCasing = pipeCasing;
+                    pipeCasing.ClearPipes();
+                    Config.Instance.gazeController.interactionType = GazeController.EyeInteractionType.None;
+                    Config.Instance.paintingBoard.GetComponent<ObjectManipulator>().AllowedInteractionTypes = InteractionFlags.None;
+                });
+            }
 
             if (marker.parent != null)
             {
                 var positionB = marker.parent.position.Div(dim) - 0.5f * Vector3.one;
-                float radiusB = marker.parent.radius * Vector3.one.Divide(dim).MinComponent() * parentTransform.parent.transform.localScale.x;
+                float radiusB = marker.parent.radius * Vector3.one.Divide(dim).MinComponent() * parentTransform.parent.transform.localScale.x * Config.Instance.radiusScale;
                 positionB = parentTransform.TransformPoint(positionB);
 
                 RpcCreateCylinder(runner, positionA, positionB, radiusA, radiusB, marker.type);

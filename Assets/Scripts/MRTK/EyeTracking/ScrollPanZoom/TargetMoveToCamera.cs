@@ -15,19 +15,19 @@ namespace MixedReality.Toolkit.Examples
     {
         private static TargetMoveToCamera currentlyFocusedTarget;
 
-        [Tooltip("The focus distance of the GameObject in front of the camera when it is selected")]
+        [Tooltip("The focus distance of the GameObject in front of the camera when it is selection")]
         [SerializeField]
         private float DistanceToCamera = 1f;
 
-        [Tooltip("Speed of the object when transitioning when selected or deselected")]
+        [Tooltip("Speed of the object when transitioning when selection or deselected")]
         [SerializeField]
         private float speed = 1f;
 
-        [Tooltip("The distance threshold to stop transitioning when selected")]
+        [Tooltip("The distance threshold to stop transitioning when selection")]
         [SerializeField]
         private float minDistanceToStopTransition = 1f;
 
-        [Tooltip("Toggles the GameObject to rotate by eye gaze when selected")]
+        [Tooltip("Toggles the GameObject to rotate by eye gaze when selection")]
         [SerializeField]
         private bool setToAutoRotateIfFocused = true;
 

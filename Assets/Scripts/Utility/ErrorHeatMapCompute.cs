@@ -16,6 +16,7 @@ public class ErrorHeatMapCompute : MonoBehaviour
 
     private void Start()
     {
+        config = Config.Instance;
         Vector3Int dim = config.originalDim;
         computeShader = Resources.Load("ComputeShaders/ErrorHeatMap") as ComputeShader;
         int kernel = computeShader.FindKernel("CSMain");

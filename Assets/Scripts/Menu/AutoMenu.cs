@@ -107,7 +107,8 @@ public class AutoMenu : SubMenu
         TextMeshProUGUI[] textMeshProUGUIs = GetComponentsInChildren<TextMeshProUGUI>();
         var radiusText = textMeshProUGUIs[3];
         radiusText.text = $"Soma Radius:\n {value}";
-        config.somaRadius = value / 2;
+        //config.somaRadius = value / 2;
+        config.somaRadius = value;
 
         source = new CancellationTokenSource();
         token = source.Token;

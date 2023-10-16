@@ -1,15 +1,13 @@
-using JetBrains.Annotations;
+using ANT;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.XR.OpenXR.Input;
+
 
 public class FIM : MonoBehaviour
 {
@@ -24,6 +22,7 @@ public class FIM : MonoBehaviour
     public RenderTexture offset;
     public RenderTexture threshold;
     public ComputeShader computeShader;
+    public RenderTexture selection;
     public Vector3Int dim;
 
 
@@ -57,6 +56,7 @@ public class FIM : MonoBehaviour
         mask = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
         visualize = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         threshold = InitRenderTexture3D(dim.x , dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
+        selection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
         offset = InitOffset();
         volume = CopyData(config.ScaledVolume);
     }
@@ -750,8 +750,12 @@ public class FIM : MonoBehaviour
         while (queue.Count > 0)
         {
             uint peek = queue.Dequeue();
-            if (peek > parentBufferData.Length) Debug.Log(peek);
-            if (!trunk.Contains(parentBufferData[peek]))
+            if (peek > parentBufferData.Length)
+            {
+                BoardManager.Instance.CreatePoint(peek, Config.Instance.scaledDim, Color.green, 1.6f);
+                Debug.Log(Utils.IndexToCoordinate(peek, Config.Instance.scaledDim));
+            }
+                if (!trunk.Contains(parentBufferData[peek]))
             {
                 trunk.Add(parentBufferData[peek]);
                 queue.Enqueue(parentBufferData[peek]);
@@ -991,8 +995,10 @@ public class FIM : MonoBehaviour
             uint peek = queue.Dequeue();
             if (!trunk.Contains(parentBufferData[peek]))
             {
+                Debug.Log(Utils.IndexToCoordinate(peek, Config.Instance.scaledDim));
                 trunk.Add(parentBufferData[peek]);
                 queue.Enqueue(parentBufferData[peek]);
+
             }
         }
 
@@ -1682,6 +1688,32 @@ public class FIM : MonoBehaviour
         });
 
         return (mask, data);
+    }
+
+    public RenderTexture ModifySelection(List<uint> targetindexes)
+    {
+        selection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
+        Debug.Log("target count: " + targetindexes.Count);
+        int kernel;
+        if (targetindexes.Count > 0)
+        {
+            ComputeBuffer targetBuffer = new(targetindexes.Count, sizeof(uint), ComputeBufferType.Default);
+            targetBuffer.SetData(targetindexes.ToArray());
+            kernel = computeShader.FindKernel("ModifySelection");
+            computeShader.SetBuffer(kernel, "selectionTargetBuffer", targetBuffer);
+            computeShader.SetTexture(kernel, "selection", selection);
+            computeShader.SetInt("targetNum", targetindexes.Count);
+            computeShader.Dispatch(kernel, Mathf.CeilToInt(targetindexes.Count / 128.0f), 1, 1);
+            targetBuffer.Release();
+        }
+
+        return selection;
+    }
+
+    public RenderTexture ClearSelection()
+    {
+        selection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
+        return selection;
     }
 
     RenderTexture InitRenderTexture3D(int width, int height, int depth, RenderTextureFormat format, UnityEngine.Experimental.Rendering.GraphicsFormat graphicsFormat)

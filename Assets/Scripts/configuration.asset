@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50972b7922036fa4e850b74c6e517dac, type: 3}
   m_Name: configuration
   m_EditorClassIdentifier: 
-  path: C:\Users\80121\Desktop\MyResult\17302_00024
+  path: C:\Users\80121\Desktop\img\01865_P020.v3dpbd
   savePath: C:\Users\80121\Desktop\MyResult\
   needImport: 0
   scale: 1
   gaussianSmoothing: 0
   forceRootCenter: 0
-  volume: {fileID: 11700000, guid: 7c5e68c83742c3041b388a52b54e2d33, type: 2}
-  scaledDim: {x: 256, y: 256, z: 128}
-  somaRadius: 10
+  volume: {fileID: 11700000, guid: bea738efb909d224ebcd971e3bd738bf, type: 2}
+  scaledDim: {x: 512, y: 512, z: 128}
+  somaRadius: 20
   bkgThresh: 64
   blockSize: 0
   viewThresh: 25

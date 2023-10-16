@@ -13,15 +13,15 @@ namespace MixedReality.Toolkit.Examples
     [AddComponentMenu("Scripts/MRTK/Examples/EyeTrackingTarget")]
     public class EyeTrackingTarget : MonoBehaviour
     {
-        [Tooltip("Visual effect (e.g., particle explosion or animation) that is played when a target is selected.")]
+        [Tooltip("Visual effect (e.g., particle explosion or animation) that is played when a target is selection.")]
         [SerializeField]
         private GameObject visualEffectsOnHit = null;
 
-        [Tooltip("Audio clip that is played when a target is selected.")]
+        [Tooltip("Audio clip that is played when a target is selection.")]
         [SerializeField]
         private AudioClip audioFxCorrectTarget = null;
 
-        [Tooltip("Audio clip that is played when a wrong target is selected.")]
+        [Tooltip("Audio clip that is played when a wrong target is selection.")]
         [SerializeField]
         private AudioClip audioFxIncorrectTarget = null;
 

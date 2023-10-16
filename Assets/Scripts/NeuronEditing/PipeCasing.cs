@@ -5,13 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Timeline;
+using UnityEngine.UIElements;
 using UnityEngine.XR;
 
 public class PipeCasing : MonoBehaviour
 {
     public List<Marker> markers;
     public Dictionary<Marker, GameObject> spheres;
-    [SerializeField] private int center;
+    [SerializeField] private int beginning;
     private Transform cube;
     [SerializeField] int len = 0;
     public List<uint> targets;
@@ -29,26 +31,54 @@ public class PipeCasing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        bool jointIsValid = aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.RightHand, out HandJointPose jointPose);
+        bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
+        if (jointIsValid && handIsValid && isPinching && pinchAmount >= 0.95)
+        {
+
+            int center = len / 2 + beginning;
+            Marker centerMarker = markers[center];
+            Vector3 centerPos = cube.TransformPoint(centerMarker.position.Div(dim) - 0.5f * Vector3.one);
+            Debug.Log($"centerIndex: {center} centerPos:{centerPos}");
+            if (center>0)
+            {
+                Marker preMarker = markers[center - 1];
+                Vector3 prePos = cube.TransformPoint(preMarker.position.Div(dim) - 0.5f * Vector3.one);
+                Debug.Log($"preIndex: {center-1} prePos:{prePos}");
+                if (Vector3.Distance(prePos, jointPose.Position) < Vector3.Distance(centerPos, jointPose.Position)) MoveBack();
+            }
+            if(center< beginning + len)
+            {
+                Marker nextMarker = markers[center + 1];
+                Vector3 nextPos = cube.TransformPoint(nextMarker.position.Div(dim) - 0.5f * Vector3.one);
+                if (Vector3.Distance(nextPos, jointPose.Position) < Vector3.Distance(centerPos, jointPose.Position))
+                {
+                    MoveOn();
+                }
+                Debug.Log($"nextIndex: {center+1} nextPos:{nextPos}");
+            }
+        }
+
     }
 
     [InspectorButton]
     public void MoveOn()
     {
-        center = Math.Min(markers.Count, center + 1);
+        beginning = Math.Min(markers.Count, beginning + 1);
         Activate();
     }
 
     [InspectorButton]
     public void MoveBack()
     {
-        center = Math.Max(0, center - 1);
+        beginning = Math.Max(0, beginning - 1);
         Activate();
     }
 
     [InspectorButton]
     public void AddLength()
     {
-        len = Math.Min(len + 1, markers.Count);
+        len = Math.Min(len + 2, markers.Count - beginning -1);
         Activate();
     }
 
@@ -92,31 +122,34 @@ public class PipeCasing : MonoBehaviour
     public void Activate()
     {
         ClearPipes();
-        for (int i = 0; i < len && i + center < markers.Count; i++)
+        for (int i = 0; i < len && i + beginning < markers.Count; i++)
         {
-            Marker marker = markers[i + center];
+            Marker marker = markers[i + beginning];
             var cylinder = Primitive.CreateCylinder(marker, dim, cube, radiusBias);
             cylinder.GetComponent<MeshRenderer>().material.color = Color.white;
             cylinder.transform.SetParent(GameObject.Find("Pipe").transform, true);
             targets.AddRange(GetTargets(marker, radiusBias , pipeExtension));
 
+            var sphere = Primitive.CreateSphere(marker, dim, cube, radiusBias);
+            sphere.GetComponent<MeshRenderer>().material.color = Color.white;
+            sphere.transform.SetParent(GameObject.Find("Pipe").transform, true);
 
-            if (i == len - 1 || i + center == markers.Count - 1)
-            {
-                cylinder.AddComponent<BoxCollider>();
-                var si = cylinder.AddComponent<StatefulInteractable>();
-                si.IsPokeSelected.OnEntered.AddListener((args) => {
-                    HeadInteract();
-                });
-            }
-            else if (i == 0)
-            {
-                cylinder.AddComponent<BoxCollider>();
-                var si = cylinder.AddComponent<StatefulInteractable>();
-                si.IsPokeSelected.OnEntered.AddListener((args) => {
-                    TailInteract();
-                });
-            }
+            //if (i == len - 1 || i + beginning == markers.Count - 1)
+            //{
+            //    cylinder.AddComponent<BoxCollider>();
+            //    var si = cylinder.AddComponent<StatefulInteractable>();
+            //    si.IsPokeSelected.OnEntered.AddListener((args) => {
+            //        HeadInteract();
+            //    });
+            //}
+            //else if (i == 0)
+            //{
+            //    cylinder.AddComponent<BoxCollider>();
+            //    var si = cylinder.AddComponent<StatefulInteractable>();
+            //    si.IsPokeSelected.OnEntered.AddListener((args) => {
+            //        TailInteract();
+            //    });
+            //}
         }
     }
 
@@ -124,14 +157,7 @@ public class PipeCasing : MonoBehaviour
     {
         bool jointIsValid = aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.RightHand, out HandJointPose jointPose);
         bool handIsValid = aggregator.TryGetPinchProgress(XRNode.RightHand, out bool isReadyToPinch, out bool isPinching, out float pinchAmount);
-        if (jointIsValid && handIsValid && isPinching && pinchAmount >= 0.95)
-        {
-            MoveOn();
-        }
-        else
-        {
-            AddLength();
-        }
+        MoveOn();
     }
 
     private void TailInteract()
@@ -205,7 +231,7 @@ public class PipeCasing : MonoBehaviour
         markers = new();
         targets = new();
         markers.Add(marker);
-        center = 0;
+        beginning = 0;
         this.dim = dim;
         this.cube = cubeTransform;
         var parent = marker.parent;

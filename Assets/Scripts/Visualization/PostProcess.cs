@@ -8,6 +8,7 @@ public class BaseVolumeRendering : PostProcessEffectSettings
 {
     public TextureParameter volume = new TextureParameter { value = null };
     public TextureParameter mask = new TextureParameter { value = null };
+    public TextureParameter selection = new TextureParameter { value = null };
     public TextureParameter threshold = new TextureParameter { value = null };
     public TextureParameter connection = new TextureParameter { value = null };
     public TextureParameter occupancyMap = new TextureParameter { value = null };
@@ -52,6 +53,7 @@ public sealed class BaseVolumeRenderer : PostProcessEffectRenderer<BaseVolumeRen
         else if (config.VRShaderType == Config.ShaderType.FixedThreshold)
         {
             sheet.properties.SetTexture(Shader.PropertyToID("_Mask"), settings.mask.value);
+            sheet.properties.SetTexture(Shader.PropertyToID("_Selection"), settings.selection.value);
             sheet.properties.SetFloat(Shader.PropertyToID("_viewThreshold"), settings.viewThreshold.value);
         }
         else if (config.VRShaderType == Config.ShaderType.BaseAccelerated)

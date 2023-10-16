@@ -23,7 +23,7 @@ namespace MixedReality.Toolkit.Examples
         [SerializeField]
         private Color onHoverColor = Color.white;
 
-        [Tooltip("The selected color of the GameObject.")]
+        [Tooltip("The selection color of the GameObject.")]
         [SerializeField]
         private Color onSelectColor = Color.blue;
 

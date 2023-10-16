@@ -97,6 +97,10 @@ MonoBehaviour:
     m_Address: 080926a
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: ed1ada5e111f511468a37b4de0711a71
+    m_Address: 01015_P008
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 75e32621cd834bf4bb6c8c8afeebf5c0, type: 2}
   m_SchemaSet:

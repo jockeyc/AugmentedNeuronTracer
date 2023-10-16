@@ -68,7 +68,7 @@ public class MainMenu : MonoBehaviour
         buttons[(int)ButtonFunc.Undo].enabled = false;
         buttons[(int)ButtonFunc.Redo].enabled = false;
 
-        gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        //gameObject.transform.GetChild(0).gameObject.SetActive(false);
     }
 
     void SaveEvent()
@@ -272,7 +272,6 @@ public class MainMenu : MonoBehaviour
 
     void LockMove(bool islock)
     {
-        Debug.Log("what£¿");
         PressableButton button = buttons[(int)ButtonFunc.Move];
         var iconSelector = button.GetComponentInChildren<FontIconSelector>();
         TextMeshProUGUI textMeshPro = button.GetComponentsInChildren<TextMeshProUGUI>()[1];

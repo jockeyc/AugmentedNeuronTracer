@@ -1,0 +1,5155 @@
+{
+    "array": [
+        {
+            "imageIndex": 0,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 335.0,
+                "y": 296.0,
+                "z": 63.0
+            },
+            "labelPosition": {
+                "x": 328.0,
+                "y": 298.0,
+                "z": 59.0
+            },
+            "time": 3.8732833862304689,
+            "targetIntensity": 37,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 335.0,
+                "y": 296.0,
+                "z": 63.0
+            },
+            "labelPosition": {
+                "x": 328.0,
+                "y": 298.0,
+                "z": 59.0
+            },
+            "time": 4.590061187744141,
+            "targetIntensity": 37,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 335.0,
+                "y": 296.0,
+                "z": 63.0
+            },
+            "labelPosition": {
+                "x": 334.0,
+                "y": 296.0,
+                "z": 63.0
+            },
+            "time": 3.899839401245117,
+            "targetIntensity": 37,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 182.0,
+                "y": 366.0,
+                "z": 31.0
+            },
+            "labelPosition": {
+                "x": 182.0,
+                "y": 368.0,
+                "z": 32.0
+            },
+            "time": 2.9843292236328127,
+            "targetIntensity": 86,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 182.0,
+                "y": 366.0,
+                "z": 31.0
+            },
+            "labelPosition": {
+                "x": 182.0,
+                "y": 366.0,
+                "z": 31.000001907348634
+            },
+            "time": 5.1373443603515629,
+            "targetIntensity": 86,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "labelPosition": {
+                "x": 296.0,
+                "y": 316.0,
+                "z": 76.0
+            },
+            "time": 5.383129119873047,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 302.0,
+                "y": 274.0,
+                "z": 84.0
+            },
+            "labelPosition": {
+                "x": 302.0,
+                "y": 274.0,
+                "z": 84.0
+            },
+            "time": 0.9335556030273438,
+            "targetIntensity": 64,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 230.0,
+                "y": 195.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 230.0,
+                "y": 194.0,
+                "z": 59.0
+            },
+            "time": 0.5010757446289063,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 230.0,
+                "y": 195.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 230.0,
+                "y": 194.0,
+                "z": 59.0
+            },
+            "time": 1.351837158203125,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 230.0,
+                "y": 195.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 230.0,
+                "y": 194.0,
+                "z": 59.0
+            },
+            "time": 1.7357254028320313,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 230.0,
+                "y": 195.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 162.0,
+                "y": 304.0,
+                "z": 53.0
+            },
+            "time": 4.65216064453125,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 230.0,
+                "y": 195.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 162.0,
+                "y": 304.0,
+                "z": 53.0
+            },
+            "time": 4.687919616699219,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 230.0,
+                "y": 195.0,
+                "z": 58.0
+            },
+            "labelPosition": {
+                "x": 162.0,
+                "y": 304.0,
+                "z": 53.0
+            },
+            "time": 4.9520263671875,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 219.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 246.0,
+                "y": 290.0,
+                "z": 42.0
+            },
+            "time": 0.248626708984375,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 219.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 352.0,
+                "y": 282.0,
+                "z": 33.0
+            },
+            "time": 0.36553955078125,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 219.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 340.0,
+                "y": 280.0,
+                "z": 37.0
+            },
+            "time": 0.7315139770507813,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 219.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 220.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "time": 0.3167724609375,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 219.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 220.0,
+                "y": 208.0,
+                "z": 34.0
+            },
+            "time": 1.4342498779296876,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 219.0,
+                "y": 216.0,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 224.0,
+                "y": 266.0,
+                "z": 50.0
+            },
+            "time": 3.0535507202148439,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 224.0,
+                "y": 266.0,
+                "z": 50.0
+            },
+            "time": 0.43082427978515627,
+            "targetIntensity": 57,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 216.0,
+                "y": 180.0,
+                "z": 35.0
+            },
+            "time": 0.766082763671875,
+            "targetIntensity": 57,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 215.0,
+                "y": 181.0,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 214.0,
+                "y": 180.0,
+                "z": 35.0
+            },
+            "time": 2.5171432495117189,
+            "targetIntensity": 57,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 226.0,
+                "z": 65.0
+            },
+            "time": 1.6836929321289063,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 224.0,
+                "z": 65.0
+            },
+            "time": 3.0668869018554689,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 224.0,
+                "z": 65.0
+            },
+            "time": 4.399726867675781,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 224.0,
+                "z": 65.0
+            },
+            "time": 4.616546630859375,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 224.0,
+                "z": 65.0
+            },
+            "time": 4.783294677734375,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 224.0,
+                "z": 65.0
+            },
+            "time": 4.8158416748046879,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 240.0,
+                "y": 224.0,
+                "z": 65.0
+            },
+            "time": 5.43292236328125,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 340.0,
+                "y": 280.0,
+                "z": 37.0
+            },
+            "time": 9.264167785644532,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 240.0,
+                "y": 225.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 272.0,
+                "y": 300.0,
+                "z": 34.0
+            },
+            "time": 13.209358215332032,
+            "targetIntensity": 33,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 290.0,
+                "y": 225.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 224.0,
+                "z": 52.0
+            },
+            "time": 0.366790771484375,
+            "targetIntensity": 68,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 290.0,
+                "y": 225.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 224.0,
+                "z": 52.0
+            },
+            "time": 2.0010757446289064,
+            "targetIntensity": 68,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 290.0,
+                "y": 225.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 228.0,
+                "z": 51.0
+            },
+            "time": 2.3170623779296877,
+            "targetIntensity": 68,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 290.0,
+                "y": 225.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 228.0,
+                "z": 51.0
+            },
+            "time": 2.7199478149414064,
+            "targetIntensity": 68,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 290.0,
+                "y": 225.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 220.0,
+                "y": 290.0,
+                "z": 37.0
+            },
+            "time": 3.0836181640625,
+            "targetIntensity": 68,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "time": 0.21646881103515626,
+            "targetIntensity": 198,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 0,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 288.0,
+                "y": 236.0,
+                "z": 50.0
+            },
+            "time": 2.0316390991210939,
+            "targetIntensity": 198,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 414.0,
+                "y": 169.0,
+                "z": 68.0
+            },
+            "labelPosition": {
+                "x": 412.0,
+                "y": 174.0,
+                "z": 70.03125
+            },
+            "time": 0.6485595703125,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 414.0,
+                "y": 169.0,
+                "z": 68.0
+            },
+            "labelPosition": {
+                "x": 414.0,
+                "y": 168.0,
+                "z": 68.734375
+            },
+            "time": 0.017181396484375,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 400.0,
+                "y": 240.0,
+                "z": 134.0
+            },
+            "labelPosition": {
+                "x": 398.0,
+                "y": 240.0,
+                "z": 128.390625
+            },
+            "time": 1.06719970703125,
+            "targetIntensity": 44,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 159.0,
+                "y": 193.0,
+                "z": 45.0
+            },
+            "labelPosition": {
+                "x": 158.0,
+                "y": 192.0,
+                "z": 45.390625
+            },
+            "time": 1.9100799560546876,
+            "targetIntensity": 158,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 291.0,
+                "y": 97.0,
+                "z": 47.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 98.0,
+                "z": 46.6875
+            },
+            "time": 0.4828338623046875,
+            "targetIntensity": 45,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 246.0,
+                "y": 424.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 246.0,
+                "y": 424.0,
+                "z": 51.875
+            },
+            "time": 2.45037841796875,
+            "targetIntensity": 81,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 171.0,
+                "z": 22.0
+            },
+            "labelPosition": {
+                "x": 334.0,
+                "y": 156.0,
+                "z": 58.359375
+            },
+            "time": 1.7462005615234376,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 171.0,
+                "z": 22.0
+            },
+            "labelPosition": {
+                "x": 328.0,
+                "y": 172.0,
+                "z": 23.34375
+            },
+            "time": 4.69390869140625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 171.0,
+                "z": 22.0
+            },
+            "labelPosition": {
+                "x": 328.0,
+                "y": 170.0,
+                "z": 23.34375
+            },
+            "time": 1.7573394775390626,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 392.0,
+                "y": 241.0,
+                "z": 125.0
+            },
+            "labelPosition": {
+                "x": 390.0,
+                "y": 242.0,
+                "z": 123.203125
+            },
+            "time": 0.3159637451171875,
+            "targetIntensity": 87,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 166.0,
+                "y": 325.0,
+                "z": 26.0
+            },
+            "labelPosition": {
+                "x": 166.0,
+                "y": 326.0,
+                "z": 27.234375
+            },
+            "time": 1.649749755859375,
+            "targetIntensity": 49,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 232.0,
+                "y": 381.0,
+                "z": 54.0
+            },
+            "labelPosition": {
+                "x": 232.0,
+                "y": 382.0,
+                "z": 53.171875
+            },
+            "time": 3.4127655029296877,
+            "targetIntensity": 87,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 1,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 98.0,
+                "y": 290.0,
+                "z": 31.0
+            },
+            "labelPosition": {
+                "x": 98.0,
+                "y": 290.0,
+                "z": 32.421875
+            },
+            "time": 1.917449951171875,
+            "targetIntensity": 31,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 258.0,
+                "y": 317.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 256.0,
+                "y": 316.0,
+                "z": 46.5390625
+            },
+            "time": 1.7837982177734376,
+            "targetIntensity": 53,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 258.0,
+                "y": 317.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 258.0,
+                "y": 318.0,
+                "z": 61.6328125
+            },
+            "time": 2.9426116943359377,
+            "targetIntensity": 53,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 258.0,
+                "y": 317.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 262.0,
+                "y": 314.0,
+                "z": 49.0546875
+            },
+            "time": 3.0263824462890627,
+            "targetIntensity": 53,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 258.0,
+                "y": 317.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 272.0,
+                "y": 316.0,
+                "z": 47.796875
+            },
+            "time": 0.0985870361328125,
+            "targetIntensity": 53,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 217.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 218.0,
+                "z": 69.1796875
+            },
+            "time": 2.481536865234375,
+            "targetIntensity": 49,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 217.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 218.0,
+                "z": 69.1796875
+            },
+            "time": 4.081207275390625,
+            "targetIntensity": 49,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 217.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 218.0,
+                "z": 69.1796875
+            },
+            "time": 4.1489715576171879,
+            "targetIntensity": 49,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 219.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 224.0,
+                "z": 66.6640625
+            },
+            "time": 2.21588134765625,
+            "targetIntensity": 60,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 219.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 156.0,
+                "y": 216.0,
+                "z": 70.4375
+            },
+            "time": 1.700927734375,
+            "targetIntensity": 60,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 155.0,
+                "y": 219.0,
+                "z": 69.0
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 220.0,
+                "z": 67.921875
+            },
+            "time": 1.05078125,
+            "targetIntensity": 60,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 34.0,
+                "y": 330.0,
+                "z": 92.00000762939453
+            },
+            "labelPosition": {
+                "x": 154.0,
+                "y": 226.0,
+                "z": 65.40625
+            },
+            "time": 0.583984375,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 34.0,
+                "y": 330.0,
+                "z": 92.00000762939453
+            },
+            "labelPosition": {
+                "x": 34.0,
+                "y": 330.0,
+                "z": 91.8203125
+            },
+            "time": 0.60089111328125,
+            "targetIntensity": 34,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 123.0,
+                "y": 236.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 124.0,
+                "y": 238.0,
+                "z": 51.5703125
+            },
+            "time": 2.20086669921875,
+            "targetIntensity": 45,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 123.0,
+                "y": 236.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 124.0,
+                "y": 238.0,
+                "z": 51.5703125
+            },
+            "time": 0.565582275390625,
+            "targetIntensity": 45,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 123.0,
+                "y": 236.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 122.0,
+                "y": 236.0,
+                "z": 50.3125
+            },
+            "time": 3.050445556640625,
+            "targetIntensity": 45,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 114.0,
+                "y": 235.0,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 112.0,
+                "y": 236.0,
+                "z": 47.796875
+            },
+            "time": 1.433929443359375,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 114.0,
+                "y": 235.0,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 114.0,
+                "y": 234.0,
+                "z": 47.796875
+            },
+            "time": 3.433868408203125,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 114.0,
+                "y": 235.0,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 114.0,
+                "y": 234.0,
+                "z": 47.796875
+            },
+            "time": 1.632293701171875,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 114.0,
+                "y": 235.0,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 114.0,
+                "y": 234.0,
+                "z": 47.796875
+            },
+            "time": 2.81689453125,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 127.0,
+                "y": 399.0,
+                "z": 66.0
+            },
+            "labelPosition": {
+                "x": 114.0,
+                "y": 234.0,
+                "z": 47.796875
+            },
+            "time": 0.064056396484375,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 127.0,
+                "y": 399.0,
+                "z": 66.0
+            },
+            "labelPosition": {
+                "x": 128.0,
+                "y": 398.0,
+                "z": 65.40625
+            },
+            "time": 2.132568359375,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 266.0,
+                "y": 313.0,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 264.0,
+                "y": 312.0,
+                "z": 50.3125
+            },
+            "time": 1.6019287109375,
+            "targetIntensity": 151,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 508.0,
+                "y": 380.0,
+                "z": 61.0
+            },
+            "labelPosition": {
+                "x": 508.0,
+                "y": 380.0,
+                "z": 61.6328125
+            },
+            "time": 0.31622314453125,
+            "targetIntensity": 47,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 2,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 98.0,
+                "y": 240.0,
+                "z": 44.0
+            },
+            "labelPosition": {
+                "x": 100.0,
+                "y": 240.0,
+                "z": 44.0234375
+            },
+            "time": 2.301727294921875,
+            "targetIntensity": 42,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 188.0,
+                "z": 54.0
+            },
+            "labelPosition": {
+                "x": 328.0,
+                "y": 188.0,
+                "z": 49.2421875
+            },
+            "time": 2.766082763671875,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 188.0,
+                "z": 54.0
+            },
+            "labelPosition": {
+                "x": 326.0,
+                "y": 188.0,
+                "z": 50.734375
+            },
+            "time": 2.079986572265625,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 188.0,
+                "z": 54.0
+            },
+            "labelPosition": {
+                "x": 330.0,
+                "y": 180.0,
+                "z": 49.2421875
+            },
+            "time": 4.280487060546875,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 328.0,
+                "y": 188.0,
+                "z": 54.0
+            },
+            "labelPosition": {
+                "x": 318.0,
+                "y": 190.0,
+                "z": 41.78125
+            },
+            "time": 6.54779052734375,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 302.0,
+                "y": 344.0,
+                "z": 117.0
+            },
+            "labelPosition": {
+                "x": 302.0,
+                "y": 342.0,
+                "z": 111.9140625
+            },
+            "time": 3.131866455078125,
+            "targetIntensity": 138,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 302.0,
+                "y": 344.0,
+                "z": 117.0
+            },
+            "labelPosition": {
+                "x": 300.0,
+                "y": 344.0,
+                "z": 116.390625
+            },
+            "time": 1.016204833984375,
+            "targetIntensity": 138,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 337.0,
+                "y": 263.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 374.0,
+                "y": 132.0,
+                "z": 73.1171875
+            },
+            "time": 0.901519775390625,
+            "targetIntensity": 127,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 337.0,
+                "y": 263.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 338.0,
+                "y": 264.0,
+                "z": 62.671875
+            },
+            "time": 1.7003173828125,
+            "targetIntensity": 127,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 138.0,
+                "z": 108.0
+            },
+            "labelPosition": {
+                "x": 210.0,
+                "y": 140.0,
+                "z": 107.4375
+            },
+            "time": 0.465850830078125,
+            "targetIntensity": 139,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 211.0,
+                "y": 138.0,
+                "z": 108.0
+            },
+            "labelPosition": {
+                "x": 344.0,
+                "y": 244.0,
+                "z": 61.1796875
+            },
+            "time": 1.51611328125,
+            "targetIntensity": 139,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 222.0,
+                "y": 172.0,
+                "z": 99.9765625
+            },
+            "time": 0.16845703125,
+            "targetIntensity": 254,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 222.0,
+                "y": 164.0,
+                "z": 102.9609375
+            },
+            "time": 1.049591064453125,
+            "targetIntensity": 254,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 242.0,
+                "y": 198.0,
+                "z": 64.1640625
+            },
+            "time": 2.114898681640625,
+            "targetIntensity": 254,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 222.0,
+                "y": 172.0,
+                "z": 101.46875
+            },
+            "time": 2.3165283203125,
+            "targetIntensity": 254,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 226.0,
+                "y": 166.0,
+                "z": 104.453125
+            },
+            "time": 2.605255126953125,
+            "targetIntensity": 254,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 223.0,
+                "y": 165.0,
+                "z": 103.0
+            },
+            "labelPosition": {
+                "x": 244.0,
+                "y": 200.0,
+                "z": 61.1796875
+            },
+            "time": 2.8409423828125,
+            "targetIntensity": 254,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 185.0,
+                "y": 210.0,
+                "z": 86.0
+            },
+            "labelPosition": {
+                "x": 182.0,
+                "y": 210.0,
+                "z": 86.546875
+            },
+            "time": 2.465606689453125,
+            "targetIntensity": 187,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 185.0,
+                "y": 210.0,
+                "z": 86.0
+            },
+            "labelPosition": {
+                "x": 182.0,
+                "y": 210.0,
+                "z": 86.546875
+            },
+            "time": 2.600494384765625,
+            "targetIntensity": 187,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 185.0,
+                "y": 210.0,
+                "z": 86.0
+            },
+            "labelPosition": {
+                "x": 186.0,
+                "y": 210.0,
+                "z": 86.546875
+            },
+            "time": 3.296051025390625,
+            "targetIntensity": 187,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 284.0,
+                "y": 366.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 166.0,
+                "y": 392.0,
+                "z": 74.609375
+            },
+            "time": 2.2852783203125,
+            "targetIntensity": 90,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 284.0,
+                "y": 366.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 282.0,
+                "y": 368.0,
+                "z": 80.578125
+            },
+            "time": 1.784820556640625,
+            "targetIntensity": 90,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 290.0,
+                "y": 339.0,
+                "z": 79.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 340.0,
+                "z": 79.0859375
+            },
+            "time": 2.34735107421875,
+            "targetIntensity": 233,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 173.0,
+                "y": 211.0,
+                "z": 87.0
+            },
+            "labelPosition": {
+                "x": 172.0,
+                "y": 212.0,
+                "z": 86.546875
+            },
+            "time": 0.601287841796875,
+            "targetIntensity": 152,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 246.0,
+                "y": 151.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 246.0,
+                "y": 162.0,
+                "z": 91.0234375
+            },
+            "time": 2.21673583984375,
+            "targetIntensity": 61,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 3,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 246.0,
+                "y": 151.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 244.0,
+                "y": 152.0,
+                "z": 113.40625
+            },
+            "time": 2.282928466796875,
+            "targetIntensity": 61,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 213.0,
+                "y": 69.0,
+                "z": 88.0
+            },
+            "labelPosition": {
+                "x": 212.0,
+                "y": 70.0,
+                "z": 88.171875
+            },
+            "time": 0.75384521484375,
+            "targetIntensity": 61,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 166.0,
+                "y": 287.0,
+                "z": 77.0
+            },
+            "labelPosition": {
+                "x": 168.0,
+                "y": 286.0,
+                "z": 77.484375
+            },
+            "time": 1.76678466796875,
+            "targetIntensity": 242,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 289.0,
+                "y": 355.0,
+                "z": 77.0
+            },
+            "labelPosition": {
+                "x": 290.0,
+                "y": 354.0,
+                "z": 77.484375
+            },
+            "time": 1.599395751953125,
+            "targetIntensity": 54,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 275.0,
+                "y": 306.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 274.0,
+                "y": 308.0,
+                "z": 106.875
+            },
+            "time": 2.583099365234375,
+            "targetIntensity": 71,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 265.0,
+                "y": 91.0,
+                "z": 40.0
+            },
+            "labelPosition": {
+                "x": 266.0,
+                "y": 96.0,
+                "z": 33.3984375
+            },
+            "time": 3.398101806640625,
+            "targetIntensity": 69,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 265.0,
+                "y": 91.0,
+                "z": 40.0
+            },
+            "labelPosition": {
+                "x": 266.0,
+                "y": 90.0,
+                "z": 38.7421875
+            },
+            "time": 2.8004150390625,
+            "targetIntensity": 69,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 300.0,
+                "y": 184.0,
+                "z": 94.0
+            },
+            "labelPosition": {
+                "x": 302.0,
+                "y": 184.0,
+                "z": 96.1875
+            },
+            "time": 1.5927734375,
+            "targetIntensity": 249,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 300.0,
+                "y": 184.0,
+                "z": 94.0
+            },
+            "labelPosition": {
+                "x": 300.0,
+                "y": 184.0,
+                "z": 93.515625
+            },
+            "time": 2.511383056640625,
+            "targetIntensity": 249,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 102.0,
+                "y": 350.0,
+                "z": 62.0
+            },
+            "labelPosition": {
+                "x": 104.0,
+                "y": 350.0,
+                "z": 62.7890625
+            },
+            "time": 2.735198974609375,
+            "targetIntensity": 57,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 297.0,
+                "y": 137.0,
+                "z": 97.0
+            },
+            "labelPosition": {
+                "x": 298.0,
+                "y": 136.0,
+                "z": 97.5234375
+            },
+            "time": 2.191162109375,
+            "targetIntensity": 78,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 364.0,
+                "y": 306.0,
+                "z": 90.0
+            },
+            "labelPosition": {
+                "x": 362.0,
+                "y": 306.0,
+                "z": 89.5078125
+            },
+            "time": 2.717010498046875,
+            "targetIntensity": 89,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 4,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 322.0,
+                "y": 183.0,
+                "z": 95.00000762939453
+            },
+            "labelPosition": {
+                "x": 322.0,
+                "y": 182.0,
+                "z": 94.8515625
+            },
+            "time": 0.70172119140625,
+            "targetIntensity": 58,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 158.5937957763672,
+                "y": 292.5780944824219,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 158.59375,
+                "y": 292.578125,
+                "z": 127.0
+            },
+            "time": 2.64886474609375,
+            "targetIntensity": 32,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 49.21875,
+                "y": 199.609375,
+                "z": 121.0
+            },
+            "time": 3.46527099609375,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 172.26559448242188,
+                "y": 243.35940551757813,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 172.265625,
+                "y": 246.09375,
+                "z": 127.0
+            },
+            "time": 1.0675048828125,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 600.1953125,
+                "y": 334.9609069824219,
+                "z": 98.0
+            },
+            "labelPosition": {
+                "x": 598.828125,
+                "y": 336.328125,
+                "z": 98.0
+            },
+            "time": 2.9315185546875,
+            "targetIntensity": 43,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 129.88279724121095,
+                "y": 295.3125,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 131.25,
+                "y": 295.3125,
+                "z": 127.0
+            },
+            "time": 2.54888916015625,
+            "targetIntensity": 38,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 188.67190551757813,
+                "y": 291.2109069824219,
+                "z": 121.0
+            },
+            "labelPosition": {
+                "x": 194.140625,
+                "y": 292.578125,
+                "z": 119.0
+            },
+            "time": 2.57470703125,
+            "targetIntensity": 117,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 188.67190551757813,
+                "y": 291.2109069824219,
+                "z": 121.0
+            },
+            "labelPosition": {
+                "x": 180.46875,
+                "y": 287.109375,
+                "z": 123.0
+            },
+            "time": 1.93377685546875,
+            "targetIntensity": 117,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 188.67190551757813,
+                "y": 291.2109069824219,
+                "z": 121.0
+            },
+            "labelPosition": {
+                "x": 194.140625,
+                "y": 289.84375,
+                "z": 120.0
+            },
+            "time": 2.12725830078125,
+            "targetIntensity": 117,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 188.67190551757813,
+                "y": 291.2109069824219,
+                "z": 121.0
+            },
+            "labelPosition": {
+                "x": 188.671875,
+                "y": 289.84375,
+                "z": 121.0
+            },
+            "time": 2.2166748046875,
+            "targetIntensity": 117,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 492.1875,
+                "y": 391.0155944824219,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 489.453125,
+                "y": 393.75,
+                "z": 54.0
+            },
+            "time": 3.5997314453125,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 492.1875,
+                "y": 391.0155944824219,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 492.1875,
+                "y": 391.015625,
+                "z": 51.0
+            },
+            "time": 1.6318359375,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 492.1875,
+                "y": 391.0155944824219,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 462.109375,
+                "y": 388.28125,
+                "z": 44.0
+            },
+            "time": 2.48223876953125,
+            "targetIntensity": 52,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 494.9219055175781,
+                "y": 339.0625,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 494.921875,
+                "y": 339.0625,
+                "z": 64.0
+            },
+            "time": 0.84844970703125,
+            "targetIntensity": 47,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 442.96881103515627,
+                "y": 318.5546875,
+                "z": 46.0
+            },
+            "labelPosition": {
+                "x": 440.234375,
+                "y": 317.1875,
+                "z": 47.0
+            },
+            "time": 2.44268798828125,
+            "targetIntensity": 45,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 442.96881103515627,
+                "y": 318.5546875,
+                "z": 46.0
+            },
+            "labelPosition": {
+                "x": 442.96875,
+                "y": 317.1875,
+                "z": 46.0
+            },
+            "time": 1.0999755859375,
+            "targetIntensity": 45,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 240.625,
+                "y": 0.0,
+                "z": 111.0
+            },
+            "labelPosition": {
+                "x": 243.359375,
+                "y": 0.0,
+                "z": 112.0
+            },
+            "time": 1.9644775390625,
+            "targetIntensity": 46,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 240.625,
+                "y": 0.0,
+                "z": 111.0
+            },
+            "labelPosition": {
+                "x": 243.359375,
+                "y": 0.0,
+                "z": 112.0
+            },
+            "time": 1.46710205078125,
+            "targetIntensity": 46,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 240.625,
+                "y": 0.0,
+                "z": 111.0
+            },
+            "labelPosition": {
+                "x": 237.890625,
+                "y": 2.734375,
+                "z": 111.0
+            },
+            "time": 2.91668701171875,
+            "targetIntensity": 46,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 240.625,
+                "y": 0.0,
+                "z": 111.0
+            },
+            "labelPosition": {
+                "x": 243.359375,
+                "y": 0.0,
+                "z": 112.0
+            },
+            "time": 3.13458251953125,
+            "targetIntensity": 46,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 240.625,
+                "y": 0.0,
+                "z": 111.0
+            },
+            "labelPosition": {
+                "x": 237.890625,
+                "y": 0.0,
+                "z": 111.0
+            },
+            "time": 4.88604736328125,
+            "targetIntensity": 46,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 5,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 285.7421875,
+                "y": 663.0858764648438,
+                "z": 118.0
+            },
+            "labelPosition": {
+                "x": 287.109375,
+                "y": 664.453125,
+                "z": 118.0
+            },
+            "time": 1.300537109375,
+            "targetIntensity": 32,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 692.0,
+                "y": 136.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 692.0,
+                "y": 136.0,
+                "z": 22.0
+            },
+            "time": 1.25128173828125,
+            "targetIntensity": 35,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 402.0,
+                "y": 264.0,
+                "z": 8.0
+            },
+            "labelPosition": {
+                "x": 404.0,
+                "y": 268.0,
+                "z": 7.0
+            },
+            "time": 3.09930419921875,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 402.0,
+                "y": 264.0,
+                "z": 8.0
+            },
+            "labelPosition": {
+                "x": 400.0,
+                "y": 264.0,
+                "z": 7.0
+            },
+            "time": 1.55126953125,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 320.0,
+                "y": 408.0,
+                "z": 31.0
+            },
+            "time": 0.63287353515625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 368.0,
+                "y": 400.0,
+                "z": 5.0
+            },
+            "time": 0.8658447265625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 368.0,
+                "y": 396.0,
+                "z": 4.0
+            },
+            "time": 1.9658203125,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 384.0,
+                "y": 404.0,
+                "z": 8.0
+            },
+            "time": 0.6845703125,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 388.0,
+                "y": 384.0,
+                "z": 17.0
+            },
+            "time": 0.11669921875,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 372.0,
+                "y": 412.0,
+                "z": 3.0
+            },
+            "time": 1.316650390625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 412.0,
+                "y": 552.0,
+                "z": 25.0
+            },
+            "time": 2.368408203125,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 368.0,
+                "y": 400.0,
+                "z": 5.0
+            },
+            "time": 1.0992431640625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 396.0,
+                "y": 396.0,
+                "z": 67.0
+            },
+            "time": 0.732666015625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 368.0,
+                "y": 400.0,
+                "z": 5.0
+            },
+            "time": 0.1824951171875,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 380.0,
+                "y": 400.0,
+                "z": 7.0
+            },
+            "time": 2.4473876953125,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 380.0,
+                "y": 400.0,
+                "z": 7.0
+            },
+            "time": 1.2666015625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 364.0,
+                "y": 404.0,
+                "z": 3.0
+            },
+            "time": 0.799560546875,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 364.0,
+                "y": 404.0,
+                "z": 3.0
+            },
+            "time": 1.76751708984375,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 372.0,
+                "y": 408.0,
+                "z": 3.0
+            },
+            "labelPosition": {
+                "x": 372.0,
+                "y": 412.0,
+                "z": 3.0
+            },
+            "time": 2.15679931640625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 624.0,
+                "y": 548.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 624.0,
+                "y": 548.0,
+                "z": 127.0
+            },
+            "time": 1.2000732421875,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 624.0,
+                "y": 548.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 848.0,
+                "y": 552.0,
+                "z": 36.0
+            },
+            "time": 2.03277587890625,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 958.0,
+                "y": 570.0,
+                "z": 84.0
+            },
+            "labelPosition": {
+                "x": 960.0,
+                "y": 568.0,
+                "z": 76.0
+            },
+            "time": 1.48406982421875,
+            "targetIntensity": 32,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 958.0,
+                "y": 570.0,
+                "z": 84.0
+            },
+            "labelPosition": {
+                "x": 956.0,
+                "y": 568.0,
+                "z": 84.0
+            },
+            "time": 0.949951171875,
+            "targetIntensity": 32,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 958.0,
+                "y": 570.0,
+                "z": 84.0
+            },
+            "labelPosition": {
+                "x": 900.0,
+                "y": 556.0,
+                "z": 36.0
+            },
+            "time": 2.16790771484375,
+            "targetIntensity": 32,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 264.0,
+                "y": 574.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 256.0,
+                "y": 576.0,
+                "z": 73.0
+            },
+            "time": 2.74945068359375,
+            "targetIntensity": 46,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 264.0,
+                "y": 574.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 260.0,
+                "y": 572.0,
+                "z": 78.0
+            },
+            "time": 3.0164794921875,
+            "targetIntensity": 46,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 264.0,
+                "y": 574.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 260.0,
+                "y": 584.0,
+                "z": 63.0
+            },
+            "time": 1.69781494140625,
+            "targetIntensity": 46,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 264.0,
+                "y": 574.0,
+                "z": 81.0
+            },
+            "labelPosition": {
+                "x": 264.0,
+                "y": 572.0,
+                "z": 81.0
+            },
+            "time": 0.96539306640625,
+            "targetIntensity": 46,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 956.0,
+                "y": 230.0,
+                "z": 85.0
+            },
+            "labelPosition": {
+                "x": 940.0,
+                "y": 248.0,
+                "z": 37.0
+            },
+            "time": 0.31597900390625,
+            "targetIntensity": 31,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 956.0,
+                "y": 230.0,
+                "z": 85.0
+            },
+            "labelPosition": {
+                "x": 956.0,
+                "y": 228.0,
+                "z": 85.0
+            },
+            "time": 0.14849853515625,
+            "targetIntensity": 31,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 424.0,
+                "y": 320.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 432.0,
+                "y": 292.0,
+                "z": 69.0
+            },
+            "time": 1.24957275390625,
+            "targetIntensity": 43,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 424.0,
+                "y": 320.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 424.0,
+                "y": 320.0,
+                "z": 0.0
+            },
+            "time": 0.00177001953125,
+            "targetIntensity": 43,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 828.0,
+                "y": 320.0,
+                "z": 65.0
+            },
+            "labelPosition": {
+                "x": 828.0,
+                "y": 320.0,
+                "z": 65.0
+            },
+            "time": 1.1329345703125,
+            "targetIntensity": 38,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 900.0,
+                "y": 328.0,
+                "z": 125.0
+            },
+            "time": 2.65277099609375,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 896.0,
+                "y": 336.0,
+                "z": 97.0
+            },
+            "time": 3.0499267578125,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 900.0,
+                "y": 328.0,
+                "z": 98.0
+            },
+            "time": 0.6317138671875,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 900.0,
+                "y": 328.0,
+                "z": 98.0
+            },
+            "time": 0.48455810546875,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 892.0,
+                "y": 340.0,
+                "z": 97.0
+            },
+            "time": 1.68438720703125,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 892.0,
+                "y": 340.0,
+                "z": 98.0
+            },
+            "time": 0.0013427734375,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 900.0,
+                "y": 332.0,
+                "z": 98.0
+            },
+            "time": 2.682861328125,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 892.0,
+                "y": 340.0,
+                "z": 98.0
+            },
+            "time": 1.79852294921875,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 896.0,
+                "y": 332.0,
+                "z": 99.0
+            },
+            "time": 0.56866455078125,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 6,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 894.0,
+                "y": 334.0,
+                "z": 99.0
+            },
+            "labelPosition": {
+                "x": 904.0,
+                "y": 328.0,
+                "z": 98.0
+            },
+            "time": 2.83447265625,
+            "targetIntensity": 39,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 578.0,
+                "y": 656.0,
+                "z": 13.0
+            },
+            "labelPosition": {
+                "x": 576.0,
+                "y": 660.0,
+                "z": 15.0
+            },
+            "time": 0.09967041015625,
+            "targetIntensity": 71,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 578.0,
+                "y": 656.0,
+                "z": 13.0
+            },
+            "labelPosition": {
+                "x": 576.0,
+                "y": 656.0,
+                "z": 13.0
+            },
+            "time": 0.28253173828125,
+            "targetIntensity": 71,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 578.0,
+                "y": 656.0,
+                "z": 13.0
+            },
+            "labelPosition": {
+                "x": 592.0,
+                "y": 640.0,
+                "z": 59.0
+            },
+            "time": 1.4818115234375,
+            "targetIntensity": 71,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 388.0,
+                "y": 416.0,
+                "z": 127.0
+            },
+            "time": 2.77996826171875,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 388.0,
+                "y": 416.0,
+                "z": 127.0
+            },
+            "time": 2.14874267578125,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 388.0,
+                "y": 416.0,
+                "z": 127.0
+            },
+            "time": 3.78277587890625,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 388.0,
+                "y": 416.0,
+                "z": 127.0
+            },
+            "time": 1.78399658203125,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 388.0,
+                "y": 416.0,
+                "z": 127.0
+            },
+            "time": 1.18280029296875,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 115.0
+            },
+            "labelPosition": {
+                "x": 384.0,
+                "y": 416.0,
+                "z": 114.0
+            },
+            "time": 1.03448486328125,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 546.0,
+                "y": 480.0,
+                "z": 125.0
+            },
+            "labelPosition": {
+                "x": 548.0,
+                "y": 480.0,
+                "z": 123.0
+            },
+            "time": 1.366943359375,
+            "targetIntensity": 37,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 694.0,
+                "y": 404.0,
+                "z": 82.0
+            },
+            "labelPosition": {
+                "x": 692.0,
+                "y": 404.0,
+                "z": 82.0
+            },
+            "time": 1.35003662109375,
+            "targetIntensity": 36,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 564.0,
+                "y": 524.0,
+                "z": 107.0
+            },
+            "time": 1.9327392578125,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 564.0,
+                "y": 524.0,
+                "z": 107.0
+            },
+            "time": 3.1201171875,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 564.0,
+                "y": 524.0,
+                "z": 107.0
+            },
+            "time": 1.9156494140625,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 564.0,
+                "y": 524.0,
+                "z": 107.0
+            },
+            "time": 1.43157958984375,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 552.0,
+                "y": 520.0,
+                "z": 104.0
+            },
+            "time": 1.08294677734375,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 564.0,
+                "y": 524.0,
+                "z": 107.0
+            },
+            "time": 1.449951171875,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "time": 0.68328857421875,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 560.0,
+                "y": 520.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 552.0,
+                "y": 508.0,
+                "z": 51.0
+            },
+            "time": 2.05242919921875,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 416.0,
+                "y": 320.0,
+                "z": 60.0
+            },
+            "labelPosition": {
+                "x": 416.0,
+                "y": 320.0,
+                "z": 61.0
+            },
+            "time": 2.14794921875,
+            "targetIntensity": 45,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 332.0,
+                "y": 592.0,
+                "z": 53.0
+            },
+            "time": 1.86883544921875,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 332.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "time": 1.93316650390625,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 344.0,
+                "y": 584.0,
+                "z": 53.0
+            },
+            "time": 2.33270263671875,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 332.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "time": 3.10626220703125,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 344.0,
+                "y": 584.0,
+                "z": 53.0
+            },
+            "time": 1.751220703125,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 332.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "time": 1.58233642578125,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 52.0
+            },
+            "labelPosition": {
+                "x": 336.0,
+                "y": 588.0,
+                "z": 53.0
+            },
+            "time": 1.23291015625,
+            "targetIntensity": 84,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 344.0,
+                "y": 560.0,
+                "z": 55.0
+            },
+            "time": 0.00103759765625,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 716.0,
+                "y": 348.0,
+                "z": 23.0
+            },
+            "time": 2.3995361328125,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 344.0,
+                "z": 25.0
+            },
+            "time": 2.83612060546875,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 716.0,
+                "y": 352.0,
+                "z": 23.0
+            },
+            "time": 1.2996826171875,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 344.0,
+                "z": 25.0
+            },
+            "time": 0.95001220703125,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 716.0,
+                "y": 348.0,
+                "z": 23.0
+            },
+            "time": 0.967041015625,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 760.0,
+                "y": 328.0,
+                "z": 113.0
+            },
+            "time": 5.04937744140625,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 936.0,
+                "y": 340.0,
+                "z": 125.0
+            },
+            "time": 3.69952392578125,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 760.0,
+                "y": 328.0,
+                "z": 113.0
+            },
+            "time": 0.41455078125,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 344.0,
+                "z": 25.0
+            },
+            "time": 2.51690673828125,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 344.0,
+                "z": 25.0
+            },
+            "time": 1.0162353515625,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 344.0,
+                "z": 25.0
+            },
+            "time": 1.06646728515625,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "labelPosition": {
+                "x": 716.0,
+                "y": 344.0,
+                "z": 23.0
+            },
+            "time": 1.1331787109375,
+            "targetIntensity": 48,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 712.0,
+                "y": 704.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 704.0,
+                "z": 51.0
+            },
+            "time": 1.01336669921875,
+            "targetIntensity": 50,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 712.0,
+                "y": 704.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 708.0,
+                "y": 656.0,
+                "z": 92.0
+            },
+            "time": 1.9307861328125,
+            "targetIntensity": 50,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 712.0,
+                "y": 704.0,
+                "z": 51.0
+            },
+            "labelPosition": {
+                "x": 704.0,
+                "y": 660.0,
+                "z": 94.0
+            },
+            "time": 0.5833740234375,
+            "targetIntensity": 50,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 748.0,
+                "y": 848.0,
+                "z": 112.0
+            },
+            "labelPosition": {
+                "x": 748.0,
+                "y": 848.0,
+                "z": 112.0
+            },
+            "time": 2.6827392578125,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 748.0,
+                "y": 848.0,
+                "z": 112.0
+            },
+            "labelPosition": {
+                "x": 744.0,
+                "y": 840.0,
+                "z": 111.0
+            },
+            "time": 1.4110107421875,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 748.0,
+                "y": 848.0,
+                "z": 112.0
+            },
+            "labelPosition": {
+                "x": 744.0,
+                "y": 840.0,
+                "z": 111.0
+            },
+            "time": 1.62841796875,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 748.0,
+                "y": 848.0,
+                "z": 112.0
+            },
+            "labelPosition": {
+                "x": 744.0,
+                "y": 840.0,
+                "z": 111.0
+            },
+            "time": 1.7939453125,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 7,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 748.0,
+                "y": 848.0,
+                "z": 112.0
+            },
+            "labelPosition": {
+                "x": 744.0,
+                "y": 840.0,
+                "z": 111.0
+            },
+            "time": 2.2940673828125,
+            "targetIntensity": 34,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 20.0
+            },
+            "time": 2.6165771484375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 0.232666015625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 1.66571044921875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 700.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 1.3504638671875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 3.71771240234375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 0.7847900390625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 704.0,
+                "y": 448.0,
+                "z": 78.0
+            },
+            "time": 4.132568359375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 4.049072265625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 412.0,
+                "z": 22.0
+            },
+            "time": 2.0316162109375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 1.98248291015625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 1.3658447265625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 700.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 0.04852294921875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 0.79864501953125,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 1.14947509765625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 3.20001220703125,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 0.18505859375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 1.13348388671875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 1.28509521484375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 2.01593017578125,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 0.93353271484375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 1.0987548828125,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 712.0,
+                "y": 416.0,
+                "z": 16.0
+            },
+            "time": 1.300537109375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 696.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 1.949462890625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 2.322998046875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 3.93115234375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 1.111083984375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 692.0,
+                "y": 492.0,
+                "z": 40.0
+            },
+            "time": 3.1502685546875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 692.0,
+                "y": 492.0,
+                "z": 40.0
+            },
+            "time": 3.6507568359375,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 4.9676513671875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 700.0,
+                "y": 416.0,
+                "z": 19.0
+            },
+            "time": 3.79150390625,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 0.4520263671875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 690.0,
+                "y": 416.0,
+                "z": 21.0
+            },
+            "labelPosition": {
+                "x": 684.0,
+                "y": 416.0,
+                "z": 22.0
+            },
+            "time": 0.182373046875,
+            "targetIntensity": 44,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 648.0,
+                "y": 328.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 652.0,
+                "y": 328.0,
+                "z": 0.0
+            },
+            "time": 1.0369873046875,
+            "targetIntensity": 97,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 648.0,
+                "y": 328.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 644.0,
+                "y": 332.0,
+                "z": 3.0
+            },
+            "time": 1.9315185546875,
+            "targetIntensity": 97,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 648.0,
+                "y": 328.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 648.0,
+                "y": 328.0,
+                "z": 0.0
+            },
+            "time": 2.0509033203125,
+            "targetIntensity": 97,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 688.0,
+                "y": 470.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 708.0,
+                "y": 476.0,
+                "z": 79.0
+            },
+            "time": 1.233154296875,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 688.0,
+                "y": 470.0,
+                "z": 37.0
+            },
+            "labelPosition": {
+                "x": 688.0,
+                "y": 468.0,
+                "z": 36.0
+            },
+            "time": 0.2156982421875,
+            "targetIntensity": 51,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 404.0,
+                "y": 816.0,
+                "z": 89.0
+            },
+            "labelPosition": {
+                "x": 404.0,
+                "y": 816.0,
+                "z": 89.0
+            },
+            "time": 0.9166259765625,
+            "targetIntensity": 41,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 536.0,
+                "y": 272.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 532.0,
+                "y": 272.0,
+                "z": 3.0
+            },
+            "time": 2.552490234375,
+            "targetIntensity": 49,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 536.0,
+                "y": 272.0,
+                "z": 0.0
+            },
+            "labelPosition": {
+                "x": 536.0,
+                "y": 272.0,
+                "z": 2.0
+            },
+            "time": 0.466796875,
+            "targetIntensity": 49,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 458.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 544.0,
+                "y": 288.0,
+                "z": 71.0
+            },
+            "time": 1.080322265625,
+            "targetIntensity": 67,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 458.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 460.0,
+                "y": 512.0,
+                "z": 123.0
+            },
+            "time": 0.8499755859375,
+            "targetIntensity": 67,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 458.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 460.0,
+                "y": 512.0,
+                "z": 124.0
+            },
+            "time": 3.0001220703125,
+            "targetIntensity": 67,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 458.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 424.0,
+                "y": 516.0,
+                "z": 50.0
+            },
+            "time": 1.7022705078125,
+            "targetIntensity": 67,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 458.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 460.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "time": 0.78271484375,
+            "targetIntensity": 67,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 458.0,
+                "y": 512.0,
+                "z": 127.0
+            },
+            "labelPosition": {
+                "x": 460.0,
+                "y": 500.0,
+                "z": 60.0
+            },
+            "time": 3.3599853515625,
+            "targetIntensity": 67,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 0.0,
+                "y": 558.0,
+                "z": 49.0
+            },
+            "labelPosition": {
+                "x": 0.0,
+                "y": 560.0,
+                "z": 49.0
+            },
+            "time": 1.2666015625,
+            "targetIntensity": 61,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 468.0,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 28.0,
+                "y": 464.0,
+                "z": 85.0
+            },
+            "time": 2.53125,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 468.0,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 56.0,
+                "y": 464.0,
+                "z": 43.0
+            },
+            "time": 0.2989501953125,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 50.0,
+                "y": 468.0,
+                "z": 43.0
+            },
+            "labelPosition": {
+                "x": 52.0,
+                "y": 468.0,
+                "z": 42.0
+            },
+            "time": 2.482421875,
+            "targetIntensity": 129,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 536.0,
+                "y": 406.0,
+                "z": 106.0
+            },
+            "labelPosition": {
+                "x": 536.0,
+                "y": 404.0,
+                "z": 107.0
+            },
+            "time": 1.166748046875,
+            "targetIntensity": 32,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 800.0,
+                "y": 584.0,
+                "z": 72.0
+            },
+            "time": 2.5316162109375,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 800.0,
+                "y": 584.0,
+                "z": 72.0
+            },
+            "time": 2.1165771484375,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 808.0,
+                "y": 588.0,
+                "z": 74.0
+            },
+            "time": 2.468017578125,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 800.0,
+                "y": 584.0,
+                "z": 72.0
+            },
+            "time": 3.349609375,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 812.0,
+                "y": 592.0,
+                "z": 76.0
+            },
+            "time": 0.1170654296875,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 812.0,
+                "y": 592.0,
+                "z": 76.0
+            },
+            "time": 0.1162109375,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 800.0,
+                "y": 584.0,
+                "z": 72.0
+            },
+            "time": 2.2838134765625,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 8,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 804.0,
+                "y": 586.0,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 812.0,
+                "y": 592.0,
+                "z": 76.0
+            },
+            "time": 1.816650390625,
+            "targetIntensity": 116,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 0,
+            "targetPosition": {
+                "x": 310.9375,
+                "y": 568.75,
+                "z": 98.0
+            },
+            "labelPosition": {
+                "x": 309.375,
+                "y": 568.75,
+                "z": 99.0
+            },
+            "time": 2.2667236328125,
+            "targetIntensity": 35,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 1,
+            "targetPosition": {
+                "x": 507.8125,
+                "y": 573.4375,
+                "z": 71.0
+            },
+            "labelPosition": {
+                "x": 509.375,
+                "y": 575.0,
+                "z": 72.0
+            },
+            "time": 2.488037109375,
+            "targetIntensity": 46,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 46.875,
+                "y": 478.125,
+                "z": 85.0
+            },
+            "labelPosition": {
+                "x": 50.0,
+                "y": 471.875,
+                "z": 83.0
+            },
+            "time": 2.8167724609375,
+            "targetIntensity": 43,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 2,
+            "targetPosition": {
+                "x": 46.875,
+                "y": 478.125,
+                "z": 85.0
+            },
+            "labelPosition": {
+                "x": 46.875,
+                "y": 478.125,
+                "z": 85.0
+            },
+            "time": 3.164794921875,
+            "targetIntensity": 43,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 501.5625,
+                "y": 632.8125,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 503.125,
+                "y": 631.25,
+                "z": 71.0
+            },
+            "time": 1.484130859375,
+            "targetIntensity": 38,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 3,
+            "targetPosition": {
+                "x": 501.5625,
+                "y": 632.8125,
+                "z": 72.0
+            },
+            "labelPosition": {
+                "x": 500.0,
+                "y": 628.125,
+                "z": 72.0
+            },
+            "time": 4.467041015625,
+            "targetIntensity": 38,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 446.875,
+                "y": 290.625,
+                "z": 48.0
+            },
+            "time": 1.98486328125,
+            "targetIntensity": 98,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 440.625,
+                "y": 278.125,
+                "z": 49.0
+            },
+            "time": 4.764404296875,
+            "targetIntensity": 98,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 446.875,
+                "y": 290.625,
+                "z": 48.0
+            },
+            "time": 3.0174560546875,
+            "targetIntensity": 98,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "time": 0.93310546875,
+            "targetIntensity": 98,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 4,
+            "targetPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "labelPosition": {
+                "x": 443.75,
+                "y": 287.5,
+                "z": 48.0
+            },
+            "time": 1.935546875,
+            "targetIntensity": 98,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 5,
+            "targetPosition": {
+                "x": 553.125,
+                "y": 551.5625,
+                "z": 35.0
+            },
+            "labelPosition": {
+                "x": 553.125,
+                "y": 553.125,
+                "z": 35.0
+            },
+            "time": 0.749755859375,
+            "targetIntensity": 41,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 221.875,
+                "z": 49.0
+            },
+            "labelPosition": {
+                "x": 456.25,
+                "y": 231.25,
+                "z": 42.0
+            },
+            "time": 1.0172119140625,
+            "targetIntensity": 54,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 221.875,
+                "z": 49.0
+            },
+            "labelPosition": {
+                "x": 450.0,
+                "y": 218.75,
+                "z": 49.0
+            },
+            "time": 1.3155517578125,
+            "targetIntensity": 54,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 6,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 221.875,
+                "z": 49.0
+            },
+            "labelPosition": {
+                "x": 453.125,
+                "y": 215.625,
+                "z": 48.0
+            },
+            "time": 3.5838623046875,
+            "targetIntensity": 54,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 235.9375,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 456.25,
+                "y": 240.625,
+                "z": 45.0
+            },
+            "time": 1.916748046875,
+            "targetIntensity": 112,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 235.9375,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 450.0,
+                "y": 234.375,
+                "z": 50.0
+            },
+            "time": 1.5667724609375,
+            "targetIntensity": 112,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 235.9375,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 450.0,
+                "y": 234.375,
+                "z": 50.0
+            },
+            "time": 2.5670166015625,
+            "targetIntensity": 112,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 7,
+            "targetPosition": {
+                "x": 451.5625,
+                "y": 235.9375,
+                "z": 50.0
+            },
+            "labelPosition": {
+                "x": 446.875,
+                "y": 240.625,
+                "z": 48.0
+            },
+            "time": 2.682861328125,
+            "targetIntensity": 112,
+            "isLeaf": false
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 8,
+            "targetPosition": {
+                "x": 406.25,
+                "y": 550.0,
+                "z": 113.0
+            },
+            "labelPosition": {
+                "x": 406.25,
+                "y": 550.0,
+                "z": 113.0
+            },
+            "time": 0.76708984375,
+            "targetIntensity": 33,
+            "isLeaf": true
+        },
+        {
+            "imageIndex": 9,
+            "labelIndex": 9,
+            "targetPosition": {
+                "x": 656.25,
+                "y": 392.1875,
+                "z": 36.0
+            },
+            "labelPosition": {
+                "x": 656.25,
+                "y": 393.75,
+                "z": 36.0
+            },
+            "time": 0.7493896484375,
+            "targetIntensity": 32,
+            "isLeaf": true
+        }
+    ]
+}

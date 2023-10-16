@@ -67,6 +67,12 @@ public class Config : Singleton<Config>
     public Texture3D occupancyMap;
     public Texture3D distanceMap;
 
+    public float radiusScale=1;
+    public uint selectedIndex = 0;
+    public bool isIsolating = false;
+    public int resampleFactor = 5;
+
+
     public enum ShaderType {
         Base, FlexibleThreshold, FixedThreshold, BaseAccelerated
     }
@@ -172,6 +178,7 @@ public class Config : Singleton<Config>
 
         if (volumeRenderingWithChebyshev)
         {
+            Debug.Log("yes");
             var computer = gameObject.AddComponent<OccupancyMapCompute>();
             computer.ComputeOccupancyMap();
             computer.ComputeDistanceMap();
@@ -209,8 +216,13 @@ public class Config : Singleton<Config>
 
     public void ApplyMask(RenderTexture mask, byte[] maskedVolumeData)
     {
-        fixedBkgThresholdMaterial.SetTexture("_Mask", mask);
+        postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.value = mask;
         volumeData = maskedVolumeData;
+    }
+
+    public void ApplySelection(RenderTexture selection)
+    {
+        postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.value = selection;
     }
 
     public void SetTexture(Texture3D tex)
@@ -220,6 +232,7 @@ public class Config : Singleton<Config>
         //savePath = CreateSavePath($"./MyResult/{imageName}/");
         savePath = CreateSavePath($"C:\\Users\\80121\\Desktop\\MyResult\\{imageName}\\");
         originalDim = new Vector3Int(origin.width, origin.height, origin.depth);
+        scaledDim = configuration.scaledDim;
         if (scale)
         {
             scaledVolume = TextureScaler.Scale(origin, scaledDim, gaussianSmoothing);   //Scale volume

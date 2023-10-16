@@ -21,7 +21,7 @@ public class OccupancyMapCompute : MonoBehaviour
 
     public  void ComputeOccupancyMap()
     {
-        Config config = GameObject.Find("Config").GetComponent<Config>();
+        Config config = gameObject.GetComponent<Config>();
         ComputeShader occupancyCompute = Resources.Load("ComputeShaders/OccupancyMap") as ComputeShader;
         
         volume = config.Origin;
