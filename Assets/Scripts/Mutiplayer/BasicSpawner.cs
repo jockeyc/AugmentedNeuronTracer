@@ -17,14 +17,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        GameObject director = GameObject.Find("director(Clone)");
-        if (director == null)
-        {
-            Debug.Log("create director");
-            var prefab = Resources.Load("Prefabs/director") as GameObject;
-            director =  _runner.Spawn(prefab, new Vector3(0, 0, 0), Quaternion.identity).gameObject;
-        }
-
         Debug.Log("OnPlayerJoined");
         GameObject paintingBoard = GameObject.Find("PaintingBoard(Clone)");
         if (paintingBoard == null)

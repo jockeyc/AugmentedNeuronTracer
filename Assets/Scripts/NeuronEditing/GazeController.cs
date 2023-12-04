@@ -1,4 +1,4 @@
-using ANT;
+using IntraMR;
 using CommandStructure;
 using Cysharp.Threading.Tasks.Triggers;
 using Fusion;
@@ -96,16 +96,13 @@ public class GazeController : Singleton<GazeController>
         };
 
         eyePointer = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        eyePointer.name = "EyePointer";
         eyePointer.transform.localScale = Vector3.one.Divide(Config.Instance.originalDim).MaxComponent() * 2 * BoardManager.Instance.gameObject.transform.localScale;
         eyePointer.GetComponent<SphereCollider>().enabled = false;
         eyePointer.SetActive(false);
         eyePointerMaterial = eyePointer.GetComponent<MeshRenderer>().material;
 
         aggregator = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
-
-        director = GameObject.Find("director(Clone)");
-        director.transform.localScale = new Vector3(0.001f, 1.0f, 0.001f);
-        director.GetComponentInChildren<CapsuleCollider>().enabled = false;
     }
 
 
@@ -118,7 +115,6 @@ public class GazeController : Singleton<GazeController>
         //interactor.TryGetCurrent3DRaycastHit(out result);
         eyePointer.transform.localScale = Vector3.one.Divide(Config.Instance.originalDim).MaxComponent() * BoardManager.Instance.gameObject.transform.localScale;
         traceTime += Time.deltaTime;
-
         if (result.IsRaycast && result.raycastHit.collider.CompareTag("Board"))
         //if (result.collider == null) return;
         //if (result.collider.CompareTag("Board"))
@@ -154,8 +150,7 @@ public class GazeController : Singleton<GazeController>
         }
         else
         {
-            eyePointer.SetActive(false);
-            director.SetActive(false);
+            //eyePointer.SetActive(false);
         }
 
     }

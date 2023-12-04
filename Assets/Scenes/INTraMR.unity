@@ -1107,8 +1107,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PreferredRunner: 0
   Components:
+  - {fileID: 1537225539}
   - {fileID: 1537225532}
   _guid: fa282c7c-bea0-4919-
+--- !u!20 &1537225539 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2351505566771328527, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+  m_PrefabInstance: {fileID: 946078097}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1537225540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1537225516}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6430e052fe8d63d4d9617eccb7db99bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  colorRT: {fileID: 0}
+  depthRT: {fileID: 0}
+  m_DepthTex: {fileID: 0}
+  Cube: {fileID: 0}
 --- !u!1 &1567357662
 GameObject:
   m_ObjectHideFlags: 0

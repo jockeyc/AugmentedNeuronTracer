@@ -1,9 +1,11 @@
 // Each #kernel tells which function to compile; you can have many kernels
 //FIM DT Kernel 
+#pragma enable_d3d11_debug_symbols
+
 #pragma kernel InitBound
 #pragma kernel UpdateFarState
-#pragma kernel UpdateSourceValue
-#pragma kernel UpdateSourceState
+#pragma kernel UpdateActiveValue
+#pragma kernel UpdateActiveState
 #pragma kernel VisualizeTexture
 #pragma kernel InitRemedy
 #pragma kernel UpdateRemedy
@@ -12,8 +14,8 @@
 //FIM Tree Kernel
 #pragma kernel InitSeed
 #pragma kernel UpdateFarStateTree
-#pragma kernel UpdateSourceValueTree
-#pragma kernel UpdateSourceStateTree
+#pragma kernel UpdateActiveValueTree
+#pragma kernel UpdateActiveStateTree
 #pragma kernel InitRemedyTree
 #pragma kernel UpdateRemedyTree
 #pragma kernel UpdateRemedyNeighborTree
@@ -22,8 +24,8 @@
 //FIM Full Image Kernel
 #pragma kernel InitSeedFI
 #pragma kernel UpdateFarStateFI
-#pragma kernel UpdateSourceValueFI
-#pragma kernel UpdateSourceStateFI
+#pragma kernel UpdateActiveValueFI
+#pragma kernel UpdateActiveStateFI
 #pragma kernel InitRemedyFI
 #pragma kernel UpdateRemedyFI
 #pragma kernel UpdateRemedyNeighborFI
@@ -31,8 +33,8 @@
 //FIM Tracing Branch
 #pragma kernel AdjustIntensity
 #pragma kernel AdjustIntensityWithValue
-#pragma kernel InitOffset
-#pragma kernel ApplyOffset
+#pragma kernel InitBias
+#pragma kernel ApplyBias
 
 #pragma kernel ModifyMask
 #pragma kernel ModifySelection
@@ -60,8 +62,8 @@
 #pragma kernel GetDiff
 
 // state tag def
-#define ACTIVE 0
-#define SOURCE 1
+#define SOURCE 0
+#define ACTIVE 1
 #define FAR 2
 #define REMEDY 3
 #define CONVERGE 4
@@ -92,7 +94,7 @@ RWTexture3D<float> mask;
 RWTexture3D<float> selection;
 RWTexture3D<float> volume;
 Texture3D<float> origin;
-RWTexture3D<float> _offset;
+RWTexture3D<float> bias;
 RWTexture3D<float> threshold;
 int bkgThreshold;
 uint3 dims;
@@ -156,7 +158,7 @@ void InitBound (uint3 id : SV_DispatchThreadID)
     if (volume[id] < threshold[id/THRESHOLD_BLOCK_SIZE] || mask[id] > 0 ||
     id.z == 0 || id.z == (dims.z - 1)||id.x == 0 || id.x == (dims.x - 1) || id.y == 0 || id.y == (dims.y - 1))
     { 
-        state[id] = ACTIVE;
+        state[id] = SOURCE;
         if(mask[id]>0) 
         {
             gwdt[id] = 1/255.0f; 
@@ -174,14 +176,13 @@ void InitBound (uint3 id : SV_DispatchThreadID)
 }
 
 
-uint sourceCount;
-AppendStructuredBuffer<uint> sourceSet;
+AppendStructuredBuffer<uint> activeSet;
 [numthreads(THREADX, THREADY, THREADZ)]
 void UpdateFarState(uint3 id : SV_DispatchThreadID)
 {
     if (state[id] == FAR)
     {
-        bool isSource = false;
+        bool isActive = false;
         for (int i = -1; i <= 1; i++)
         {
             int x2 = (int)id.x + i;
@@ -200,23 +201,23 @@ void UpdateFarState(uint3 id : SV_DispatchThreadID)
                     int diff = abs(i) + abs(j) + abs(k);
                     //if (diff > max_diff)
                     //    continue;
-                    isSource = isSource || state[uint3(x2, y2, z2)] == ACTIVE;
+                    isActive = isActive || state[uint3(x2, y2, z2)] == SOURCE;
                 }
             }
         }
-        if (isSource)
+        if (isActive)
         {
-            state[id] = SOURCE;
+            state[id] = ACTIVE;
             uint index = PosToIndex(id);
-            sourceSet.Append(index);
+            activeSet.Append(index);
         }
     }
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void UpdateSourceValue(uint3 id : SV_DispatchThreadID)
+void UpdateActiveValue(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] == SOURCE)
+    if (state[id] == ACTIVE)
     {
         float min_dist = INFINITE;
         for (int i = -1; i <= 1; i++)
@@ -235,10 +236,8 @@ void UpdateSourceValue(uint3 id : SV_DispatchThreadID)
                     if (z2 < 0 || z2 >= (int) dims.z)
                         continue;
                     int diff = abs(i) + abs(j) + abs(k);
-                    //if (diff > max_diff)
-                    //    continue;
                     uint3 id2 = uint3(x2, y2, z2);
-                    if (state[id2] == ACTIVE)
+                    if (state[id2] == SOURCE)
                     {
                         float new_dist = gwdt[id2] + volume[id] * sqrt(diff);
                         min_dist = min(min_dist, new_dist);
@@ -248,18 +247,19 @@ void UpdateSourceValue(uint3 id : SV_DispatchThreadID)
         }
 
         gwdt[id] = min_dist;
-        //state[id] = ACTIVE;
+        //state[id] = SOURCE;
     }
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void UpdateSourceState(uint3 id : SV_DispatchThreadID)
+void UpdateActiveState(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] == SOURCE)
-        state[id] = ACTIVE;
+    if (state[id] == ACTIVE)
+        state[id] = SOURCE;
 }
 
 AppendStructuredBuffer<uint> remedySet;
+RWStructuredBuffer<int> continueDispatch;
 [numthreads(THREADX, THREADY, THREADZ)]
 void InitRemedy(uint3 id : SV_DispatchThreadID)
 {
@@ -295,7 +295,7 @@ void InitRemedy(uint3 id : SV_DispatchThreadID)
     //    int z2 = id.z + z_offset[i];
     //    int diff = diffs[i];
     //    uint3 id2 = uint3(x2, y2, z2);
-    //    if (state[id2] == ACTIVE)
+    //    if (state[id2] == SOURCE)
     //    {
     //        float new_dist = gwdt[id2] + volume[id] * diff == 1? 1.0f: 1.414213562373095f;
     //        min_dist = min(min_dist, new_dist);
@@ -349,7 +349,7 @@ void UpdateRemedy(uint3 id : SV_DispatchThreadID)
         //    int z2 = id.z + z_offset[i];
         //    int diff = diffs[i];
         //    uint3 id2 = uint3(x2, y2, z2);
-        //    if (state[id2] == ACTIVE)
+        //    if (state[id2] == SOURCE)
         //    {
         //        float new_dist = gwdt[id2] + volume[id] * diff == 1? 1.0f: 1.414213562373095f;
         //        min_dist = min(min_dist, new_dist);
@@ -457,7 +457,7 @@ void InitSeed(uint3 id : SV_DispatchThreadID)
 {
     if (PosToIndex(id) == (uint)seedIndex)
     {
-        state[id] = ACTIVE;
+        state[id] = SOURCE;
         phi[id] = 0;
     }
     else if (gwdt[id] < threshold[id/THRESHOLD_BLOCK_SIZE])
@@ -478,7 +478,7 @@ void UpdateFarStateTree(uint3 id : SV_DispatchThreadID)
 {
     if (state[id] == FAR && mask[id]<=0)
     {
-        bool isSource = false;
+        bool isActive = false;
         for (int i = -1; i <= 1; i++)
         {
             int x2 = (int) id.x + i;
@@ -497,16 +497,16 @@ void UpdateFarStateTree(uint3 id : SV_DispatchThreadID)
                     //int diff = abs(i) + abs(j) + abs(k);
                     //if (diff > max_diff)
                     //    continue;
-                    isSource = isSource || state[uint3(x2, y2, z2)] == ACTIVE;
+                    isActive = isActive || state[uint3(x2, y2, z2)] == SOURCE;
                 }
             }
         }
         
-        if (isSource)
+        if (isActive)
         {
-            state[id] = SOURCE;
+            state[id] = ACTIVE;
             uint index = PosToIndex(id);
-            sourceSet.Append(index);
+            activeSet.Append(index);
         }
     }
 }
@@ -519,9 +519,9 @@ float GI(float intensity)
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void UpdateSourceValueTree(uint3 id : SV_DispatchThreadID)
+void UpdateActiveValueTree(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] == SOURCE)
+    if (state[id] == ACTIVE)
     {
         float min_dist = INFINITE;
         for (int i = -1; i <= 1; i++)
@@ -543,7 +543,7 @@ void UpdateSourceValueTree(uint3 id : SV_DispatchThreadID)
                     //if (diff > max_diff)
                     //    continue;
                     uint3 id2 = uint3(x2, y2, z2);
-                    if (state[id2] == ACTIVE)
+                    if (state[id2] == SOURCE)
                     {
                         float new_dist = newDistance(id,id2,diff);
                         if (new_dist < min_dist)
@@ -560,9 +560,9 @@ void UpdateSourceValueTree(uint3 id : SV_DispatchThreadID)
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void UpdateSourceStateTree(uint3 id : SV_DispatchThreadID)
+void UpdateActiveStateTree(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] == SOURCE)
+    if (state[id] == ACTIVE)
     {
         float min_dist = phi[id];
         bool converged = true;
@@ -577,7 +577,7 @@ void UpdateSourceStateTree(uint3 id : SV_DispatchThreadID)
                     int z2 = (int) id.z + k;
                     int diff = abs(i) + abs(j) + abs(k);
                     uint3 id2 = uint3(x2, y2, z2);
-                    if (state[id2] == ACTIVE)
+                    if (state[id2] == SOURCE)
                     {
                         float new_dist = newDistance(id,id2,diff);
                         if (new_dist < phi[id])
@@ -589,14 +589,14 @@ void UpdateSourceStateTree(uint3 id : SV_DispatchThreadID)
             }
         }
         AllMemoryBarrier();
-        if(converged) state[id] = ACTIVE;
+        if(converged) state[id] = SOURCE;
     }
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
 void InitRemedyTree(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] != ACTIVE)
+    if (state[id] != SOURCE)
     {
         state[id] = BACKGROUND;
         return;
@@ -761,7 +761,7 @@ void InitSeedFI(uint3 id : SV_DispatchThreadID)
 {
     if (PosToIndex(id) == (uint) seedIndex)
     {
-        state[id] = ACTIVE;
+        state[id] = SOURCE;
         phi[id] = 0;
     }
     else
@@ -778,7 +778,7 @@ void UpdateFarStateFI(uint3 id : SV_DispatchThreadID)
 {
     if (state[id] == FAR && mask[id]<=0)
     {
-        bool isSource = false;
+        bool isActive = false;
         for (int i = -1; i <= 1; i++)
         {
             int x2 = (int) id.x + i;
@@ -798,24 +798,24 @@ void UpdateFarStateFI(uint3 id : SV_DispatchThreadID)
                     if (diff > max_diff)
                         continue;
                     uint3 id2 = uint3(x2, y2, z2);
-                    isSource = isSource || state[id2] == ACTIVE;
-                    //isSource = isSource || (state[id2] == ACTIVE);
+                    isActive = isActive || state[id2] == SOURCE;
+                    //isActive = isActive || (state[id2] == SOURCE);
                 }
             }
         }
-        if (isSource)
+        if (isActive)
         {
-            state[id] = SOURCE;
+            state[id] = ACTIVE;
             uint index = PosToIndex(id);
-            sourceSet.Append(index);
+            activeSet.Append(index);
         }
     }
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void UpdateSourceValueFI(uint3 id : SV_DispatchThreadID)
+void UpdateActiveValueFI(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] == SOURCE)
+    if (state[id] == ACTIVE)
     {
         float min_dist = INFINITE;
         for (int i = -1; i <= 1; i++)
@@ -835,7 +835,7 @@ void UpdateSourceValueFI(uint3 id : SV_DispatchThreadID)
                         continue;
                     int diff = abs(i) + abs(j) + abs(k);
                     uint3 id2 = uint3(x2, y2, z2);
-                    if (state[id2] == ACTIVE)
+                    if (state[id2] == SOURCE)
                     {
                         float new_dist = newDistance(id,id2,diff);
                         if (new_dist < min_dist)
@@ -852,9 +852,9 @@ void UpdateSourceValueFI(uint3 id : SV_DispatchThreadID)
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void UpdateSourceStateFI(uint3 id : SV_DispatchThreadID)
+void UpdateActiveStateFI(uint3 id : SV_DispatchThreadID)
 {
-    if (state[id] == SOURCE)
+    if (state[id] == ACTIVE)
     {
         float min_dist = phi[id];
         bool converged = true;
@@ -869,7 +869,7 @@ void UpdateSourceStateFI(uint3 id : SV_DispatchThreadID)
                     int z2 = (int) id.z + k;
                     int diff = abs(i) + abs(j) + abs(k);
                     uint3 id2 = uint3(x2, y2, z2);
-                    if (state[id2] == ACTIVE)
+                    if (state[id2] == SOURCE)
                     {
                         float new_dist = newDistance(id,id2,diff);
                         if (new_dist < phi[id])
@@ -881,7 +881,7 @@ void UpdateSourceStateFI(uint3 id : SV_DispatchThreadID)
             }
         }
         AllMemoryBarrier();
-        if(converged) state[id] = ACTIVE;
+        if(converged) state[id] = SOURCE;
     }
     
 }
@@ -889,7 +889,7 @@ void UpdateSourceStateFI(uint3 id : SV_DispatchThreadID)
 [numthreads(THREADX, THREADY, THREADZ)]
 void InitRemedyFI(uint3 id : SV_DispatchThreadID)
 {
-    //if (state[id] != ACTIVE)
+    //if (state[id] != SOURCE)
     //{
     //    state[id] = BACKGROUND;
     //    return;
@@ -1048,11 +1048,11 @@ void AdjustIntensity(uint3 id: SV_DISPATCHTHREADID)
         uint3 pos = IndexToPos(targetBuffer[id.x]);
         if(undo>0.01)
         {
-            _offset[pos] = 0.5;
+            bias[pos] = 0.5;
         }
         else
         {
-            _offset[pos] = 0.5 + threshold[id/THRESHOLD_BLOCK_SIZE];
+            bias[pos] = 0.5 + threshold[id/THRESHOLD_BLOCK_SIZE];
         }
     }
 }
@@ -1064,34 +1064,61 @@ void AdjustIntensityWithValue(uint3 id: SV_DISPATCHTHREADID)
     if(id.x<targetNum)
     {
         uint3 pos = IndexToPos(targetBuffer[id.x]);
-        _offset[pos] += intensity/255.0f;
+        bias[pos] += intensity/255.0f;
     }
 }
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void InitOffset(uint3 id : SV_DispatchThreadID)
+void InitBias(uint3 id : SV_DispatchThreadID)
 {
-    _offset[id] = 0.5f;
+    bias[id] = 0.5f;
 }
 
 
 
 [numthreads(THREADX, THREADY, THREADZ)]
-void ApplyOffset(uint3 id : SV_DispatchThreadID)
+void ApplyBias(uint3 id : SV_DispatchThreadID)
 {
-    volume[id] = origin[id]+_offset[id] - 0.5f;
+    volume[id] = origin[id]+bias[id] - 0.5f;
 }
 
 
-float max_intensity;
 RWTexture3D<float> visualization;
 [numthreads(THREADX, THREADY, THREADZ)]
 void Visualization(uint3 id : SV_DispatchThreadID)
 {
-    if(gwdt[id]<10/255.0f) visualization[id] = gwdt[id]/max_intensity;
-    //else visualization[id] = 3*(gwdt[id]/max_intensity+0.1)*(gwdt[id]/max_intensity+0.1);
-    else visualization[id] =max(10/255.0f,(gwdt[id]/2));
-
+    //if(gwdt[id]<10/255.0f) visualization[id] = gwdt[id]/maxIntensity;
+    ////else visualization[id] = 3*(gwdt[id]/max_intensity+0.1)*(gwdt[id]/max_intensity+0.1);
+    //else visualization[id] =max(10/255.0f,(gwdt[id]/3));
+    //visualization[id] = gwdt[id]/maxIntensity;
+    float count = 0;
+    float num = 0;
+    for (int i = -1; i <= 1; i++)
+    {
+        int x2 = (int) id.x + i;
+        if (x2 < 0 || x2 >= (int) dims.x)
+            continue;
+        for (int j = -1; j <= 1; j++)
+        {
+            int y2 = (int) id.y + j;
+            if (y2 < 0 || y2 >= (int) dims.y)
+                continue;
+            for (int k = -1; k <= 1; k++)
+            {
+                int z2 = (int) id.z + k;
+                if (z2 < 0 || z2 >= (int) dims.z)
+                    continue;
+                int diff = abs(i) + abs(j) + abs(k);
+                if (diff > max_diff)
+                    continue;
+                num++;
+                uint3 id2 = uint3(x2, y2, z2);
+                if(gwdt[id2]<gwdt[id]) count++;
+            }
+        }
+        if(count/num < 0.4f || gwdt[id]<0.1f) visualization[id] = 0;
+        else visualization[id] = max(0.1f,gwdt[id]/maxIntensity*2);
+    }
    // visualization[id] = 1-(gwdt[id]/max_intensity*2);
 }
 
@@ -1179,7 +1206,7 @@ void UpdateConnection(uint3 id : SV_DispatchThreadID)
     if (isNeighbor && connection[id] <0.9)
     {
         connection[id] = 1;
-        sourceSet.Append(PosToIndex(id));
+        activeSet.Append(PosToIndex(id));
     }
 }
 
@@ -1230,7 +1257,7 @@ void UpdateCluster(uint3 id : SV_DispatchThreadID)
     if (isNeighbor && connection[id] <0.9)
     {
         connection[id] = 1;
-        sourceSet.Append(PosToIndex(id));
+        activeSet.Append(PosToIndex(id));
     }
 }
 
@@ -1247,7 +1274,7 @@ void InitTrunk(uint3 id : SV_DispatchThreadID)
     }
     // if (PosToIndex(id) == (uint)seedIndex)
     //{
-    //    state[id] = ACTIVE;
+    //    state[id] = SOURCE;
     //}
     //else if (gwdt[id] < threshold[id/THRESHOLD_BLOCK_SIZE])
     //{
@@ -1291,7 +1318,7 @@ void UpdateTrunk(uint3 id : SV_DispatchThreadID)
     if (isNeighbor && connection[id] <0.9)
     {
         connection[id] = 1;
-        sourceSet.Append(PosToIndex(id));
+        activeSet.Append(PosToIndex(id));
     }
 }
 
@@ -1307,3 +1334,4 @@ void InitErase(uint3 id : SV_DispatchThreadID)
         phi[pos] = INFINITE;
     }
 }
+

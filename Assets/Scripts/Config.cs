@@ -40,11 +40,12 @@ public class Config : Singleton<Config>
     public uint curIndex = 0;
     public int thresholdBlockSize = 2;
     [SerializeField] private ShaderType _vrShaderType = ShaderType.Base;
-    public PostProcessVolume postProcessVolume;
+    private PostProcessVolume postProcessVolume;
     public bool useBatch = true;
     public bool useKeyBoard = true;
     public int customThresh = 30;
     public NetworkRunner runner;
+    public BaseVolumeRendering volumeRendering;
 
     private byte[] volumeData;
 
@@ -69,6 +70,8 @@ public class Config : Singleton<Config>
     public uint selectedIndex = 0;
     public bool isIsolating = false;
     public int resampleFactor = 5;
+
+    public bool needFilter = true;
 
 
     public enum ShaderType {
@@ -168,8 +171,8 @@ public class Config : Singleton<Config>
         invoker.savePath = savePath + "\\commands.json";
 
         //volume rendering post process
-        postProcessVolume = GameObject.Find("volume").GetComponent<PostProcessVolume>();
-        BaseVolumeRendering volumeRendering = postProcessVolume.profile.GetSetting<BaseVolumeRendering>();
+        postProcessVolume = GameObject.Find("volume").GetComponent<PostProcessVolume>(); 
+        volumeRendering = postProcessVolume.profile.GetSetting<BaseVolumeRendering>();
         if (volumeRendering == null) volumeRendering = postProcessVolume.profile.AddSettings<BaseVolumeRendering>();
         volumeRendering.volume.overrideState = true;
         volumeRendering.volume.value = origin;

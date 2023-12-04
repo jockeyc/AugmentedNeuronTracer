@@ -1,4 +1,4 @@
-﻿using ANT;
+﻿using IntraMR;
 using Cysharp.Threading.Tasks;
 using Fusion.Profiling;
 using MixedReality.Toolkit.SpatialManipulation;
@@ -161,7 +161,7 @@ public class SwcLoader : Singleton<SwcLoader>
                     }
                 case RadiusMode.generate:
                     {
-                        marker.radius = Marker.markerRadius(data, dim.x, dim.y, dim.z, marker, Config.Instance.BkgThresh);
+                        marker.radius = marker.MarkerRadius(data, dim.x, dim.y, dim.z, Config.Instance.BkgThresh);
                         marker.radius = Math.Min(2*marker.radius, 4);
                         break;
                     }
@@ -170,7 +170,7 @@ public class SwcLoader : Singleton<SwcLoader>
                     break;
             }
             if (pair.Key == 1) marker.radius = Config.Instance.somaRadius;
-            if (pair.Key == 1) marker.radius = Math.Max(marker.radius,Marker.markerRadius(data, dim.x, dim.y, dim.z, marker, Config.Instance.BkgThresh));
+            if (pair.Key == 1) marker.radius = Math.Max(marker.radius,marker.MarkerRadius(data, dim.x, dim.y, dim.z, Config.Instance.BkgThresh));
             markers[pair.Key] = marker;
         }
 
@@ -212,7 +212,7 @@ public class SwcLoader : Singleton<SwcLoader>
                     }
                 case RadiusMode.generate:
                     {
-                        marker.radius = Marker.markerRadius(data, dim.x, dim.y, dim.z, marker, Config.Instance.BkgThresh);
+                        marker.radius = marker.MarkerRadius(data, dim.x, dim.y, dim.z, Config.Instance.BkgThresh);
                         marker.radius = Math.Max(marker.radius, 5);
                         break;
                     }
@@ -221,7 +221,7 @@ public class SwcLoader : Singleton<SwcLoader>
                     break;
             }
             if (pair.Key == 1) marker.radius = Config.Instance.somaRadius;
-            if (pair.Key == 1) marker.radius = Math.Max(marker.radius,Marker.markerRadius(data, dim.x, dim.y, dim.z, marker, Config.Instance.BkgThresh));
+            if (pair.Key == 1) marker.radius = Math.Max(marker.radius, marker.MarkerRadius(data, dim.x, dim.y, dim.z, Config.Instance.BkgThresh));
             markers[pair.Key] = marker;
         }
 

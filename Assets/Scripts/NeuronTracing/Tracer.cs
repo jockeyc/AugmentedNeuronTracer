@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using UnityEditor;
 using UnityEngine;
 
 public class Tracer : MonoBehaviour
@@ -37,10 +38,6 @@ public class Tracer : MonoBehaviour
     public FIM fim;
     private Config config;
 
-    byte[] img1d;
-    Vector3Int dim;
-    GameObject cube;
-
     Dictionary<int,int> types = new();
     Dictionary<int,int> batches = new();
 
@@ -53,8 +50,6 @@ public class Tracer : MonoBehaviour
     {
         this.config = GetComponent<Config>();
         this.fim = gameObject.AddComponent<FIM>();
-
-        ReloadConfig();
     }
 
     public void Initial(int bkgThreshold,float somaRadius,Vector3Int rootPos)
@@ -73,7 +68,7 @@ public class Tracer : MonoBehaviour
     /// calculate the min geodesic distance of all voxel to the soma
     /// </summary>
     /// <param name="type">current operation type:initial,sweep,eye tracing</param>
-    public void Trace(int type = 0)
+    public void Trace(int type = 1)
     {
         FIMFI(type);
     }
@@ -82,23 +77,23 @@ public class Tracer : MonoBehaviour
     /// only calculate the part of trunk
     /// </summary>
     /// <param name="type">current operation type</param>
-    public void TraceTrunk(int type = 0)
+    public void TraceTrunk(int type = 1)
     {
         if(curCoroutine != null)StopCoroutine(curCoroutine);
-        curCoroutine = StartCoroutine(FIM(type));
+        curCoroutine = StartCoroutine(FIMAsync(type));
         //FMM();
     }
 
     public void dontCoroutine(int  type=0)
     {
-        FIMnotCoroutine(type);
+        FIM(type);
     }
 
     /// <summary>
     /// trace the remedy part
     /// </summary>
     /// <param name="type">current operation type</param>
-    public void TraceBranch(int type = 0)
+    public void TraceBranch(int type = 1)
     {
         if (curCoroutine != null) StopCoroutine(curCoroutine);
         curCoroutine = StartCoroutine(FIMRemedyCoroutine(type));
@@ -112,7 +107,7 @@ public class Tracer : MonoBehaviour
     public void FIMFI(int type)
     {
         time = Time.realtimeSinceStartup;
-        fim.FIMDT();
+        fim.DistanceTransform();
         Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
 
         time = Time.realtimeSinceStartup;
@@ -128,7 +123,7 @@ public class Tracer : MonoBehaviour
     {
         time = Time.realtimeSinceStartup;
 
-        fim.FIMDT();
+        fim.DistanceTransform();
         Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
@@ -141,12 +136,12 @@ public class Tracer : MonoBehaviour
     {
         time = Time.realtimeSinceStartup;
 
-        yield return StartCoroutine(fim.FIMDTCoroutine());
+        yield return StartCoroutine(fim.DistanceTransformAsync());
         Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
         completeTree = new();
-        yield return StartCoroutine(fim.FIMRemedy(completeTree));
+        yield return StartCoroutine(fim.TraceBranch(completeTree));
         Debug.Log($"Initial restruction complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
         PostProcess(type);
@@ -156,7 +151,7 @@ public class Tracer : MonoBehaviour
     {
         time = Time.realtimeSinceStartup;
 
-        fim.FIMDT();
+        fim.DistanceTransform();
         Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup; 
 
@@ -166,52 +161,34 @@ public class Tracer : MonoBehaviour
         PostProcess(type);
     }
 
-
-    //public void FIM(int type)
-    //{
-    //    time = Time.realtimeSinceStartup;
-
-    //    fim.FIMDT();
-    //    Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
-    //    time = Time.realtimeSinceStartup;
-
-    //    completeTree = fim.FIMTree();
-    //    Debug.Log($"complete Tree nums:{completeTree.Count} Initial restruction complete in {Time.realtimeSinceStartup - time}s");
-    //    time = Time.realtimeSinceStartup;
-
-    //    PostProcess(type);
-    //}
-    public void FIMnotCoroutine(int type)
+    public void FIM(int type)
     {
         time = Time.realtimeSinceStartup;
 
-        fim.FIMDT();
+        fim.DistanceTransform();
         Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
-        //completeTree = fim.FIMTree();
-
-        //completeTree = fim.FIMTree();
-        completeTree = fim.FIMTree();
-        Debug.Log($"complete Tree nums:{completeTree.Count} Initial restruction complete in {Time.realtimeSinceStartup - time}s");
+        completeTree = fim.InitialReconstruction();
+        Debug.Log($"Initial restruction complete in {Time.realtimeSinceStartup - time}s complete Tree nums:{completeTree.Count}");
         time = Time.realtimeSinceStartup;
 
         PostProcess(type);
     }
-    public IEnumerator FIM(int type)
+    public IEnumerator FIMAsync(int type)
     {
         time = Time.realtimeSinceStartup;
 
-        yield return StartCoroutine(fim.FIMDTCoroutine());
+        yield return StartCoroutine(fim.DistanceTransformAsync());
+
         Debug.Log($"DT complete in  {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
-        //completeTree = fim.FIMTree();
         completeTree = new();
-        
-        //completeTree = fim.FIMTree();
-        yield return StartCoroutine(fim.FIMTreeCoroutine(completeTree));
-        Debug.Log($"complete Tree nums:{completeTree.Count} Initial restruction complete in {Time.realtimeSinceStartup - time}s");
+
+        yield return StartCoroutine(fim.InitialReconstructionAsync(completeTree));
+
+        Debug.Log($"Initial restruction complete in {Time.realtimeSinceStartup - time}s complete Tree nums:{completeTree.Count} ");
         time = Time.realtimeSinceStartup;
 
         PostProcess(type);
@@ -250,7 +227,7 @@ public class Tracer : MonoBehaviour
 
         Debug.Log($"FMM Reconstruction cost:{calculationTime}");
 
-        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio);
+        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, SR_ratio);
         Debug.Log(filteredTree.Count);
         Debug.Log($"filter complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
@@ -270,11 +247,8 @@ public class Tracer : MonoBehaviour
     /// <param name="type"></param>
     private void PostProcess(int type)
     {
-        //img1d = config.Origin.GetPixelData<byte>(0).ToArray();
-        //dim = config._originalDim;
         time = Time.realtimeSinceStartup;
-        img1d = config.ScaledVolume.GetPixelData<byte>(0).ToArray();
-        dim = config.scaledDim;
+        //config.VolumeData = config.ScaledVolume.GetPixelData<byte>(0).ToArray();
 
         if ( type == 0)
         {
@@ -283,7 +257,7 @@ public class Tracer : MonoBehaviour
         var newtypes = new Dictionary<int, int>(completeTree.Count);
         foreach (var item in completeTree)
         {
-            int index = (int)item.img_index(dim.x, dim.x * dim.y);
+            int index = (int)item.img_index(config.scaledDim.x, config.scaledDim.x * config.scaledDim.y);
             if (!types.ContainsKey(index))
             {
                 newtypes[index] = type;
@@ -299,7 +273,7 @@ public class Tracer : MonoBehaviour
         var newbathces = new Dictionary<int, int>(completeTree.Count);
         foreach (var item in completeTree)
         {
-            int index = (int)item.img_index(dim.x,dim.x * dim.y);
+            int index = (int)item.img_index(config.scaledDim.x,config.scaledDim.x * config.scaledDim.y);
             if(!batches.ContainsKey(index))
             {
                 newbathces[index] = currentSequence+1;
@@ -312,49 +286,47 @@ public class Tracer : MonoBehaviour
             item.batch = newbathces[index];
         }
         batches = newbathces;
-
-        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio, lengthFactor, lengthThreshold);
+        filteredTree = hp.HierarchyPrune(completeTree, config.VolumeData, config.scaledDim.x, config.scaledDim.y, config.scaledDim.z, ref config.somaRadius, bkg_thresh, SR_ratio, lengthFactor, lengthThreshold);
         Debug.Log($"filtered Tree nums:{filteredTree.Count} filter complete in {Time.realtimeSinceStartup - time}s");
         time = Time.realtimeSinceStartup;
 
-        var cloneTree = CloneTree(filteredTree);
+        var cloneTree = config.needFilter? CloneTree(filteredTree):completeTree;
 
-        resampledTree = hp.Resample(cloneTree, img1d, dim.x, dim.y, dim.z, config.resampleFactor);
+        resampledTree = hp.Resample(cloneTree, config.VolumeData, config.scaledDim.x, config.scaledDim.y, config.scaledDim.z, config.needFilter ? config.resampleFactor:20);
         Debug.Log($"resample Tree nums:{resampledTree.Count} resample complete in {Time.realtimeSinceStartup - time}s");
-        time = Time.realtimeSinceStartup;
+        time = Time.realtimeSinceStartup; 
 
         List<float> growth = new(resampledTree.Count);
         foreach(var marker in resampledTree)
         {
-            float value = (float)batches[(int)marker.img_index(dim.x, dim.x * dim.y)] / (currentSequence+1);
+            float value = (float)batches[(int)marker.img_index(config.scaledDim.x, config.scaledDim.x * config.scaledDim.y)] / (currentSequence+1);
             growth.Add(value);
         }
 
         //if (config.useBatch) Primitive.CreateTree(resampledTree, cube.transform, dim, growth);
         //else Primitive.CreateTree(resampledTree, cube.transform, dim);
-        Primitive.RpcCreateTree(config.runner, resampledTree, cube.transform, dim);
+        // Primitive.RpcCreateTree(config.runner, resampledTree, config.cube.transform, config.scaledDim);
+        Primitive.RpcCreateTreeSDF(config.runner, resampledTree, config.cube.transform, config.scaledDim);
         Debug.Log($"create tree complete in {Time.realtimeSinceStartup - time}s");
+
     }
+
     public void CreateTree()
     {
-        Primitive.RpcCreateTree(config.runner, resampledTree, cube.transform, dim);
+        if (resampledTree == null || resampledTree.Count == 0) return;
+        Primitive.RpcCreateTree(config.runner, resampledTree, config.cube.transform, config.scaledDim);
     }
     public void Pruning(CancellationToken token)
     {
-        filteredTree = hp.HierarchyPrune(completeTree, img1d, dim.x, dim.y, dim.z, ref config.somaRadius, bkg_thresh, 4, true, SR_ratio, lengthFactor, lengthThreshold);
+        if (completeTree == null || completeTree.Count == 0) return;
+        filteredTree = hp.HierarchyPrune(completeTree, config.VolumeData, config.scaledDim.x, config.scaledDim.y, config.scaledDim.z, ref config.somaRadius, bkg_thresh, SR_ratio, lengthFactor, lengthThreshold);
 
         var cloneTree = CloneTree(filteredTree);
         if(token.IsCancellationRequested)
             return;
-        resampledTree = hp.Resample(cloneTree, img1d, dim.x, dim.y, dim.z, config.resampleFactor);
+        resampledTree = hp.Resample(cloneTree, config.VolumeData, config.scaledDim.x, config.scaledDim.y, config.scaledDim.z, config.resampleFactor);
     }
 
-    private void ReloadConfig()
-    {
-        img1d = config.VolumeData;
-        dim = config.scaledDim;
-        cube = config.cube;
-    }
     public void AdjustIntensity(List<Vector3> track, float intensity)
     {
         var cube = config.cube;
@@ -517,10 +489,6 @@ public class Tracer : MonoBehaviour
         var cluster = fim.GetCluster(seed);
         return cluster;
     }
-    public void Delete(uint index)
-    {
-        //fim.Delete(index);
-    }
 
     public void CloseToTrack(List<Vector3> postions)
     {
@@ -545,7 +513,6 @@ public class Tracer : MonoBehaviour
         Primitive.CreateTree(resampledTree, config.cube.transform, dim);
 
     }
-
     
     public void ClearResult()
     {
@@ -644,5 +611,10 @@ public class Tracer : MonoBehaviour
         List<uint> _indexes = GetCluster(Config.Instance.selectedIndex);
         Debug.Log(_indexes.Count);
         ModifySelection(_indexes);
+    }
+
+    public void LogTime()
+    {
+
     }
 }

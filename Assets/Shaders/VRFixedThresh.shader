@@ -27,10 +27,10 @@ Shader "VolumeRendering/FixedThreshold"
 
             float4 GetWorldSpacePosition(float depth, float2 uv)
             {
-                // ÆÁÄ»¿Õ¼ä --> ÊÓ×¶¿Õ¼ä
+                // ï¿½ï¿½Ä»ï¿½Õ¼ï¿½ --> ï¿½ï¿½×¶ï¿½Õ¼ï¿½
                 float4 view_vector = mul(_InverseProjectionMatrix, float4(2.0 * uv - 1.0, depth, 1.0));
                 view_vector.xyz /= view_vector.w;
-                //ÊÓ×¶¿Õ¼ä --> ÊÀ½ç¿Õ¼ä
+                //ï¿½ï¿½×¶ï¿½Õ¼ï¿½ --> ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½
                 float4x4 l_matViewInv = _InverseViewMatrix;
                 float4 world_vector = mul(l_matViewInv, float4(view_vector.xyz, 1));
                 return world_vector;
@@ -88,7 +88,7 @@ Shader "VolumeRendering/FixedThreshold"
             }
 
             float2 rayBoxDst(float3 boundsMin, float3 boundsMax, 
-                            //ÊÀ½çÏà»úÎ»ÖÃ      ¹âÏß·½Ïòµ¹Êý
+                            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½      ï¿½ï¿½ï¿½ß·ï¿½ï¿½ï¿½ï¿½ï¿½
                             float3 rayOrigin, float3 invRaydir) 
             {
                 float3 t0 = (boundsMin - rayOrigin) * invRaydir;
@@ -96,8 +96,8 @@ Shader "VolumeRendering/FixedThreshold"
                 float3 tmin = min(t0, t1);
                 float3 tmax = max(t0, t1);
 
-                float dstA = max(max(tmin.x, tmin.y), tmin.z); //½øÈëµã
-                float dstB = min(tmax.x, min(tmax.y, tmax.z)); //³öÈ¥µã
+                float dstA = max(max(tmin.x, tmin.y), tmin.z); //ï¿½ï¿½ï¿½ï¿½ï¿½
+                float dstB = min(tmax.x, min(tmax.y, tmax.z)); //ï¿½ï¿½È¥ï¿½ï¿½
 
                 float dstToBox = max(0, dstA);
                 float dstInsideBox = max(0, dstB - dstToBox);
@@ -106,13 +106,14 @@ Shader "VolumeRendering/FixedThreshold"
 
             float4 Frag(VaryingsDefault i) : SV_Target
             {
+                 
                 //screen depth
                 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, i.texcoordStereo);
 
                 float4 worldPos = GetWorldSpacePosition(depth, i.texcoord);
                 float4 localPos = mul(_WorldToLocalMatrix, float4(worldPos.xyz,1));
                 float3 rayPos = _WorldSpaceCameraPos;
-                //Ïà»úµ½Ã¿¸öÏñËØµÄÊÀ½ç·½Ïò
+                //ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ç·½ï¿½ï¿½
                 float3 worldViewDir = normalize(worldPos.xyz - rayPos.xyz);
 
                 float3 localRayPos = mul(_WorldToLocalMatrix,float4(rayPos,1)).xyz;
@@ -124,33 +125,20 @@ Shader "VolumeRendering/FixedThreshold"
                 float depthEyeLinear = distance(localPos.xyz,localRayPos);
                 
                 float2 rayToContainerInfo = rayBoxDst(boundsMin, boundsMax, localRayPos, (1 / localViewDir));
-                float dstToBox = rayToContainerInfo.x; //Ïà»úµ½ÈÝÆ÷µÄ¾àÀë
-                float dstInsideBox = rayToContainerInfo.y; //·µ»Ø¹âÏßÊÇ·ñÔÚÈÝÆ÷ÖÐ
-                //Ïà»úµ½ÎïÌåµÄ¾àÀë - Ïà»úµ½ÈÝÆ÷µÄ¾àÀë£¬ÕâÀï¸ú ¹âÏßÊÇ·ñÔÚÈÝÆ÷ÖÐ È¡×îÐ¡£¬¹ýÂËµôÒ»Ð©ÎÞÐ§Öµ
+                float dstToBox = rayToContainerInfo.x; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½
+                float dstInsideBox = rayToContainerInfo.y; //ï¿½ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¡ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Ò»Ð©ï¿½ï¿½Ð§Öµ
                 float dstLimit = min(depthEyeLinear - dstToBox, dstInsideBox);
                 float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);
+               
                 if(dstLimit>0)
                 {
                     float4 result =  RayMarching(localRayPos,localViewDir,dstToBox,dstLimit);
-                    result.a = min(0.85,result.a);
-                    //result.a = max(0.1,result.a);
-                    //result = max(0.1,result);
+                    //result.a = min(0.85,result.a);
 
                     if(result.g ==1) result = float4(0,0,0,result.a);
                     else if(result.g ==0.5) result = float4(0,result.b,0,result.a);
                     else if(result.b >= result.r) result = float4(result.b,result.b,result.b,result.a);
-                    //else result = float4(result.r,0,0,result.a);
-
-                    //result = min(float4(0.8),result);
-                    //color = float4(result + (1-result.a)*color.rgb,1);
-                    //if(color.r>0||color.b>0||color.g>0)
-                    //{
-                    //    color = float4(result.rgb * result.a + color.rgb * (1-result.a),1);
-                    //}
-                    //else
-                    //{
-                    //    color = result;
-                    //}
 
                     if(result.a > _viewThreshold)
                     {                    
@@ -170,7 +158,7 @@ Shader "VolumeRendering/FixedThreshold"
                             color = float4(result * base + (1-result.a)*color.rgb,1);
                         }
                     }
-                    color = max(color,0.1);
+                    color+=0.2;
                     //else{
                     //    color = float4(result * float3(1,1,1) + (1-result.a)*color.rgb,1);
                     //}

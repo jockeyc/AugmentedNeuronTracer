@@ -34,4 +34,14 @@ public static class VectorExtension
         return self.x >= other.x && self.y >= other.y && self.z >= other.z;
     }
 
+    public static float MaxComponent(this Vector3 self)
+    {
+        return Mathf.Max(self.x, Mathf.Max(self.y, self.z));
+    }
+    
+    public static float MinComponent(this Vector3 self)
+    {
+        return Mathf.Min(self.x, Mathf.Min(self.y, self.z));
+    }
+
 }

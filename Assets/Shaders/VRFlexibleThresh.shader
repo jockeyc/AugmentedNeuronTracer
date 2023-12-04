@@ -15,7 +15,6 @@ Shader "VolumeRendering/FlexibleThreshold"
             float4x4 _InverseViewMatrix;
             float4x4 _WorldToLocalMatrix;
             float4x4 _TransposeObjectToWorldMatrix;
-
             TEXTURE2D_SAMPLER2D(_CameraDepthTexture, sampler_CameraDepthTexture);
 			TEXTURE2D_SAMPLER2D(_MainTex, sampler_MainTex);
 			sampler3D _Volume; 
@@ -44,34 +43,7 @@ Shader "VolumeRendering/FlexibleThreshold"
                 float depth_connection = 99999;
                 float depth_bkgThresh = 99999;
                 int step = (dstLimit-dstToBox)/dt;
-
-              //  for(int t = 0; t< 500000; t ++)
-              //  {
-              //      float4 uv = float4(p + 0.5, 1);
-              //      float val = tex3Dlod(_Volume, uv);
-              //      //float connection = 0;
-              //      //float bkgThresh = 0;
-              //      float connection = tex3Dlod(_Connection,uv);
-              //      float bkgThresh = tex3Dlod(_Threshold,uv);
-              //      if(connection>0.01){
-              //          col.g = max(val,col.g);
-              //          depth_connection = min(depth_connection,t*dt);
-              //      }
-              //      if(val>=bkgThresh){
-              //          col.b = max(val,col.b);
-              //          depth_bkgThresh = min(depth_bkgThresh,t*dt);
-              //      }
-              //      else{
-              //          col.r = max(val,col.r);
-              //      }
-              //      alpha = max(alpha,val);
-                    
-              //      if(alpha >= 0.98 || t * dt > dstLimit)
-              //      {
-              //          break;
-              //      }
-		            //p += direction * dt;
-              //  }                
+             
                 for(int t = 0; t< 500000; t ++)
                 {
                     float4 uv = float4(p + 0.5, 1);
@@ -124,6 +96,7 @@ Shader "VolumeRendering/FlexibleThreshold"
             {
                 //screen depth
                 float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, i.texcoordStereo);
+                //return float4(depth*10,0,0,1);
 
                 float4 worldPos = GetWorldSpacePosition(depth, i.texcoord);
                 float4 localPos = mul(_WorldToLocalMatrix, float4(worldPos.xyz,1));
@@ -147,12 +120,14 @@ Shader "VolumeRendering/FlexibleThreshold"
                 if(dstLimit>0)
                 {
                     float4 result =  RayMarching(localRayPos,localViewDir,dstToBox,dstLimit);
-                    result.a = clamp(result.a,25/255.0f, 0.85);
-                    result.r = clamp(result.r,25/255.0f, 0.85);
-                    result.g = clamp(result.g,25/255.0f, 0.85);
-                    result.b = clamp(result.b,25/255.0f, 0.85);
+                    //result.a = clamp(result.a,25/255.0f, 0.85);
+                    //result.r = clamp(result.r,25/255.0f, 0.85);
+                    //result.g = clamp(result.g,25/255.0f, 0.85);
+                    //result.b = clamp(result.b,25/255.0f, 0.85);
 
-
+                    color = float4(result.a * float4(1,1,1,1) + (1-result.a)*color.rgb,1);
+                    
+                    return color;
                     //if(result.g >0) 
                     //{
                     //    float3 base = float3(0,result.g,result.g);

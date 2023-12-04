@@ -31,12 +31,12 @@ public class GazeMenu : SubMenu
         sliders[0].Value = config.ViewThresh / (float)SLIDER_MAXIMUM[0];
 
         config.VRShaderType = Config.ShaderType.FixedThreshold;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().viewThreshold.overrideState = true;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().viewThreshold.value = config.ViewThresh / 255.0f;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.overrideState = true;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.value = config.tracer.fim.mask;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.overrideState = true;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.value = config.tracer.fim.selection;
+        config.volumeRendering.viewThreshold.overrideState = true;
+        config.volumeRendering.viewThreshold.value = config.ViewThresh / 255.0f;
+        config.volumeRendering.mask.overrideState = true;
+        config.volumeRendering.mask.value = config.tracer.fim.mask;
+        config.volumeRendering.selection.overrideState = true;
+        config.volumeRendering.selection.value = config.tracer.fim.selection;
     }
 
     private void Redo()
@@ -54,17 +54,17 @@ public class GazeMenu : SubMenu
         Config.Instance.gazeController.interactionType = Buttons[3].IsToggled? GazeController.EyeInteractionType.DeleteNoise:GazeController.EyeInteractionType.Repair;
         if (Buttons[3].IsToggled)
         {
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.overrideState = true;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.value = config.tracer.fim.mask;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.overrideState = true;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.value = config.tracer.fim.selection;
+            config.volumeRendering.mask.overrideState = true;
+            config.volumeRendering.mask.value = config.tracer.fim.mask;
+            config.volumeRendering.selection.overrideState = true;
+            config.volumeRendering.selection.value = config.tracer.fim.selection;
         }
         else
         {
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.overrideState = true;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.value = config.tracer.fim.mask;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.overrideState = true;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.value = config.tracer.fim.ClearSelection();
+            config.volumeRendering.mask.overrideState = true;
+            config.volumeRendering.mask.value = config.tracer.fim.mask;
+            config.volumeRendering.selection.overrideState = true;
+            config.volumeRendering.selection.value = config.tracer.fim.ClearSelection();
         }
         //config.invoker.Execute(new DeleteCommand(config.invoker, config.tracer, config.curIndex));
     }
@@ -87,12 +87,12 @@ public class GazeMenu : SubMenu
         config.ViewThresh = value;
 
         config.VRShaderType = Config.ShaderType.FixedThreshold;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().viewThreshold.overrideState = true;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().viewThreshold.value = value/255.0f;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.overrideState = true;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.value = config.tracer.fim.mask;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.overrideState = true;
-        config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.value = config.tracer.fim.selection;
+        config.volumeRendering.viewThreshold.overrideState = true;
+        config.volumeRendering.viewThreshold.value = value/255.0f;
+        config.volumeRendering.mask.overrideState = true;
+        config.volumeRendering.mask.value = config.tracer.fim.mask;
+        config.volumeRendering.selection.overrideState = true;
+        config.volumeRendering.selection.value = config.tracer.fim.selection;
     }
 
     void Leave()
@@ -105,10 +105,10 @@ public class GazeMenu : SubMenu
         else
         {
             Buttons[3].ForceSetToggled(false);
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.overrideState = true;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().mask.value = config.tracer.fim.mask;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.overrideState = true;
-            config.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().selection.value = config.tracer.fim.ClearSelection();
+            config.volumeRendering.mask.overrideState = true;
+            config.volumeRendering.mask.value = config.tracer.fim.mask;
+            config.volumeRendering.selection.overrideState = true;
+            config.volumeRendering.selection.value = config.tracer.fim.ClearSelection();
             config.invoker.Execute(new DeleteCommand(config.tracer, config.selectedIndex));
         }
     }

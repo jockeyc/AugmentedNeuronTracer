@@ -89,13 +89,13 @@ public class AutoMenu : SubMenu
 
         config.VRShaderType = Config.ShaderType.FlexibleThreshold;
 
-        var renderSetting = Config.Instance.postProcessVolume.profile.GetSetting<BaseVolumeRendering>();
+        var renderSetting = Config.Instance.volumeRendering;
         renderSetting.connection.overrideState = true;
         renderSetting.connection.value = connection;
         renderSetting.threshold.overrideState = true;
         renderSetting.threshold.value = threshold;
 
-        config.tracer.TraceTrunk(0);
+        config.tracer.TraceTrunk();
     }
 
     async void UpdateRadiusValue(SliderEventData data)

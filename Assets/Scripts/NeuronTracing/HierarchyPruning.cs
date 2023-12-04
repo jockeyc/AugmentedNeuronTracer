@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 public class HierarchyPruning
 {
@@ -10,45 +14,47 @@ public class HierarchyPruning
     {
         public HierarchySegment parent;
         public Marker leafMarker;
-        public Marker root_marker;
+        public Marker rootMarker;
         public double length;
         public int level;
 
         public HierarchySegment()
         {
             leafMarker = null;
-            root_marker = null;
+            rootMarker = null;
             length = 0;
             level = 1;
             parent = null;
         }
 
-        public void setValue(Marker _leaf, Marker _root, double _len, int _level)
+        public void SetValue(Marker _leaf, Marker _root, double _len, int _level)
         {
             leafMarker = _leaf;
-            root_marker = _root;
+            rootMarker = _root;
             length = _len;
             level = _level;
             parent = null;
         }
 
-        public List<Marker> get_markers()
+        public List<Marker> GetMarkers()
         {
             Marker p = leafMarker;
             List<Marker> markers = new();
-            while (p != root_marker)
+            while (p != rootMarker)
             {
                 markers.Add(p);
                 p = p.parent;
             }
-            markers.Add(root_marker);
+            markers.Add(rootMarker);
             return markers;
         }
     }
-    List<HierarchySegment> swc2topoSegs(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2)
+
+    List<HierarchySegment> SWC2TopoSegs(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2)
     {
         int tolNum = inswc.Count;
-        Dictionary<Marker, int> swcMap = new();
+        Dictionary<Marker, int> swcMap = new(tolNum);
+ 
         for (int i = 0; i < tolNum; i++)
         {
             swcMap[inswc[i]] = i;
@@ -56,23 +62,26 @@ public class HierarchyPruning
 
         int[] childs_num = new int[tolNum];
 
-        for (int i = 0; i < tolNum; i++)
+        Parallel.ForEach(inswc, marker =>
         {
-            if (inswc[i].parent != null && !swcMap.ContainsKey(inswc[i].parent))
+            if (marker.parent != null)
             {
-                inswc[i].parent = null;
+                int parent_index = swcMap[marker.parent];
+                Interlocked.Increment(ref childs_num[parent_index]);
             }
-            if (inswc[i].parent == null) continue;
-            int parent_index = swcMap[inswc[i].parent];
-            childs_num[parent_index]++;
-        }
+        });
 
-        List<Marker> leafMarkers = new();
-        for (int i = 0; i < tolNum; i++)
+        ConcurrentBag<Marker> leafMarkerBag = new ConcurrentBag<Marker>();
+
+        Parallel.For(0, tolNum, i =>
         {
-            if (childs_num[i] == 0) leafMarkers.Add(inswc[i]);
-        }
+            if (childs_num[i] == 0)
+            {
+                leafMarkerBag.Add(inswc[i]);
+            }
+        });
 
+        List<Marker> leafMarkers = leafMarkerBag.ToList();
         int leafNum = leafMarkers.Count;
 
         int sz01 = sz0 * sz1;
@@ -109,8 +118,8 @@ public class HierarchyPruning
         }
 
         //activate hierarchy segments
-        Dictionary<Marker, int> leafMap = new();
-        List<HierarchySegment> topoSegs = new();
+        Dictionary<Marker, int> leafMap = new(leafNum);
+        List<HierarchySegment> topoSegs = new(leafNum);
         for (int i = 0; i < leafNum; i++)
         {
             topoSegs.Add(new HierarchySegment());
@@ -132,7 +141,7 @@ public class HierarchyPruning
 
             double dst = topoDists[swcMap[rootMarker]];
 
-            topoSegs[i].setValue(leafMarker, rootMarker, dst, level);
+            topoSegs[i].SetValue(leafMarker, rootMarker, dst, level);
 
 
             if (rootParent == null)
@@ -141,12 +150,11 @@ public class HierarchyPruning
             }
             else
             {
-                Marker leaf_marker2 = topoLeafs[swcMap[rootParent]];
-                if (leaf_marker2 != null)
+                Marker leafMarker2 = topoLeafs[swcMap[rootParent]];
+                if (leafMarker2 != null)
                 {
-                    int leaf_index2 = leafMap[leaf_marker2];
-                    topoSegs[i].parent = topoSegs[leaf_index2];
-                    //... rest of the code
+                    int leafIndex2 = leafMap[leafMarker2];
+                    topoSegs[i].parent = topoSegs[leafIndex2];
                 }
             }
         }
@@ -154,7 +162,7 @@ public class HierarchyPruning
         return topoSegs;
     }
 
-     List<Marker> TopoSegs2swc(List<HierarchySegment> topoSegs, int swcType)
+    List<Marker> TopoSegs2swc(List<HierarchySegment> topoSegs, int swcType)
     {
         var outswc = new List<Marker>();
         double min_dst = double.MaxValue;
@@ -184,7 +192,7 @@ public class HierarchyPruning
 
             int color_id = (int)((swcType == 0) ? (dst - min_dst) / max_dst * 254 + 20.5 : (level - min_level) / max_level * 254.0 + 20.5);
             List<Marker> tmp_markers;
-            tmp_markers = topo_seg.get_markers();
+            tmp_markers = topo_seg.GetMarkers();
             foreach (Marker marker in tmp_markers)
             {
                 //marker.type = color_id;
@@ -201,7 +209,7 @@ public class HierarchyPruning
         {
             int color_id = out_segs.Contains(topo_seg) ? 0 : 1;
             List<Marker> tmp_markers;
-            tmp_markers = topo_seg.get_markers();
+            tmp_markers = topo_seg.GetMarkers();
             foreach (Marker marker in tmp_markers)
             {
                 //marker.type = color_id;
@@ -210,25 +218,21 @@ public class HierarchyPruning
         }
     }
 
-    public List<Marker> HierarchyPrune(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2, ref float somaRadius, double bkg_thresh = 30.0, double length_thresh = 5.0, bool isSoma = true, double SR_ratio = 1.0 / 9.0, float lengthFactor = 4, float lengthThreshold = 0.5f)
+    public List<Marker> HierarchyPrune(List<Marker> inswc, byte[] img, int size0, int size1, int size2, ref float somaRadius, double bkg_thresh = 30.0, double SR_ratio = 1.0 / 9.0, float lengthFactor = 4, float lengthThreshold = 0.5f)
     {
-        int sz01 = sz0 * sz1;
-        int tol_sz = sz01 * sz2;
+        int size01 = size0 * size1;
+        int totalSize = size01 * size2;
 
-        List<HierarchySegment> topoSegs  = swc2topoSegs(inswc, img, sz0, sz1, sz2);
-        //Debug.Log(topoSegs.Count);
+        List<HierarchySegment> topoSegs = SWC2TopoSegs(inswc, img, size0, size1, size2);
 
         List<HierarchySegment> filterSegs = new();
         Marker root = inswc.FirstOrDefault(marker => marker.parent == null);
 
-        double real_thresh = Math.Max(10, bkg_thresh);
+        double realThresh = Math.Max(10, bkg_thresh);
 
-        if (somaRadius < 0) somaRadius = Marker.markerRadius(img, sz0, sz1, sz2, root, real_thresh);
+        if (somaRadius < 0) somaRadius = root.MarkerRadius(img, size0, size1, size2, realThresh);
         Debug.Log($"Soma Radius: {somaRadius}");
 
-        //somaRadius = MathF.Min(10,somaRadius);
-
-        //filterSegs.AddRange(topoSegs.Where(topoSeg => topoSeg.length >= 2));
         foreach (HierarchySegment topoSeg in topoSegs)
         {
             Marker leafMarker = topoSeg.leafMarker;
@@ -248,24 +252,26 @@ public class HierarchyPruning
             }
         }
 
-        //Debug.Log(filterSegs.Count);
-
         //calculate radius of every node
+        List<Marker> markers = new();
         foreach (var seg in filterSegs)
         {
-            Marker leaf_marker = seg.leafMarker;
-            Marker root_marker = seg.root_marker;
-            Marker p = leaf_marker;
-            while (p != root_marker.parent)
+            Marker leafMarker = seg.leafMarker;
+            Marker rootMarker = seg.rootMarker;
+            Marker p = leafMarker;
+            while (p != rootMarker.parent)
             {
-                p.radius = MathF.Max(p.radius,1.5f);
-                //p.radius = Marker.markerRadius(img, sz0, sz1, sz2, p, real_thresh);
-                p.radius = MathF.Min(somaRadius / 6, Marker.markerRadius(img, sz0, sz1, sz2, p, real_thresh));
+                markers.Add(p);
                 p = p.parent;
             }
         }
+
+        Parallel.ForEach(markers, marker =>
+        {
+            marker.radius = marker.MarkerRadius(img, size0, size1, size2, realThresh);
+            //marker.radius = 2.0f;
+        });
         root.radius = somaRadius;
-        //Debug.Log("calculate radius done");
 
         //hierarchy pruning
         byte[] tmpimg = new byte[img.Length];
@@ -280,18 +286,18 @@ public class HierarchyPruning
         foreach (var seg in filterSegs)
         {
             if (seg.parent != null && !visitedSegs.Contains(seg.parent)) continue;
-            Marker leaf_marker = seg.leafMarker;
-            Marker root_marker = seg.root_marker;
+            Marker leafMarker = seg.leafMarker;
+            Marker rootMarker = seg.rootMarker;
 
             double sum_sig = 0;
             double sum_rdc = 0;
 
-            Marker p = leaf_marker;
-            while (p != root_marker.parent)
+            Marker p = leafMarker;
+            while (p != rootMarker.parent)
             {
-                if (tmpimg[p.img_index(sz0, sz01)] == 0)
+                if (tmpimg[p.img_index(size0, size01)] == 0)
                 {
-                    sum_rdc += img[p.img_index(sz0, sz01)];
+                    sum_rdc += img[p.img_index(size0, size01)];
                 }
                 else
                 {
@@ -304,17 +310,17 @@ public class HierarchyPruning
                     for (int ii = -r; ii <= r; ii++)
                     {
                         int x2 = x + ii;
-                        if (x2 < 0 || x2 >= sz0) continue;
+                        if (x2 < 0 || x2 >= size0) continue;
                         for (int jj = -r; jj <= r; jj++)
                         {
                             int y2 = y + jj;
-                            if (y2 < 0 || y2 >= sz1) continue;
+                            if (y2 < 0 || y2 >= size1) continue;
                             for (int kk = -r; kk <= r; kk++)
                             {
                                 int z2 = z + kk;
-                                if (z2 < 0 || z2 >= sz2) continue;
+                                if (z2 < 0 || z2 >= size2) continue;
                                 if (ii * ii + jj * jj + kk * kk > r * r) continue;
-                                int index = z2 * sz01 + y2 * sz0 + x2;
+                                int index = z2 * size01 + y2 * size0 + x2;
                                 sum_sphere_size++;
                                 if (tmpimg[index] != img[index])
                                 {
@@ -326,9 +332,9 @@ public class HierarchyPruning
 
                     if (sum_sphere_size > 0 && sum_delete_size / sum_sphere_size > 0.1)
                     {
-                        sum_rdc += img[p.img_index(sz0, sz01)];
+                        sum_rdc += img[p.img_index(size0, size01)];
                     }
-                    else sum_sig += img[p.img_index(sz0, sz01)];
+                    else sum_sig += img[p.img_index(size0, size01)];
                 }
                 p = p.parent;
             }
@@ -339,10 +345,10 @@ public class HierarchyPruning
                 tolSumSig += sum_sig;
                 tolSumRdc += sum_rdc;
                 List<Marker> seg_markers = new();
-                p = leaf_marker;
-                while (p != root_marker)
+                p = leafMarker;
+                while (p != rootMarker)
                 {
-                    if (tmpimg[p.img_index(sz0, sz01)] != 0)
+                    if (tmpimg[p.img_index(size0, size01)] != 0)
                     {
                         seg_markers.Add(p);
                     }
@@ -355,28 +361,27 @@ public class HierarchyPruning
                     int r = (int)p.radius;
                     if (r > 0)
                     {
-                        int x = (int)(p.position.x + 0.5);
-                        int y = (int)(p.position.y + 0.5);
-                        int z = (int)(p.position.z + 0.5);
+                        int x = (int)(p.position.x);
+                        int y = (int)(p.position.y);
+                        int z = (int)(p.position.z);
                         //double sum_sphere_size = 0;
                         //double sum_delete_size = 0;
                         for (int ii = -r; ii <= r; ii++)
                         {
                             int x2 = x + ii;
-                            if (x2 < 0 || x2 >= sz0) continue;
+                            if (x2 < 0 || x2 >= size0) continue;
                             for (int jj = -r; jj <= r; jj++)
                             {
                                 int y2 = y + jj;
-                                if (y2 < 0 || y2 >= sz1) continue;
+                                if (y2 < 0 || y2 >= size1) continue;
                                 for (int kk = -r; kk <= r; kk++)
                                 {
                                     int z2 = z + kk;
-                                    if (z2 < 0 || z2 >= sz2) continue;
+                                    if (z2 < 0 || z2 >= size2) continue;
                                     if (ii * ii + jj * jj + kk * kk > r * r) continue;
-                                    int index = z2 * sz01 + y2 * sz0 + x2;
+                                    int index = z2 * size01 + y2 * size0 + x2;
                                     tmpimg[index] = 0;
                                 }
-
                             }
                         }
                     }
@@ -386,280 +391,113 @@ public class HierarchyPruning
                 visitedSegs.Add(seg);
             }
         }
+        ////evaluation
+        //double tree_sig = 0;
+        //double covered_sig = 0;
+        //foreach (var m in inswc)
+        //{
+        //    tree_sig += img[m.img_index(size0, size01)];
+        //    if (tmpimg[m.img_index(size0, size01)] == 0) covered_sig += img[m.img_index(size0, size01)];
+        //}
 
-        //evaluation
-        double tree_sig = 0;
-        double covered_sig = 0;
-        foreach (var m in inswc)
-        {
-            tree_sig += img[m.img_index(sz0, sz01)];
-            if (tmpimg[m.img_index(sz0, sz01)] == 0) covered_sig += img[m.img_index(sz0, sz01)];
-        }
- 
-        //Debug.Log("S/T ratio" + covered_sig / tree_sig + "(" + covered_sig + "/" + tree_sig + ")");
-        //Debug.Log(outSegs.Count);
+        ////Debug.Log("S/T ratio" + covered_sig / tree_sig + "(" + covered_sig + "/" + tree_sig + ")");
+        ////Debug.Log(outSegs.Count);
 
         var outswc = TopoSegs2swc(outSegs, 0);
         return outswc;
-        //topo_segs2swc(visited_segs,filter_segs, out outswc, 0);
     }
-
-    //public List<Marker> hierarchy_prune_repair(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2, double bkg_thresh = 30.0, double length_thresh = 5.0, double SR_ratio = 1.0 / 9.0)
-    //{
-    //    int sz01 = sz0 * sz1;
-    //    int tol_sz = sz01 * sz2;
-
-    //    List<HierarchySegment> topo_segs = swc2topoSegs(inswc, img, sz0, sz1, sz2);
-    //    Debug.Log(topo_segs.Count);
-
-    //    List<HierarchySegment> filter_segs = new List<HierarchySegment>();
-    //    Marker root = new Marker();
-    //    foreach (Marker marker in inswc)
-    //    {
-    //        if (marker.parent == null)
-    //        {
-    //            root = marker;
-    //            break;
-    //        }
-    //    }
-
-    //    double real_thresh = bkg_thresh;
-    //    //double real_thresh = 50;
-    //    //real_thresh = Math.Max(real_thresh, bkg_thresh);
-
-    //    foreach (HierarchySegment topo_seg in topo_segs)
-    //    {
-    //        Marker leaf_marker = topo_seg.leafMarker;
-    //        if (topo_seg.length >= length_thresh)
-    //        {
-    //            filter_segs.Add(topo_seg);
-    //        }
-    //    }
-
-    //    Debug.Log(filter_segs.Count);
-    //    if (filter_segs.Count == 0)
-    //    {
-    //        filter_segs = topo_segs;
-    //    }
-
-
-    //    //calculate radius of every node
-    //    foreach (var seg in filter_segs)
-    //    {
-    //        Marker leaf_marker = seg.leafMarker;
-    //        Marker root_marker = seg.root_marker;
-    //        Marker p = leaf_marker;
-    //        while (p != root_marker.parent)
-    //        {
-    //            p.radius = Marker.markerRadius(img, sz0, sz1, sz2, p, real_thresh);
-    //            p = p.parent;
-    //        }
-    //    }
-    //    Debug.Log("calculate radius done");
-
-    //    //hierarchy pruning
-    //    byte[] tmpimg = new byte[img.Length];
-    //    img.CopyTo(tmpimg, 0);
-
-    //    filter_segs.Sort((a, b) => { return -a.length.CompareTo(b.length); });
-
-    //    var out_segs = new List<HierarchySegment>();
-    //    double tol_sum_sig = 0.0, tol_sum_rdc = 0.0;
-    //    var visited_segs = new HashSet<HierarchySegment>();
-    //    int count = 0;
-
-    //    foreach (var seg in filter_segs)
-    //    {
-    //        if (seg.parent != null && !visited_segs.Contains(seg.parent)) continue;
-    //        Marker leaf_marker = seg.leafMarker;
-    //        Marker root_marker = seg.root_marker;
-
-    //        double sum_sig = 0;
-    //        double sum_rdc = 0;
-
-    //        Marker p = leaf_marker;
-    //        while (p != root_marker.parent)
-    //        {
-    //            if (tmpimg[p.img_index(sz0, sz01)] == 0)
-    //            {
-    //                sum_rdc += img[p.img_index(sz0, sz01)];
-    //            }
-    //            else
-    //            {
-    //                int r = (int)p.radius;
-    //                int x = (int)(p.position.x);
-    //                int y = (int)(p.position.y);
-    //                int z = (int)(p.position.z);
-    //                double sum_sphere_size = 0;
-    //                double sum_delete_size = 0;
-    //                for (int ii = -r; ii <= r; ii++)
-    //                {
-    //                    int x2 = x + ii;
-    //                    if (x2 < 0 || x2 >= sz0) continue;
-    //                    for (int jj = -r; jj <= r; jj++)
-    //                    {
-    //                        int y2 = y + jj;
-    //                        if (y2 < 0 || y2 >= sz1) continue;
-    //                        for (int kk = -r; kk <= r; kk++)
-    //                        {
-    //                            int z2 = z + kk;
-    //                            if (z2 < 0 || z2 >= sz2) continue;
-    //                            if (ii * ii + jj * jj + kk * kk > r * r) continue;
-    //                            int index = z2 * sz01 + y2 * sz0 + x2;
-    //                            sum_sphere_size++;
-    //                            if (tmpimg[index] != img[index])
-    //                            {
-    //                                sum_delete_size++;
-    //                            }
-    //                        }
-    //                    }
-    //                }
-
-    //                if (sum_sphere_size > 0 && sum_delete_size / sum_sphere_size > 0.1)
-    //                {
-    //                    sum_rdc += img[p.img_index(sz0, sz01)];
-    //                }
-    //                else sum_sig += img[p.img_index(sz0, sz01)];
-    //            }
-    //            p = p.parent;
-    //        }
-
-    //        if (seg.parent == null || sum_rdc == 0 || (sum_sig / sum_rdc >= SR_ratio && sum_sig >= byte.MaxValue))
-    //        {
-    //            tol_sum_sig += sum_sig;
-    //            tol_sum_rdc += sum_rdc;
-    //            List<Marker> seg_markers = new List<Marker>();
-    //            p = leaf_marker;
-    //            while (p != root_marker)
-    //            {
-    //                if (tmpimg[p.img_index(sz0, sz01)] != 0)
-    //                {
-    //                    seg_markers.Add(p);
-    //                }
-    //                p = p.parent;
-    //            }
-
-    //            foreach (var marker in seg_markers)
-    //            {
-    //                p = marker;
-    //                int r = (int)p.radius;
-    //                if (r > 0)
-    //                {
-    //                    int x = (int)(p.position.x + 0.5);
-    //                    int y = (int)(p.position.y + 0.5);
-    //                    int z = (int)(p.position.z + 0.5);
-    //                    double sum_sphere_size = 0;
-    //                    double sum_delete_size = 0;
-    //                    for (int ii = -r; ii <= r; ii++)
-    //                    {
-    //                        int x2 = x + ii;
-    //                        if (x2 < 0 || x2 >= sz0) continue;
-    //                        for (int jj = -r; jj <= r; jj++)
-    //                        {
-    //                            int y2 = y + jj;
-    //                            if (y2 < 0 || y2 >= sz1) continue;
-    //                            for (int kk = -r; kk <= r; kk++)
-    //                            {
-    //                                int z2 = z + kk;
-    //                                if (z2 < 0 || z2 >= sz2) continue;
-    //                                if (ii * ii + jj * jj + kk * kk > r * r) continue;
-    //                                int index = z2 * sz01 + y2 * sz0 + x2;
-    //                                tmpimg[index] = 0;
-    //                            }
-
-    //                        }
-    //                    }
-    //                }
-    //            }
-
-    //            out_segs.Add(seg);
-    //            visited_segs.Add(seg);
-    //        }
-    //    }
-
-    //    //evaluation
-    //    double tree_sig = 0;
-    //    double covered_sig = 0;
-    //    foreach (var m in inswc)
-    //    {
-    //        tree_sig += img[m.img_index(sz0, sz01)];
-    //        if (tmpimg[m.img_index(sz0, sz01)] == 0) covered_sig += img[m.img_index(sz0, sz01)];
-    //    }
-    //    //for (int i = 0; i < tol_sz; i++)
-    //    //{
-    //    //    if (tmpimg[i] == 0) covered_sig += img[i];
-    //    //}
-    //    Debug.Log("S/T ratio" + covered_sig / tree_sig + "(" + covered_sig + "/" + tree_sig + ")");
-    //    //Debug.Log(out_segs.Count);
-
-    //    //topo_segs2swc(out_segs, out outswc, 0);
-    //    //Debug.Log(outswc.Count);
-    //    //out_segs = Resample(out_segs, 10);
-    //    List<Marker> outswc = TopoSegs2swc(out_segs, 0);
-    //    return outswc;
-    //    //topo_segs2swc(visited_segs,filter_segs, out outswc, 0);
-    //}
 
     public List<Marker> Resample(List<Marker> inswc, byte[] img, int sz0, int sz1, int sz2,int factor =10)
     {
         int sz01 = sz0 * sz1;
-        int tol_sz = sz01 * sz2;
-        List<HierarchySegment> topo_segs = swc2topoSegs(inswc, img, sz0, sz1, sz2);
-        topo_segs = Resample(topo_segs, factor);
-        List<Marker> outswc = TopoSegs2swc(topo_segs, 0);
+        int tolSz = sz01 * sz2;
+        List<HierarchySegment> topoSegs = SWC2TopoSegs(inswc, img, sz0, sz1, sz2);
+        topoSegs = Resample(topoSegs, factor);
+        List<Marker> outswc = TopoSegs2swc(topoSegs, 0);
         //topo_segs2swc(visited_segs,filter_segs, out outswc, 0);
         return outswc;
     }
 
-    public List<HierarchySegment> Resample(List<HierarchySegment> in_segs, int factor)
+    public List<HierarchySegment> Resample(List<HierarchySegment> inSegs, int factor)
     {
-        foreach (var seg in in_segs)
+        foreach (var seg in inSegs)
         {
-            if (seg.root_marker.parent != null) seg.root_marker.parent.isSegment_root = true;
+            if (seg.rootMarker.parent != null) seg.rootMarker.parent.isBranch = true;
+            seg.rootMarker.isSegment_root = true;
         }
-        foreach (var seg in in_segs)
+        foreach (var seg in inSegs)
         {
             Marker marker = seg.leafMarker;
             Marker leafMarker = seg.leafMarker;
-            Marker rootMarker = seg.root_marker;
+            Marker rootMarker = seg.rootMarker;
             marker.isLeaf = true;
-            while (marker != seg.root_marker)
+            while (marker != seg.rootMarker)
             {
+                Marker tailMarker = marker;
                 double length = 0;
-                Marker pre_marker = marker;
-                int count_marker = 0;
-                while (marker != seg.root_marker)
+                Marker preMarker = marker;
+                int countMarker = 0;
+                while (marker != seg.rootMarker)
                 {
                     length += Vector3.Distance(marker.position, marker.parent.position);
-                    count_marker++;
+                    countMarker++;
                     marker = marker.parent;
-                    if (marker.isSegment_root) break;
+                    if (marker.isBranch) break;
                 }
 
-                int count = count_marker / factor;
+                int count = countMarker / factor;
                 double step = length / count;
 
-                while (pre_marker != marker)
+                
+                while (preMarker != marker)
                 {
-                    Marker temp_marker = pre_marker;
+                    Marker tempMarker = preMarker;
                     double distance = 0;
-                    while (distance < step && temp_marker != marker)
+                    while (distance < step && tempMarker != marker)
                     {
-                        distance += Vector3.Distance(temp_marker.position, temp_marker.parent.position);
-                        temp_marker = temp_marker.parent;
+                        distance += Vector3.Distance(tempMarker.position, tempMarker.parent.position);
+                        tempMarker = tempMarker.parent;
                     }
                     //double ratio = (distance - step) / Vector3.Distance(temp_marker.position, temp_marker.parent.position);
                     //Vector3 direction = temp_marker.parent.position - temp_marker.position;
                     //var new_maker = new Marker(temp_marker.position + (float)ratio * direction);
                     //new_maker.radius = (float)ratio * temp_marker.radius + (float)(1 - ratio) * temp_marker.parent.radius;
                     //new_maker.parent = temp_marker.parent;
-                    pre_marker.parent = temp_marker;
-                    pre_marker = temp_marker;
+                    preMarker.parent = tempMarker;
+                    preMarker = tempMarker;
                 }
-                marker.isBranch_root = true;
+
+                Marker previous = null;
+                Marker current = tailMarker;
+                while (current.parent != marker)
+                {
+                    previous = current;
+                    current = current.parent;
+                }
+                if (previous != null  && Vector3.Distance(current.position, marker.position) < step/2)
+                {
+                    previous.parent = marker;
+                }
+                
+                current = tailMarker;
+                while (current.parent != marker)
+                {
+                    previous = current;
+                    current = current.parent;
+                }
+                //
+                if (marker == seg.rootMarker && marker.parent != null &&
+                    Vector3.Distance(marker.position, marker.parent.position) < step / 2)
+                {
+                    current.parent = marker.parent;
+                    seg.rootMarker = current;
+                    marker = current;
+                }
+                
             }
         }
 
+        return inSegs;
         //foreach (var seg in in_segs)
         //{
         //    var leafMarker = seg.leafMarker;
@@ -682,6 +520,5 @@ public class HierarchyPruning
         //    }
         //    pre_marker.parent = marker.parent;
         //}
-        return in_segs;
     }
 }

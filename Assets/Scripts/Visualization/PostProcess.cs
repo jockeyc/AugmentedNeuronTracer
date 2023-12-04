@@ -13,6 +13,7 @@ public class BaseVolumeRendering : PostProcessEffectSettings
     public TextureParameter connection = new TextureParameter { value = null };
     public TextureParameter occupancyMap = new TextureParameter { value = null };
     public TextureParameter distanceMap = new TextureParameter { value = null };
+    public TextureParameter depth = new TextureParameter() { value = null };
     public FloatParameter viewThreshold = new FloatParameter { value = 0f };
     public Vector3Parameter dimension = new Vector3Parameter {  value = Vector3.zero };
     public FloatParameter blockSize = new FloatParameter { value = 0f };

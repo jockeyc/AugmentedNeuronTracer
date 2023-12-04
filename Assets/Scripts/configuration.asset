@@ -18,7 +18,7 @@ MonoBehaviour:
   scale: 1
   gaussianSmoothing: 0
   forceRootCenter: 0
-  volume: {fileID: 11700000, guid: bea738efb909d224ebcd971e3bd738bf, type: 2}
+  volume: {fileID: 11700000, guid: c8436c1cc65b50b4b90ac662c35ae6c1, type: 2}
   scaledDim: {x: 512, y: 512, z: 128}
   somaRadius: 20
   bkgThresh: 64

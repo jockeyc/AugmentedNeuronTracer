@@ -1,4 +1,4 @@
-using ANT;
+using IntraMR;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static Unity.ProjectAuditor.Editor.UI.Draw2D;
 
 
 public class FIM : MonoBehaviour
@@ -19,7 +20,7 @@ public class FIM : MonoBehaviour
     public RenderTexture phi;
     public RenderTexture visualize;
     public RenderTexture mask;
-    public RenderTexture offset;
+    public RenderTexture bias;
     public RenderTexture threshold;
     public ComputeShader computeShader;
     public RenderTexture selection;
@@ -57,7 +58,7 @@ public class FIM : MonoBehaviour
         visualize = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         threshold = InitRenderTexture3D(dim.x , dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         selection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.RFloat, UnityEngine.Experimental.Rendering.GraphicsFormat.R32_SFloat);
-        offset = InitOffset();
+        bias = InitBias();
         volume = CopyData(config.ScaledVolume);
     }
 
@@ -72,43 +73,43 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
-        uint sourceCount;
+        uint activeCount;
 
         computeShader.SetInts("dims", dimsArray);
         computeShader.SetInt("bkgThreshold", bkgThreshold);
         //Update Step
         int updateTime = 0;
-        var sourceSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
+        var activeSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateConnection");
             computeShader.SetTexture(kernel, "connection", connection);
             computeShader.SetTexture(kernel, "mask", mask);
             computeShader.SetTexture(kernel, "volume", volume);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.SetTexture(kernel, "threshold", threshold);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
-        sourceSet.Release();
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0);
+        activeSet.Release();
         return connection;
     }
 
     //distance transform with FIM
-    public void FIMDT()
+    public void DistanceTransform()
     {
         int bkgThreshold = config.BkgThresh;
 
-        int kernel = computeShader.FindKernel("ApplyOffset");
+        int kernel = computeShader.FindKernel("ApplyBias");
         computeShader.SetTexture(kernel, "volume", volume);
         computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
-        computeShader.SetTexture(kernel, "_offset", offset);
+        computeShader.SetTexture(kernel, "bias", bias);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         kernel = computeShader.FindKernel("InitBound");
@@ -120,40 +121,39 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
-        uint sourceCount;
+        uint activeCount;
         computeShader.SetInts("dims", dimsArray);
 
         //Update Step
         int updateTime = 0;
-        ComputeBuffer sourceSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
+        ComputeBuffer activeSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateFarState");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "visualize", visualize);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceValue");
+            kernel = computeShader.FindKernel("UpdateActiveValue");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "volume", volume);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceState");
+            kernel = computeShader.FindKernel("UpdateActiveState");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
-        sourceSet.Release();
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+        } while (activeCount > 0);
+        activeSet.Release();
 
-        uint remedyCount = 0;
+        uint remedyCount;
         //Remedy Step
         ComputeBuffer remedySet = new(16777216, sizeof(uint), ComputeBufferType.Append);
         remedySet.SetCounterValue(0);
@@ -165,7 +165,7 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         remedyCount = GetAppendBufferSize(remedySet);
-        //remedySet.Release();
+
         int remedyTime = 0;
         while (remedyCount > 0)
         {
@@ -189,8 +189,6 @@ public class FIM : MonoBehaviour
 
             //Get Remedy Set Count
             remedyCount = GetAppendBufferSize(remedySet);
-            //remedySet.Release();
-            //Debug.Log($"remedy buffer count: {remedyCount}");
         }
         remedySet.Release();
 
@@ -209,7 +207,7 @@ public class FIM : MonoBehaviour
         float time = Time.realtimeSinceStartup;
         gwdtBuffer1.GetData(gwdtBufferData, 0, 0, gwdtBuffer1.count);
         gwdtBuffer2.GetData(gwdtBufferData, gwdtBuffer1.count, 0, gwdtBuffer2.count);
-        //gwdtBuffer2.GetData(gwdtBufferData,gwdtBuffer1.count,0,gwdtBuffer2.count);
+
         Debug.Log("DT GET Data cost " + (Time.realtimeSinceStartup - time));
         int maxIndex = 0;
         for (int i = 0; i < gwdtBufferData.Length; i++)
@@ -236,7 +234,6 @@ public class FIM : MonoBehaviour
 
 
         Debug.Log($"{seed[0]} {seed[1]} {seed[2]}");
-        //Debug.Log(maxIndex + " " + gwdtBufferData[maxIndex]);
 
         gwdtBuffer1.Release();
         gwdtBuffer2.Release();
@@ -258,12 +255,12 @@ public class FIM : MonoBehaviour
     }
 
     // coroutine version of  distance transform with FIM
-    public IEnumerator FIMDTCoroutine()
+    public IEnumerator DistanceTransformAsync()
     {
-        int kernel = computeShader.FindKernel("ApplyOffset");
+        int kernel = computeShader.FindKernel("ApplyBias");
         computeShader.SetTexture(kernel, "volume", volume);
         computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
-        computeShader.SetTexture(kernel, "_offset", offset);
+        computeShader.SetTexture(kernel, "bias", bias);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         kernel = computeShader.FindKernel("InitBound");
@@ -275,44 +272,44 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
-        uint sourceCount = 1;
+        uint activeCount = 1;
         computeShader.SetInts("dims", dimsArray);
 
         //Update Step
         int updateTime = 0;
-        ComputeBuffer sourceSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
-        while (sourceCount > 0)
+        ComputeBuffer activeSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
+        while (activeCount > 0)
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateFarState");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "visualize", visualize);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceValue");
+            kernel = computeShader.FindKernel("UpdateActiveValue");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "volume", volume);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceState");
+            kernel = computeShader.FindKernel("UpdateActiveState");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
+            //Get Active Set Count
             if (updateTime % 10 == 0)
             {
                 uint[] countBufferData = new uint[1];
-                yield return StartCoroutine(GetAppendBufferSize(sourceSet, countBufferData));
-                sourceCount = countBufferData[0];
+                yield return StartCoroutine(GetAppendBufferSizeAsync(activeSet, countBufferData));
+                activeCount = countBufferData[0];
             }
         }
-        sourceSet.Release();
+        activeSet.Release();
 
-        uint remedyCount = 0;
+        uint remedyCount;
         //Remedy Step
         ComputeBuffer remedySet = new(16777216, sizeof(uint), ComputeBufferType.Append);
         remedySet.SetCounterValue(0);
@@ -324,12 +321,11 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         remedyCount = GetAppendBufferSize(remedySet);
-        //remedySet.Release();
+
         int remedyTime = 0;
         while (remedyCount > 0)
         {
             remedyTime++;
-            //remedySet = new ComputeBuffer(dims.x * dims.y * dims.z, sizeof(uint), ComputeBufferType.Append);
             remedySet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateRemedy");
@@ -349,17 +345,16 @@ public class FIM : MonoBehaviour
             if (remedyTime % 10 == 0)
             {
                 uint[] countBufferData = new uint[1];
-                yield return StartCoroutine(GetAppendBufferSize(remedySet, countBufferData));
+                yield return StartCoroutine(GetAppendBufferSizeAsync(remedySet, countBufferData));
                 remedyCount = countBufferData[0];
-                Debug.Log($"remedy buffer count: {remedyCount}");
             }
         }
         remedySet.Release();
 
         Debug.Log($"DT update times:{updateTime} remedy times:{remedyTime}");
 
-        ComputeBuffer gwdtBuffer1 = new ComputeBuffer(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
-        ComputeBuffer gwdtBuffer2 = new ComputeBuffer(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
+        ComputeBuffer gwdtBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
+        ComputeBuffer gwdtBuffer2 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
         kernel = computeShader.FindKernel("VisualizeTexture");
         computeShader.SetTexture(kernel, "gwdt", gwdt);
         computeShader.SetBuffer(kernel, "gwdtBuffer1", gwdtBuffer1);
@@ -371,7 +366,7 @@ public class FIM : MonoBehaviour
         float time = Time.realtimeSinceStartup;
         gwdtBuffer1.GetData(gwdtBufferData, 0, 0, gwdtBuffer1.count);
         gwdtBuffer2.GetData(gwdtBufferData, gwdtBuffer1.count, 0, gwdtBuffer2.count);
-        //gwdtBuffer2.GetData(gwdtBufferData,gwdtBuffer1.count,0,gwdtBuffer2.count);
+
         Debug.Log("DT GET Data cost: " + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
         int maxIndex = 0;
@@ -400,14 +395,28 @@ public class FIM : MonoBehaviour
 
 
         Debug.Log($"{seed[0]} {seed[1]} {seed[2]}");
-        //Debug.Log(maxIndex + " " + gwdtBufferData[maxIndex]);
 
         gwdtBuffer1.Release();
         gwdtBuffer2.Release();
+
+        //var visualization = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
+        //kernel = computeShader.FindKernel("Visualization");
+        //computeShader.SetTexture(kernel, "gwdt", gwdt);
+        //computeShader.SetTexture(kernel, "visualization", visualization);
+        //computeShader.SetFloat("maxIntensity", maxIntensity);
+        //computeShader.Dispatch(kernel, dim.x / numthreads.x, dim.y / numthreads.y, dim.z / numthreads.z);
+
+        //visualization.filterMode = FilterMode.Bilinear;
+        //Config.Instance.postProcessVolume.profile.GetSetting<BaseVolumeRendering>().volume.value = visualization;
+
+        //AssetDatabase.DeleteAsset("Assets/Textures/FIM/gwdt.Asset");
+        //AssetDatabase.CreateAsset(visualization, "Assets/Textures/FIM/gwdt.Asset");
+        //AssetDatabase.SaveAssets();
+        //AssetDatabase.Refresh();
     }
 
     // calculate the geodesic distance wthin the trunk part with FIM
-    public List<Marker> FIMTree()
+    public List<Marker> InitialReconstruction()
     {
         float computationTime = Time.realtimeSinceStartup;
         int bkgThreshold = config.BkgThresh;
@@ -421,12 +430,12 @@ public class FIM : MonoBehaviour
         computeShader.SetInt("seedIndex", seedIndex);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-        uint sourceCount = 1;
+        uint activeCount = 1;
         trunk = new HashSet<uint>();
         trunk.Add((uint)seedIndex);
         //Update Steps
-        var sourceSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
-        sourceSet.SetCounterValue(0);
+        var activeSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
+        activeSet.SetCounterValue(0);
 
         float time = Time.realtimeSinceStartup;
         int updateTime = 0;
@@ -438,36 +447,36 @@ public class FIM : MonoBehaviour
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceValueTree");
+            kernel = computeShader.FindKernel("UpdateActiveValueTree");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "phi", phi);
             computeShader.SetTexture(kernel, "parent", parent);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceStateTree");
+            kernel = computeShader.FindKernel("UpdateActiveStateTree");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
+            //Get Active Set Count
             if (updateTime % 10 == 0)
             {
-                sourceCount = GetAppendBufferSize(sourceSet);
-                uint[] sourceData = new uint[sourceCount];
-                sourceSet.GetData(sourceData);
-                trunk.UnionWith(sourceData);
-                sourceSet.SetCounterValue(0);
+                activeCount = GetAppendBufferSize(activeSet);
+                uint[] activeData = new uint[activeCount];
+                activeSet.GetData(activeData);
+                trunk.UnionWith(activeData);
+                activeSet.SetCounterValue(0);
             }
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0);
         Debug.Log("trunk Count" + trunk.Count);
         Debug.Log($"generate inital result cost: {Time.realtimeSinceStartup - time}");
         time = Time.realtimeSinceStartup;
 
-        sourceSet.Release();
+        activeSet.Release();
 
         //Remedy Step
         uint remedyCount;
@@ -584,7 +593,7 @@ public class FIM : MonoBehaviour
     }
 
     // coroutine version of calculating the geodesic distance wthin the trunk part with FIM 
-    public IEnumerator FIMTreeCoroutine(List<Marker> completeTree)
+    public IEnumerator InitialReconstructionAsync(List<Marker> completeTree)
     {
         float computationTime = Time.realtimeSinceStartup;
         int bkgThreshold = config.BkgThresh;
@@ -598,16 +607,16 @@ public class FIM : MonoBehaviour
         computeShader.SetInt("seedIndex", seedIndex);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-        uint sourceCount = 1;
+        uint activeCount = 1;
         trunk = new HashSet<uint>();
         trunk.Add((uint)seedIndex);
         //Update Steps
-        var sourceSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
-        sourceSet.SetCounterValue(0);
+        var activeSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
+        activeSet.SetCounterValue(0);
         yield return 0;
         float time = Time.realtimeSinceStartup;
         int updateTime = 0;
-        while (sourceCount > 0)
+        while (activeCount > 0)
         {
             updateTime++;
 
@@ -615,38 +624,38 @@ public class FIM : MonoBehaviour
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceValueTree");
+            kernel = computeShader.FindKernel("UpdateActiveValueTree");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "phi", phi);
             computeShader.SetTexture(kernel, "parent", parent);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceStateTree");
+            kernel = computeShader.FindKernel("UpdateActiveStateTree");
             computeShader.SetTexture(kernel, "state", state);
             computeShader.SetTexture(kernel, "gwdt", gwdt);
             computeShader.SetTexture(kernel, "phi", phi);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
+            //Get Active Set Count
             if (updateTime % 20 == 0)
             {
                 uint[] countBufferData = new uint[1];
-                yield return StartCoroutine(GetAppendBufferSize(sourceSet, countBufferData));
-                sourceCount = countBufferData[0];
-                //Debug.Log($"source buffer count: {sourceCount}");
+                yield return StartCoroutine(GetAppendBufferSizeAsync(activeSet, countBufferData));
+                activeCount = countBufferData[0];
+                //Debug.Log($"active buffer count: {activeCount}");
 
-                uint[] sourceData = new uint[sourceCount];
-                //var request = AsyncGPUReadback.Request(sourceSet);
+                uint[] activeData = new uint[activeCount];
+                //var request = AsyncGPUReadback.Request(activeSet);
                 //yield return new WaitUntil(() => request.done);
                 //Debug.Log(request.GetData<uint>().Count());
-                sourceSet.GetData(sourceData);
-                trunk.UnionWith(sourceData);
-                //trunk.UnionWith(sourceData);
-                sourceSet.SetCounterValue(0);
+                activeSet.GetData(activeData);
+                trunk.UnionWith(activeData);
+                //trunk.UnionWith(activeData);
+                activeSet.SetCounterValue(0);
             }
             else
             {
@@ -657,7 +666,7 @@ public class FIM : MonoBehaviour
         Debug.Log($"generate inital result cost: {Time.realtimeSinceStartup - time}");
         time = Time.realtimeSinceStartup;
 
-        sourceSet.Release();
+        activeSet.Release();
 
         //Remedy Step
         uint remedyCount;
@@ -702,17 +711,15 @@ public class FIM : MonoBehaviour
             computeShader.SetTexture(kernel, "state", state);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            if (remedyTime % 10 == 0)
+            if (remedyTime % 20 == 0)
             {
                 uint[] countBufferData = new uint[1];
-                yield return StartCoroutine(GetAppendBufferSize(remedySet, countBufferData));
+                yield return StartCoroutine(GetAppendBufferSizeAsync(remedySet, countBufferData));
                 remedyCount = countBufferData[0];
-                maxCount = (int)Math.Max(maxCount, remedyCount);
                 remedySet.SetCounterValue(0);
             }
 
         }
-        Debug.Log(maxCount);
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
@@ -789,75 +796,73 @@ public class FIM : MonoBehaviour
     /// <returns>markers of connected part</returns>
     public List<Marker> FIMFI()
     {
-
-        int bkgThreshold = config.BkgThresh;
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
         int kernel = computeShader.FindKernel("InitSeed");
-        computeShader.SetTexture(kernel, "state", state);
-        computeShader.SetTexture(kernel, "parent", parent);
-        computeShader.SetTexture(kernel, "phi", phi);
-        computeShader.SetTexture(kernel, "gwdt", gwdt);
-        computeShader.SetTexture(kernel, "threshold", threshold);
-        computeShader.SetFloat("maxIntensity", maxIntensity);
-        computeShader.SetInt("seedIndex", seedIndex);
+        computeShader.SetTexture(kernel, State, state);
+        computeShader.SetTexture(kernel, Parent, parent);
+        computeShader.SetTexture(kernel, Phi, phi);
+        computeShader.SetTexture(kernel, Gwdt, gwdt);
+        computeShader.SetTexture(kernel, Threshold, threshold);
+        computeShader.SetFloat(MaxIntensity, maxIntensity);
+        computeShader.SetInt(SeedIndex, seedIndex);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-        uint sourceCount;
+        uint activeCount;
         trunk = new HashSet<uint>();
         trunk.Add((uint)seedIndex);
         //Update Steps
-        ComputeBuffer sourceSet = new(134217728, sizeof(uint), ComputeBufferType.Append);
-        sourceSet.SetCounterValue(0);
+        ComputeBuffer activeSet = new(134217728, sizeof(uint), ComputeBufferType.Append);
+        activeSet.SetCounterValue(0);
 
         float time = Time.realtimeSinceStartup;
         int updateTime = 0;
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateFarStateTree");
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "gwdt", gwdt);
-            computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Gwdt, gwdt);
+            computeShader.SetTexture(kernel, Mask, mask);
+            computeShader.SetBuffer(kernel, ActiveSet, activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceValueTree");
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "gwdt", gwdt);
-            computeShader.SetTexture(kernel, "phi", phi);
-            computeShader.SetTexture(kernel, "parent", parent);
+            kernel = computeShader.FindKernel("UpdateActiveValueTree");
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Gwdt, gwdt);
+            computeShader.SetTexture(kernel, Phi, phi);
+            computeShader.SetTexture(kernel, Parent, parent);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceStateTree");
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "gwdt", gwdt);
-            computeShader.SetTexture(kernel, "phi", phi);
+            kernel = computeShader.FindKernel("UpdateActiveStateTree");
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Gwdt, gwdt);
+            computeShader.SetTexture(kernel, Phi, phi);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            //Debug.Log($"source buffer count: {sourceCount}");
-            uint[] sourceData = new uint[sourceCount];
-            sourceSet.GetData(sourceData);
-            trunk.UnionWith(sourceData);
-        } while (sourceCount > 0);
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            //Debug.Log($"active buffer count: {activeCount}");
+            uint[] activeData = new uint[activeCount];
+            activeSet.GetData(activeData);
+            trunk.UnionWith(activeData);
+        } while (activeCount > 0);
         Debug.Log($"results count: {trunk.Count}");
 
-        Debug.Log($"generate inital result cost: {Time.realtimeSinceStartup - time}");
+        Debug.Log($"generate initial result cost: {Time.realtimeSinceStartup - time}");
         time = Time.realtimeSinceStartup;
 
         float calculationTime = Time.realtimeSinceStartup;
 
-        sourceSet.SetCounterValue(0);
+        activeSet.SetCounterValue(0);
         kernel = computeShader.FindKernel("InitSeedFI");
-        computeShader.SetTexture(kernel, "state", state);
-        computeShader.SetTexture(kernel, "parent", parent);
-        computeShader.SetTexture(kernel, "phi", phi);
-        computeShader.SetFloat("maxIntensity", maxIntensity);
-        computeShader.SetTexture(kernel, "threshold", threshold);
-        computeShader.SetInt("seedIndex", seedIndex);
+        computeShader.SetTexture(kernel, State, state);
+        computeShader.SetTexture(kernel, Parent, parent);
+        computeShader.SetTexture(kernel, Phi, phi);
+        computeShader.SetFloat(MaxIntensity, maxIntensity);
+        computeShader.SetTexture(kernel, Threshold, threshold);
+        computeShader.SetInt(SeedIndex, seedIndex);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
 
@@ -872,54 +877,54 @@ public class FIM : MonoBehaviour
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateFarStateFI");
-            computeShader.SetInts("dims", dimsArray);
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetTexture(kernel, "visualize", visualize);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetInts(Dims, dimsArray);
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Mask, mask);
+            computeShader.SetTexture(kernel, Visualize, visualize);
+            computeShader.SetBuffer(kernel, ActiveSet, activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceValueFI");
-            computeShader.SetInts("dims", dimsArray);
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "gwdt", gwdt);
-            computeShader.SetTexture(kernel, "phi", phi);
-            computeShader.SetTexture(kernel, "parent", parent);
-            computeShader.SetTexture(kernel, "threshold", threshold);
+            kernel = computeShader.FindKernel("UpdateActiveValueFI");
+            computeShader.SetInts(Dims, dimsArray);
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Gwdt, gwdt);
+            computeShader.SetTexture(kernel, Phi, phi);
+            computeShader.SetTexture(kernel, Parent, parent);
+            computeShader.SetTexture(kernel, Threshold, threshold);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            kernel = computeShader.FindKernel("UpdateSourceStateFI");
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "gwdt", gwdt);
-            computeShader.SetTexture(kernel, "phi", phi);
+            kernel = computeShader.FindKernel("UpdateActiveStateFI");
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Gwdt, gwdt);
+            computeShader.SetTexture(kernel, Phi, phi);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            sum += (int)sourceCount;
-        } while (sourceCount > 0);
-        sourceSet.Release();
-        Debug.Log($"source count: {sum}");
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            sum += (int)activeCount;
+        } while (activeCount > 0);
+        activeSet.Release();
+        Debug.Log($"active count: {sum}");
 
         Debug.Log($"update cost :" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
 
-        afterUpdate = GetBuffer();
-        SaveTexture(afterUpdate, $"Assets/Textures/FIM/afterUpdate.Asset");
+        //afterUpdate = GetBuffer();
+        //SaveTexture(afterUpdate, $"Assets/Textures/FIM/afterUpdate.Asset");
 
         //Remedy Step
         uint remedyCount = 0;
         var remedySet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
         remedySet.SetCounterValue(0);
         kernel = computeShader.FindKernel("InitRemedyFI");
-        computeShader.SetBuffer(kernel, "remedySet", remedySet);
-        computeShader.SetTexture(kernel, "gwdt", gwdt);
-        computeShader.SetTexture(kernel, "phi", phi);
-        computeShader.SetTexture(kernel, "state", state);
-        computeShader.SetTexture(kernel, "parent", parent);
+        computeShader.SetBuffer(kernel, RemedySet, remedySet);
+        computeShader.SetTexture(kernel, Gwdt, gwdt);
+        computeShader.SetTexture(kernel, Phi, phi);
+        computeShader.SetTexture(kernel, State, state);
+        computeShader.SetTexture(kernel, Parent, parent);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
         remedyCount = GetAppendBufferSize(remedySet);
         Debug.Log("first traceTime remedy count:" + remedyCount);
@@ -937,19 +942,19 @@ public class FIM : MonoBehaviour
             remedySet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateRemedyFI");
-            computeShader.SetBuffer(kernel, "remedySet", remedySet);
-            computeShader.SetTexture(kernel, "state", state);
-            computeShader.SetTexture(kernel, "gwdt", gwdt);
-            computeShader.SetTexture(kernel, "phi", phi);
-            computeShader.SetTexture(kernel, "threshold", threshold);
-            computeShader.SetTexture(kernel, "parent", parent);
+            computeShader.SetBuffer(kernel, RemedySet, remedySet);
+            computeShader.SetTexture(kernel, State, state);
+            computeShader.SetTexture(kernel, Gwdt, gwdt);
+            computeShader.SetTexture(kernel, Phi, phi);
+            computeShader.SetTexture(kernel, Threshold, threshold);
+            computeShader.SetTexture(kernel, Parent, parent);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
             remedyCount = GetAppendBufferSize(remedySet);
 
             kernel = computeShader.FindKernel("UpdateRemedyNeighborFI");
-            computeShader.SetBuffer(kernel, "remedySet", remedySet);
-            computeShader.SetTexture(kernel, "state", state);
+            computeShader.SetBuffer(kernel, RemedySet, remedySet);
+            computeShader.SetTexture(kernel, State, state);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
             //Get Remedy Set Count
@@ -959,17 +964,18 @@ public class FIM : MonoBehaviour
         }
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
+        time = Time.realtimeSinceStartup;
         remedySet.Release();
 
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
         ComputeBuffer parentBuffer2 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
         kernel = computeShader.FindKernel("GetParent");
-        computeShader.SetTexture(kernel, "parent", parent);
-        computeShader.SetBuffer(kernel, "parentBuffer1", parentBuffer1);
-        computeShader.SetBuffer(kernel, "parentBuffer2", parentBuffer2);
+        computeShader.SetTexture(kernel, Parent, parent);
+        computeShader.SetBuffer(kernel, ParentBuffer1, parentBuffer1);
+        computeShader.SetBuffer(kernel, ParentBuffer2, parentBuffer2);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
-
+        
         parentBufferData = new uint[parentBuffer1.count + parentBuffer2.count];
         parentBuffer1.GetData(parentBufferData, 0, 0, parentBuffer1.count);
         parentBuffer2.GetData(parentBufferData, parentBuffer1.count, 0, parentBuffer2.count);
@@ -977,17 +983,18 @@ public class FIM : MonoBehaviour
         parentBuffer1.Release();
         parentBuffer2.Release();
 
-        afterRemedy = GetBuffer();
-        SaveTexture(afterRemedy, $"Assets/Textures/FIM/afterRemedy.Asset");
+        //afterRemedy = GetBuffer();
+        //SaveTexture(afterRemedy, $"Assets/Textures/FIM/afterRemedy.Asset");
 
-        var diff = GetDiff(afterUpdate,afterRemedy);
-        SaveTexture(diff, $"Assets/Textures/FIM/diff.Asset");
+        //var diff = GetDiff(afterUpdate,afterRemedy);
+        //SaveTexture(diff, $"Assets/Textures/FIM/diff.Asset");
 
 
         Debug.Log($"FIM GD Cal cost: {Time.realtimeSinceStartup - calculationTime}");
+        time = Time.realtimeSinceStartup;
 
-        markers = new Dictionary<int, Marker>();
-        var completeTree = new List<Marker>();
+        markers = new Dictionary<int, Marker>(trunk.Count);
+        var completeTree = new List<Marker>(trunk.Count);
         Queue<uint> queue = new(trunk);
 
         while (queue.Count > 0)
@@ -1062,12 +1069,12 @@ public class FIM : MonoBehaviour
     public List<Marker> FIMRemedy()
     {
         float time = Time.realtimeSinceStartup;
-        uint sourceCount;
+        uint activeCount;
         trunk = new();
         trunk.Add((uint)seedIndex);
         //Update Steps
-        ComputeBuffer sourceSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
-        sourceSet.SetCounterValue(0);
+        ComputeBuffer activeSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
+        activeSet.SetCounterValue(0);
 
         var connection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         int kernel = computeShader.FindKernel("InitTrunk");
@@ -1079,28 +1086,28 @@ public class FIM : MonoBehaviour
         computeShader.SetInts("dims", dimsArray);
         //Update Step
         int updateTime = 0;
-        sourceSet.SetCounterValue(0);
+        activeSet.SetCounterValue(0);
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateTrunk");
             computeShader.SetTexture(kernel, "connection", connection);
             computeShader.SetTexture(kernel, "origin", volume);
             computeShader.SetTexture(kernel, "threshold", threshold);
             computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            uint[] sourceData = new uint[sourceCount];
-            sourceSet.GetData(sourceData);
-            trunk.UnionWith(sourceData);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
-        sourceSet.Release();
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            uint[] activeData = new uint[activeCount];
+            activeSet.GetData(activeData);
+            trunk.UnionWith(activeData);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0);
+        activeSet.Release();
         Debug.Log("update cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
 
@@ -1237,14 +1244,14 @@ public class FIM : MonoBehaviour
     /// incrementally calculate the tracing part in way of coroutine
     /// </summary>
     /// <returns>markers of connected part</returns>
-    public IEnumerator FIMRemedy(List<Marker> completeTree)
+    public IEnumerator TraceBranch(List<Marker> completeTree)
     {
         float time = Time.realtimeSinceStartup;
         trunk = new();
         trunk.Add((uint)seedIndex);
         //Update Steps
-        ComputeBuffer sourceSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
-        sourceSet.SetCounterValue(0);
+        ComputeBuffer activeSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
+        activeSet.SetCounterValue(0);
 
         var connection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         int kernel = computeShader.FindKernel("InitTrunk");
@@ -1255,10 +1262,10 @@ public class FIM : MonoBehaviour
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
         computeShader.SetInts("dims", dimsArray);
         //Update Step
-        uint sourceCount = 1;
+        uint activeCount = 1;
         int updateTime = 0;
-        sourceSet.SetCounterValue(0);
-        while (sourceCount > 0)
+        activeSet.SetCounterValue(0);
+        while (activeCount > 0)
         {
             updateTime++;
 
@@ -1267,25 +1274,23 @@ public class FIM : MonoBehaviour
             computeShader.SetTexture(kernel, "origin", volume);
             computeShader.SetTexture(kernel, "threshold", threshold);
             computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
+            //Get Active Set Count
             if (updateTime % 50 == 0)
             {
                 uint[] countBufferData = new uint[1];
-                yield return StartCoroutine(GetAppendBufferSize(sourceSet, countBufferData));
-                sourceCount = countBufferData[0];
+                yield return StartCoroutine(GetAppendBufferSizeAsync(activeSet, countBufferData));
+                activeCount = countBufferData[0];
 
-                uint[] sourceData = new uint[sourceCount];
-                sourceSet.GetData(sourceData);
-                trunk.UnionWith(sourceData);
-                sourceSet.SetCounterValue(0);
-                Debug.Log($"source buffer count: {sourceCount}");
-                sourceSet.SetCounterValue(0);
+                uint[] activeData = new uint[activeCount];
+                activeSet.GetData(activeData);
+                trunk.UnionWith(activeData);
+                activeSet.SetCounterValue(0);
             }
         }
-        sourceSet.Release();
+        activeSet.Release();
         Debug.Log("update cost:" + (Time.realtimeSinceStartup - time));
         time = Time.realtimeSinceStartup;
 
@@ -1315,7 +1320,6 @@ public class FIM : MonoBehaviour
         while (remedyCount > 0)
         {
             remedyTime++;
-            //remedySet = new ComputeBuffer(dims.x * dims.y * dims.z, sizeof(uint), ComputeBufferType.Append);
             remedySet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateRemedyFI");
@@ -1327,7 +1331,7 @@ public class FIM : MonoBehaviour
             computeShader.SetTexture(kernel, "parent", parent);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            remedyCount = GetAppendBufferSize(remedySet);
+            //remedyCount = GetAppendBufferSize(remedySet);
 
             kernel = computeShader.FindKernel("UpdateRemedyNeighborFI");
             computeShader.SetBuffer(kernel, "remedySet", remedySet);
@@ -1335,12 +1339,10 @@ public class FIM : MonoBehaviour
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
             //Get Remedy Set Count
-            if (remedyTime % 10 == 0)
+            if (remedyTime % 50 == 0)
             {
                 uint[] countBufferData = new uint[1];
-                yield return StartCoroutine(GetAppendBufferSize(remedySet, countBufferData));
-                remedyCount = countBufferData[0];
-
+                yield return StartCoroutine(GetAppendBufferSizeAsync(remedySet, countBufferData));
                 remedyCount = GetAppendBufferSize(remedySet);
                 remedySet.SetCounterValue(0);
             }
@@ -1348,7 +1350,6 @@ public class FIM : MonoBehaviour
         Debug.Log("remedy cost:" + (Time.realtimeSinceStartup - time));
         Debug.Log($"update times:{updateTime} remedy times:{remedyTime}");
         remedySet.Release();
-
 
         ComputeBuffer parentBuffer1 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
         ComputeBuffer parentBuffer2 = new(dim.x * dim.y * dim.z / 2, sizeof(float), ComputeBufferType.Default);
@@ -1365,15 +1366,16 @@ public class FIM : MonoBehaviour
         parentBuffer1.Release();
         parentBuffer2.Release();
 
-        afterTracing = GetBuffer();
-        SaveTexture(afterTracing, "Assets/Textures/FIM/afterTracing.Asset");
+        //afterTracing = GetBuffer();
+        //SaveTexture(afterTracing, "Assets/Textures/FIM/afterTracing.Asset");
 
-        var tracingDiff = GetDiff(afterRemedy,afterTracing);
-        SaveTexture(tracingDiff, "Assets/Textures/FIM/tracingDiff.Asset");
+        //var tracingDiff = GetDiff(afterRemedy,afterTracing);
+        //SaveTexture(tracingDiff, "Assets/Textures/FIM/tracingDiff.Asset");
 
         Debug.Log($"Incremental Calculation cost: {Time.realtimeSinceStartup - calculationTime}");
+        calculationTime = Time.realtimeSinceStartup;
 
-        markers = new Dictionary<int, Marker>();
+        markers = new Dictionary<int, Marker>(trunk.Count);
         completeTree.Capacity = (trunk.Count);
         Queue<uint> queue = new(trunk);
 
@@ -1407,17 +1409,19 @@ public class FIM : MonoBehaviour
             else marker1.parent = marker2;
         }
         Debug.Log(trunk.Count);
+
+        Debug.Log($"Incremental Calculation cost: {Time.realtimeSinceStartup - calculationTime}");
     }
 
     public List<Marker> FIMErase(HashSet<uint> modified)
     {
         float time = Time.realtimeSinceStartup;
-        uint sourceCount;
+        uint activeCount;
         trunk = new HashSet<uint>();
         trunk.Add((uint)seedIndex);
         //Update Steps
-        ComputeBuffer sourceSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
-        sourceSet.SetCounterValue(0);
+        ComputeBuffer activeSet = new(16777216, sizeof(uint), ComputeBufferType.Append);
+        activeSet.SetCounterValue(0);
 
         var connection = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
         int kernel = computeShader.FindKernel("InitTrunk");
@@ -1431,28 +1435,28 @@ public class FIM : MonoBehaviour
         computeShader.SetInts("dims", dimsArray);
         //Update Step
         int updateTime = 0;
-        sourceSet.SetCounterValue(0);
+        activeSet.SetCounterValue(0);
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateTrunk");
             computeShader.SetTexture(kernel, "connection", connection);
             computeShader.SetTexture(kernel, "origin", volume);
             computeShader.SetTexture(kernel, "threshold", threshold);
             computeShader.SetTexture(kernel, "mask", mask);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            uint[] sourceData = new uint[sourceCount];
-            sourceSet.GetData(sourceData);
-            trunk.UnionWith(sourceData);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
-        sourceSet.Release();
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            uint[] activeData = new uint[activeCount];
+            activeSet.GetData(activeData);
+            trunk.UnionWith(activeData);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0);
+        activeSet.Release();
 
         ComputeBuffer eraseTarget = new(modified.Count, sizeof(uint), ComputeBufferType.Default);
         eraseTarget.SetData(modified.ToArray());
@@ -1588,7 +1592,7 @@ public class FIM : MonoBehaviour
             //createSphere(IndexToVector(iter, config._scaledDim), config._scaledDim, iter == targetIndex ? Color.green : Color.yellow);
             if (ret.Contains(iter))
             {
-                Debug.Log("there is a Loop£¡£¡id: " + iter);
+                Debug.Log("there is a Loopï¿½ï¿½ï¿½ï¿½id: " + iter);
                 foreach (uint index in ret) Debug.Log(index);
                 break;
             }
@@ -1615,7 +1619,7 @@ public class FIM : MonoBehaviour
         targetBuffer.SetData(targetData);
         int kernel = computeShader.FindKernel("AdjustIntensity");
         computeShader.SetBuffer(kernel, "targetBuffer", targetBuffer);
-        computeShader.SetTexture(kernel, "_offset", offset);
+        computeShader.SetTexture(kernel, "bias", bias);
         computeShader.SetTexture(kernel, "threshold", threshold);
         computeShader.SetInt("undo", undo ? 1 : 0);
         computeShader.SetInt("targetNum", targets.Count);
@@ -1624,7 +1628,7 @@ public class FIM : MonoBehaviour
     }
 
     /// <summary>
-    /// adjust the intensity of targets with a offset intensity
+    /// adjust the intensity of targets with a bias intensity
     /// </summary>
     /// <param name="targetIndexes"></param>
     /// <param name="intensity"></param>
@@ -1635,7 +1639,7 @@ public class FIM : MonoBehaviour
         targetBuffer.SetData(targetData);
         int kernel = computeShader.FindKernel("AdjustIntensityWithValue");
         computeShader.SetBuffer(kernel, "targetBuffer", targetBuffer);
-        computeShader.SetTexture(kernel, "_offset", offset);
+        computeShader.SetTexture(kernel, "bias", bias);
         computeShader.SetFloat("intensity", intensity);
         computeShader.SetInt("targetNum", targetIndexes.Count);
         computeShader.Dispatch(kernel, Mathf.CeilToInt(targetIndexes.Count / 128.0f), 1, 1);
@@ -1752,7 +1756,7 @@ public class FIM : MonoBehaviour
     /// <param name="appendBuffer"></param>
     /// <param name="countBufferData"></param>
     /// <returns></returns>
-    IEnumerator GetAppendBufferSize(ComputeBuffer appendBuffer, uint[] countBufferData)
+    IEnumerator GetAppendBufferSizeAsync(ComputeBuffer appendBuffer, uint[] countBufferData)
     {
         var countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
         ComputeBuffer.CopyCount(appendBuffer, countBuffer, 0);
@@ -1806,15 +1810,15 @@ public class FIM : MonoBehaviour
         return dst;
     }
 
-    private RenderTexture InitOffset()
+    private RenderTexture InitBias()
     {
-        var offset = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
-        int kernel = computeShader.FindKernel("InitOffset");
-        computeShader.SetTexture(kernel, "_offset", offset);
+        var bias = InitRenderTexture3D(dim.x, dim.y, dim.z, RenderTextureFormat.R8, UnityEngine.Experimental.Rendering.GraphicsFormat.R8_UNorm);
+        int kernel = computeShader.FindKernel("InitBias");
+        computeShader.SetTexture(kernel, "bias", bias);
         Debug.Log(numthreads);
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-        return offset;
+        return bias;
     }
 
     /// <summary>
@@ -1832,7 +1836,7 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
-        uint sourceCount;
+        uint activeCount;
 
         HashSet<uint> cluster = new();
         cluster.Add(targetIndex);
@@ -1840,27 +1844,27 @@ public class FIM : MonoBehaviour
         computeShader.SetFloat("viewThreshold", bkgThreshold / 255.0f);
         //Update Step
         int updateTime = 0;
-        var sourceSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
+        var activeSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateCluster");
             computeShader.SetTexture(kernel, "connection", connection);
             computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.SetFloat("viewThreshold", bkgThreshold / 255.0f);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            uint[] sourceData = new uint[sourceCount];
-            sourceSet.GetData(sourceData);
-            cluster.UnionWith(sourceData);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
-        sourceSet.Release();
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            uint[] activeData = new uint[activeCount];
+            activeSet.GetData(activeData);
+            cluster.UnionWith(activeData);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0);
+        activeSet.Release();
         Debug.Log($"cluster size: {cluster.Count}");
         return cluster.ToList();
     }
@@ -1877,32 +1881,32 @@ public class FIM : MonoBehaviour
         computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
         int[] dimsArray = new int[3] { dim.x, dim.y, dim.z };
-        uint sourceCount;
+        uint activeCount;
 
         HashSet<uint> foreground = new();
         computeShader.SetInts("dims", dimsArray);
         computeShader.SetTexture(kernel, "threshold", threshold);
         //Update Step
         int updateTime = 0;
-        var sourceSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
+        var activeSet = new ComputeBuffer(16777216, sizeof(uint), ComputeBufferType.Append);
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("UpdateForeground");
             computeShader.SetTexture(kernel, "connection", connection);
             computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            uint[] sourceData = new uint[sourceCount];
-            sourceSet.GetData(sourceData);
-            foreground.UnionWith(sourceData);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0);
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            uint[] activeData = new uint[activeCount];
+            activeSet.GetData(activeData);
+            foreground.UnionWith(activeData);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0);
 
         Debug.Log($"cluster size: {foreground.Count}");
 
@@ -1910,22 +1914,22 @@ public class FIM : MonoBehaviour
         do
         {
             updateTime++;
-            sourceSet.SetCounterValue(0);
+            activeSet.SetCounterValue(0);
 
             kernel = computeShader.FindKernel("ExtendForeground");
             computeShader.SetTexture(kernel, "connection", connection);
             computeShader.SetTexture(kernel, "origin", config.ScaledVolume);
-            computeShader.SetBuffer(kernel, "sourceSet", sourceSet);
+            computeShader.SetBuffer(kernel, "activeSet", activeSet);
             computeShader.Dispatch(kernel, Mathf.CeilToInt((float)dim.x / (float)numthreads.x), Mathf.CeilToInt((float)dim.y / (float)numthreads.y), Mathf.CeilToInt((float)dim.z / (float)numthreads.z));
 
-            //Get Source Set Count
-            sourceCount = GetAppendBufferSize(sourceSet);
-            uint[] sourceData = new uint[sourceCount];
-            sourceSet.GetData(sourceData);
-            foreground.UnionWith(sourceData);
-            //Debug.Log($"source buffer count: {sourceCount}");
-        } while (sourceCount > 0 && extend_width-- > 0);
-        sourceSet.Release();
+            //Get Active Set Count
+            activeCount = GetAppendBufferSize(activeSet);
+            uint[] activeData = new uint[activeCount];
+            activeSet.GetData(activeData);
+            foreground.UnionWith(activeData);
+            //Debug.Log($"active buffer count: {activeCount}");
+        } while (activeCount > 0 && extend_width-- > 0);
+        activeSet.Release();
 
         Debug.Log($"cluster size: {foreground.Count}");
         return foreground.ToList();
@@ -1968,6 +1972,21 @@ public class FIM : MonoBehaviour
     public List<uint> firstRemedy = new();
     public List<uint> tracingRemedy = new();
     public float RemedyRate = 0.5f;
+    private static readonly int State = Shader.PropertyToID("state");
+    private static readonly int Parent = Shader.PropertyToID("parent");
+    private static readonly int Phi = Shader.PropertyToID("phi");
+    private static readonly int Gwdt = Shader.PropertyToID("gwdt");
+    private static readonly int Threshold = Shader.PropertyToID("threshold");
+    private static readonly int MaxIntensity = Shader.PropertyToID("maxIntensity");
+    private static readonly int SeedIndex = Shader.PropertyToID("seedIndex");
+    private static readonly int Mask = Shader.PropertyToID("mask");
+    private static readonly int ActiveSet = Shader.PropertyToID("activeSet");
+    private static readonly int Dims = Shader.PropertyToID("dims");
+    private static readonly int Visualize = Shader.PropertyToID("visualize");
+    private static readonly int RemedySet = Shader.PropertyToID("remedySet");
+    private static readonly int ParentBuffer1 = Shader.PropertyToID("parentBuffer1");
+    private static readonly int ParentBuffer2 = Shader.PropertyToID("parentBuffer2");
+
     void OnDrawGizmosSelected()
     {
         int[] cubeStatus = new int[cubesDim.x * cubesDim.y * cubesDim.z];

@@ -11,7 +11,7 @@ public class Marker
     public float radius;
     public float angle;
     public bool isSegment_root = false;
-    public bool isBranch_root = false;
+    public bool isBranch = false;
     public bool isLeaf = false;
     public int batch;
 
@@ -36,7 +36,7 @@ public class Marker
         radius = marker.radius;
         angle = marker.angle;
         isSegment_root= marker.isSegment_root;
-        isBranch_root= marker.isBranch_root;
+        isBranch= marker.isBranch;
         isLeaf = marker.isLeaf;
         batch = marker.batch;
     }
@@ -52,7 +52,7 @@ public class Marker
         return (uint)(position.z * sz01 + position.y * sz0 + position.x);
     }
 
-    public static float markerRadius(byte[] img, long sz0, long sz1, long sz2, Marker marker, double thresh)
+    public float MarkerRadius(byte[] img, long sz0, long sz1, long sz2, double thresh)
     {
         long sz01 = sz0 * sz1;
         double max_r = sz0 / 2;
@@ -76,11 +76,11 @@ public class Marker
                         if (r > ir - 1 && r <= ir)
                         {
                             tol_num++;
-                            long i = (long)(marker.position.x + dx);
+                            long i = (long)(position.x + dx);
                             if (i < 0 || i >= sz0) return ir;
-                            long j = (long)(marker.position.y + dy);
+                            long j = (long)(position.y + dy);
                             if (j < 0 || j >= sz1) return ir;
-                            long k = (long)(marker.position.z + dz);
+                            long k = (long)(position.z + dz);
                             if (k < 0 || k >= sz2) return ir;
                             if (img[k * sz01 + j * sz0 + i] <= thresh)
                             {

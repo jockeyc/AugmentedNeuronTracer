@@ -209,7 +209,7 @@ namespace CommandStructure
 
         public override string ToString()
         {
-            return $"{commandType} Command£º bkgThreshold:{bkgThreshold}, somaRadius:{somaRadius}, rootPos:{rootPos}";
+            return $"{commandType} Commandï¼š bkgThreshold:{bkgThreshold}, somaRadius:{somaRadius}, rootPos:{rootPos}";
         }
     }
 
@@ -257,7 +257,7 @@ namespace CommandStructure
         {
             Vector3 hitPos = new Vector3(hitPosX, hitPosY, hitPosZ);
             Vector3 direction = new Vector3(directionX, directionY, directionZ);
-            return $"{commandType} Command£º hitPos:{hitPos}, direction:{direction}";
+            return $"{commandType} Commandï¼š hitPos:{hitPos}, direction:{direction}";
         }
 
         public override void Save(int index)
@@ -340,7 +340,7 @@ namespace CommandStructure
         public void Save()
         {
             string jsonStr = JsonConvert.SerializeObject(_commands.GetRange(0,_current+1));
-            //Debug.Log("json£º" + jsonStr);
+            //Debug.Log("jsonï¼š" + jsonStr);
             File.WriteAllText(savePath, jsonStr);
         }
 
