@@ -259,7 +259,7 @@ void UpdateActiveState(uint3 id : SV_DispatchThreadID)
 }
 
 AppendStructuredBuffer<uint> remedySet;
-RWStructuredBuffer<int> continueDispatch;
+RWStructuredBuffer<int> dispatchBuffer;
 [numthreads(THREADX, THREADY, THREADZ)]
 void InitRemedy(uint3 id : SV_DispatchThreadID)
 {
@@ -280,31 +280,17 @@ void InitRemedy(uint3 id : SV_DispatchThreadID)
                 if (z2 < 0 || z2 >= (int) dims.z)
                     continue;
                 int diff = abs(i) + abs(j) + abs(k);
-                //if (diff > max_diff)
-                //    continue;
                 uint3 id2 = uint3(x2, y2, z2);
                 float new_dist = gwdt[id2] + volume[id] * sqrt(diff);
                 min_dist = min(min_dist, new_dist);
             }
         }
     }
-    //for(int i=0;i<18;i++)
-    //{
-    //    int x2 = id.x + x_offset[i];
-    //    int y2 = id.y + y_offset[i];
-    //    int z2 = id.z + z_offset[i];
-    //    int diff = diffs[i];
-    //    uint3 id2 = uint3(x2, y2, z2);
-    //    if (state[id2] == SOURCE)
-    //    {
-    //        float new_dist = gwdt[id2] + volume[id] * diff == 1? 1.0f: 1.414213562373095f;
-    //        min_dist = min(min_dist, new_dist);
-    //    }
-    //}
+    
     if (gwdt[id] > min_dist)
     {
         state[id] = REMEDY;
-        remedySet.Append(PosToIndex(id));
+        dispatchBuffer[0] = 1;
     }
     else
     {
@@ -342,24 +328,11 @@ void UpdateRemedy(uint3 id : SV_DispatchThreadID)
                 }
             }
         }
-        //for(int i=0;i<18;i++)
-        //{
-        //    int x2 = id.x + x_offset[i];
-        //    int y2 = id.y + y_offset[i];
-        //    int z2 = id.z + z_offset[i];
-        //    int diff = diffs[i];
-        //    uint3 id2 = uint3(x2, y2, z2);
-        //    if (state[id2] == SOURCE)
-        //    {
-        //        float new_dist = gwdt[id2] + volume[id] * diff == 1? 1.0f: 1.414213562373095f;
-        //        min_dist = min(min_dist, new_dist);
-        //    }
-        //}
         
         if (gwdt[id] > min_dist)
         {
             gwdt[id] = min_dist;
-            remedySet.Append(PosToIndex(id));
+            dispatchBuffer[0] = 1;
         }
         else 
         {
@@ -398,7 +371,7 @@ void UpdateRemedyNeighbor(uint3 id : SV_DispatchThreadID)
     if (isNeighbor&&state[id]!=REMEDY)
     {
         state[id] = REMEDY;
-        remedySet.Append(PosToIndex(id));
+        dispatchBuffer[0] = 1;
     }
 }
 
@@ -621,7 +594,7 @@ void InitRemedyTree(uint3 id : SV_DispatchThreadID)
     if (phi[id] > min_dist)
     {
         state[id] = REMEDY;
-        remedySet.Append(PosToIndex(id));
+        dispatchBuffer[0] = 1;
     }
     else
     {
@@ -691,7 +664,7 @@ void UpdateRemedyTree(uint3 id : SV_DispatchThreadID)
         {
             phi[id] = min_dist;
             parent[id] = parentIndex;
-            remedySet.Append(PosToIndex(id));
+            dispatchBuffer[0] = 1;
         }
         else
         {
@@ -733,7 +706,7 @@ void UpdateRemedyNeighborTree(uint3 id : SV_DispatchThreadID)
     if (isNeighbor && state[id] != REMEDY)
     {
         state[id] = REMEDY;
-        remedySet.Append(PosToIndex(id));
+        dispatchBuffer[0] = 1;
     }
 }
 
@@ -922,7 +895,7 @@ void InitRemedyFI(uint3 id : SV_DispatchThreadID)
     if (phi[id] > min_dist)
     {
         state[id] = REMEDY;
-        remedySet.Append(PosToIndex(id));
+        dispatchBuffer[0] = 1;
     }
     else
     {
@@ -971,7 +944,7 @@ void UpdateRemedyFI(uint3 id : SV_DispatchThreadID)
         {
             phi[id] = min_dist;
             parent[id] = parentIndex;
-            remedySet.Append(PosToIndex(id));
+            dispatchBuffer[0] = 1;
         }
         else
         {
@@ -1012,7 +985,7 @@ void UpdateRemedyNeighborFI(uint3 id : SV_DispatchThreadID)
     if (isNeighbor && state[id] != REMEDY)
     {
         state[id] = REMEDY;
-        remedySet.Append(PosToIndex(id));
+        dispatchBuffer[0] = 1;
     }
 }
 
